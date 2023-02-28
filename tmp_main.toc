@@ -1,0 +1,14 @@
+\gdef \the@ipfilectr {@-1}
+\gdef \the@ipfilectr {}
+\gdef \the@ipfilectr {@-2}
+\contentsline {section}{\numberline {第1章}马尔可夫决策过程}{4}{section.1}%
+\contentsline {subsection}{\numberline {1.1}马尔可夫过程}{4}{subsection.1.1}%
+\contentsline {subsubsection}{\numberline {1.1.1}马尔可夫性质}{4}{subsubsection.1.1.1}%
+\contentsline {subsubsection}{\numberline {1.1.2}马尔可夫链}{5}{subsubsection.1.1.2}%
+\contentsline {subsection}{\numberline {1.2}马尔可夫奖励过程}{5}{subsection.1.2}%
+\contentsline {subsubsection}{\numberline {1.2.1}回报与价值函数}{5}{subsubsection.1.2.1}%
+\contentsline {subsubsection}{\numberline {1.2.2}马尔可夫奖励过程的例子}{7}{subsubsection.1.2.2}%
+\contentsline {subsection}{\numberline {1.3}马尔可夫决策过程}{7}{subsection.1.3}%
+\contentsline {subsubsection}{\numberline {1.3.1}马尔可夫决策过程中的策略}{7}{subsubsection.1.3.1}%
+\contentsline {subsubsection}{\numberline {1.3.2}马尔可夫决策过程和马尔可夫过程/马尔可夫奖励过程的区别}{8}{subsubsection.1.3.2}%
+\gdef \the@ipfilectr {}
