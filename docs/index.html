@@ -31,9 +31,7 @@
         paths:'auto',
         depth:6
       },
-    }
-    
-    plugins: [
+      plugins: [
         function(hook, vm) {
           hook.beforeEach(function(content) {
             // 每次开始解析 Markdown 内容时调用
@@ -47,6 +45,7 @@
           // }) 
         }
       ]
+    } 
   </script>
   <!-- Docsify v4 -->
   <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
