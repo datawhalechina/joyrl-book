@@ -14,6 +14,8 @@ docsify init ./docs
 ```bash
 cd docs
 docsify serve
+## 或者
+docsify serve ./docs
 ```
 
 配置侧边栏
@@ -34,4 +36,4 @@ https://github.com/scruel/docsify-latex
 
 ### 参考
 
-https://jingping-ye.github.io/docsify-docs-zh/#/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B/%E5%BC%80%E5%A7%8B
+[docsify中文文档](https://jingping-ye.github.io/docsify-docs-zh/#/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B/%E5%BC%80%E5%A7%8B)
