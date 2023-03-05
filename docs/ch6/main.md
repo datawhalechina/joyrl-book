@@ -1,3 +1,2 @@
----
-bibliography: [../ref.bib]
----
+# 深度学习基础
+
