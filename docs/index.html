@@ -15,11 +15,26 @@
       name: '',
       repo: '',
       loadSidebar: true,
+      subMaxLevel: 3,
       latex: {
         inlineMath   : [['$', '$'], ['\\(', '\\)']], // default
         displayMath  : [['$$', '$$']],               // default
       }
     }
+    plugins: [
+        function(hook, vm) {
+          hook.beforeEach(function(content) {
+            // 每次开始解析 Markdown 内容时调用
+            // 将所有../img替换成img
+            // https://github.com/docsifyjs/docsify/issues/936
+            return content.replace(/..\/figs/g, "figs");
+          })
+
+          // hook.doneEach(function () {
+          //   window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')]);
+          // }) 
+        }
+      ]
   </script>
   <!-- Docsify v4 -->
   <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>

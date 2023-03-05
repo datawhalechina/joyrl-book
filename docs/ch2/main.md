@@ -1,7 +1,3 @@
----
-bibliography: [../ref.bib]
----
-
 ## 马尔可夫决策过程
 
 
