@@ -12,7 +12,7 @@ bibliography: [../ref.bib]
 
 
 <div align=center>
-<img width="800" src="./figs/interaction_mdp.png"/>
+<img width="800" src="../figs/ch2/interaction_mdp.png"/>
 </div>
 <div align=center>图 2.1 马尔可夫决策过程中智能体与环境的交互过程</div>
 
@@ -77,7 +77,7 @@ $$
 既然状态数是有限的，那其实我们可以用一种状态流向图来表示智能体与环境交互过程中的走向。举个例子，假设学生正在上课，一般来讲从老师的角度来说学生会有三种状态，认真听讲、玩手机和睡觉，分别用$s_1$，$s_2$和$s_3$表示。注意，这里从老师的角度的意思是把老师当作智能体，学生跟教师组成环境，而如果把学生当作智能体，那么认真听讲、玩手机这些就只能理解成智能体作出的决策或动作，而不是状态了。这在实际问题中是很常见的，毕竟交互是相互的，强化学习中的环境也不是严格意义上的景止环境，它也可以是其他智能体。**有时智能体和环境的角色是能相互对调的，只要能各自建模成马尔可夫决策过程即可**，比如在竞技游戏中，我方角色可以当对方角色看作环境的一部分，对方角色也可以把我方角色看作环境的一部分，然后各自作出相应的决策。 回到我们举的例子，在马尔可夫决策过程中一般所有状态之间都是可以相互切换的，当学生在认真听讲时能切换到玩手机或者睡觉的状态，在睡觉时也可能继续睡觉，也可能醒过来认真听讲或者玩手机。
 
 <div align=center>
-<img width="400" src="./figs/fsm.png"/>
+<img width="400" src="../figs/ch2/fsm.png"/>
 </div>
 <div align=center>图 2.2 马尔可夫链</div>
 
@@ -132,3 +132,7 @@ $$
 ### 本章小结
 
 本章主要介绍了马尔可夫决策过程的概念，它是强化学习的基本问题模型之一，因此读者需要牢牢掌握。此外拓展了一些重要的概念，包括马尔可夫性质、回报、状态转移矩阵、轨迹、回合等，这些概念在我们后面讲解强化学习算法的时候会频繁用到，务必牢记。
+
+### 参考文献
+
+[^1]: Silver, D., Huang, A., Maddison, C. J., Guez, A., Sifre, L., van den Driessche, G., Schrittwieser, J., Antonoglou, I., Panneershelvam, V., Lanctot, M., Dieleman, S., Grewe, D., Nham, J., Kalchbrenner, N., Sutskever, I., Lillicrap, T., Leach, M., Kavukcuoglu, K., Graepel, T. & Hassabis, D. (2016). Mastering the game of Go with deep neural networks and tree search. Nature, 529, 484--.
