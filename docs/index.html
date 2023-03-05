@@ -13,19 +13,31 @@
   <script>
     window.$docsify = {
       name: '',
-      repo: '',
+      repo: 'https://github.com/johnjim0816/joyrl_book',
+      
       loadSidebar: true,
       subMaxLevel: 3,
       latex: {
         inlineMath   : [['$', '$'], ['\\(', '\\)']], // default
         displayMath  : [['$$', '$$']],               // default
-      }
+      },
+      pagination:{
+        previousText:'上一篇',
+        nextText:'下一篇',
+      },
+      search:{
+        placeholder:'搜索',
+        noData:'找不到结果',
+        paths:'auto',
+        depth:6
+      },
     }
+    
     plugins: [
         function(hook, vm) {
           hook.beforeEach(function(content) {
             // 每次开始解析 Markdown 内容时调用
-            // 将所有../img替换成img
+            // 将所有../figs替换成figs，解决github pages下图片无法显示的问题
             // https://github.com/docsifyjs/docsify/issues/936
             return content.replace(/..\/figs/g, "figs");
           })
