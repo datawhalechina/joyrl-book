@@ -9,7 +9,7 @@
 
 
 <div align=center>
-<img width="800" src="../figs/ch2/interaction_mdp.png"/>
+<img width="800" src="figs/ch2/interaction_mdp.png"/>
 </div>
 <div align=center>图 2.1 马尔可夫决策过程中智能体与环境的交互过程</div>
 
@@ -96,6 +96,7 @@ $$
 | $S_t = s_1$ |      $0.2$      |      $0.4$      |      $0.4$      |
 | $S_t = s_2$ |      $0.2$      |      $0.5$      |      $0.3$      |
 | $S_t = s_3$ |      $0.1$      |      $0.3$      |      $0.6$      |
+
 
 在数学上也可以用矩阵来表示，如下：
 $$
