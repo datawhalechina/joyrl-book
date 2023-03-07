@@ -3,6 +3,8 @@
 ```bash
 # 安装node(Mac)
 brew install node
+# windows，安装后需要重启
+https://nodejs.org/en/
 # 全局安装docsify-cli，没有代理加速可以安装cnpm镜像加速
 npm i docsify-cli -g
 # 初始化，会在docs文件夹下生成README，index.html文件
