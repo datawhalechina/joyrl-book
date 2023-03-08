@@ -79,7 +79,88 @@ $$
 本节开始我们的第一个算法实战，由于是第一个实战，所以会讲得偏详细一些，后面的算法实战部分可能会讲得越来越粗，如果读者们有不明白的地方，欢迎随时交流讨论。实战的思路会跟理论学习有所区别，并且因人而异，因此读者们在学习实战的时候做个参考即可，最重要的是有自己的想法。此外，笔者认为**对于实战来说最重要的一点就是写好伪代码**。如果说理论部分是数学语言，实战部分就是编程语言，而伪代码则是从数学语言到编程语言之间的一个过渡，这也是笔者为什么在讲解每个算法的时候尽可能贴出伪代码的原因。在每个算法实战的内容中，笔者基本会按照定义算法，定义训练，定义环境，设置参数以及开始训练等步骤为读者们展开，这是笔者个人的编程习惯。由于这次我们是第一次讲到实战，所以会先讲一下定义训练，因为其中涉及到一个所有强化学习通用的训练模式。
 ### 定义训练
 
-回顾一下伪代码的第二行到最后一行，我们会发现一个强化学习训练的通用模式，首先我们会迭代很多个（$M$）回合，在每回合中，首先重置环境回到初始化的状态，
+回顾一下伪代码的第二行到最后一行，我们会发现一个强化学习训练的通用模式，首先我们会迭代很多个（$M$）回合，在每回合中，首先重置环境回到初始化的状态，智能体根据状态选择动作，然后环境反馈中下一个状态和对应的奖励，同时智能体会更新策略，直到回合结束。这其实就是马尔可夫决策过程中智能体与环境互动的过程，写成一段通用的代码如下：
 
+```python
+for i_ep in range(train_eps): # 遍历每个回合
+    # 重置环境，获取初始状态
+    state = env.reset()  # 重置环境,即开始新的回合
+    while True: # 对于比较复杂的游戏可以设置每回合最大的步长，例如while ep_step<100，即最大步长为100。
+        # 智能体根据策略采样动作
+        action = agent.sample_action(state)  # 根据算法采样一个动作
+        # 与环境进行一次交互，得到下一个状态和奖励
+        next_state, reward, terminated, _ = env.step(action)  # 智能体将样本记录到经验池中
+        agent.memory.push(state, action, reward, next_state, terminated) 
+        # 智能体更新策略
+        agent.update(state, action, reward, next_state, terminated)  
+        # 更新状态
+        state = next_state  
+        # 如果终止则本回合结束
+        if terminated:
+            break
+```
 
+### 定义算法
 
+强化学习中有几个要素，智能体、环境、经验池（经回放），在实践中也需要逐一定义这些要素。我们一般首先定义智能体，或者说算法，在`Python`中一般定义为类即可。再考虑一下智能体在强化学习中主要负责哪些工作.
+
+#### 采样动作
+
+首先在训练中我需要采样动作与环境交互，于是我们可以定义一个类方法，命名为`sample_action`，如下：
+
+```python
+class Agent:
+    def __init__():
+        pass
+    def sample_action(self, state):
+        ''' 采样动作，训练时用
+        '''
+        self.sample_count += 1
+        self.epsilon = self.epsilon_end + (self.epsilon_start - self.epsilon_end) * \
+            math.exp(-1. * self.sample_count / self.epsilon_decay) # epsilon是会递减的，这里选择指数递减
+        # e-greedy 策略
+        if np.random.uniform(0, 1) > self.epsilon:
+            action = np.argmax(self.Q_table[str(state)]) # 选择Q(s,a)最大对应的动作
+        else:
+            action = np.random.choice(self.n_actions) # 随机选择动作
+        return action
+```
+在这里我们用了 $\varepsilon-greedy$ 策略 ，其中 $\varepsilon$ 会随着采样的步数指数衰减，感兴趣的读者也可以直接设置固定的 $\varepsilon=0.1$ 试试。
+在 Q-learning 算法中还有一个重要的元素，即 $Q$ 表，$Q$ 表的作用是输入状态和动作，输出一个即可，这样一来我们可以用一个二维的数组来表示，比如 `Q_table[0][1] = 0.1`可以表示 $Q(s_0,a_1)=0.1$ （注意`Python`中下标是从`0`开始）。而在我们的示例代码中用了一个默认字典来表示，如下：
+
+```python
+self.Q_table  = defaultdict(lambda: np.zeros(n_actions))
+```
+
+这样的好处是从数据结构上来说，默认字典是哈希表结构，二维数组是线性表结构，从哈希表拿出数据的速度会比线性表快。
+
+#### 预测动作
+
+此外对于每个智能体在训练中和在测试中采取动作的方式一般是不一样的，因为在训练中需要增加额外的探索策略，而在测试中只需要输出 $Q$ 值对应最大的动作即可，如下：
+
+```python
+class Agent:
+    def __init__():
+        pass
+    def predict_action(self,state):
+        ''' 预测或选择动作，测试时用
+        '''
+        action = np.argmax(self.Q_table[str(state)])
+        return action
+```
+
+#### 更新方法
+
+所有强化学习算法的采样动作和预测动作方式几乎是比较固定的，对于每个智能体来说最核心的还是更新网络的方式，在 Q-learning 算法中的更新方式较为简单，而且不需要经验回放（具体会在 DQN 算法中展开），如下：
+
+```python
+def update(self, state, action, reward, next_state, terminated):
+    Q_predict = self.Q_table[str(state)][action] 
+    if terminated: # 终止状态
+        Q_target = reward  
+    else:
+        Q_target = reward + self.gamma * np.max(self.Q_table[str(next_state)]) 
+    self.Q_table[str(state)][action] += self.lr * (Q_target - Q_predict)
+```
+
+其中 `self.lr` 就是更新公式中的 $alpha$ （学习率），到这里我们就定义好了智能体，完整的内容可参考附属的代码
