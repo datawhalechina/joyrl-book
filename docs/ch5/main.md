@@ -224,7 +224,18 @@ self.epsilon_decay = 200 #  e-greedy策略中epsilon的衰减率
 </div>
 <div align=center>图 5.5 CliffWalking-v0 环境 Q-learning 算法训练曲线 </div>
 
-如图 5.5 所示，曲线横坐标表示回合数（episode），纵坐标表示每回合获得的总奖励，可以看出曲线其实从大约 $50$ 个回合的时候就开始收敛了，收敛值约在 $-13$ 左右， 也就是我们的智能体学到了一个最优策略。
+如图 5.5 所示，曲线横坐标表示回合数（episode），纵坐标表示每回合获得的总奖励，可以看出曲线其实从大约 $50$ 个回合的时候就开始收敛了，也就是我们的智能体学到了一个最优策略。在训练过程中我们打印出每回合的奖励，总共训练了 $300$ 个回合，结果如下：
+
+```bash
+...
+回合：200/300，奖励：-22.0，Epsilon：0.010
+回合：220/300，奖励：-20.0，Epsilon：0.010
+回合：240/300，奖励：-15.0，Epsilon：0.010
+回合：260/300，奖励：-20.0，Epsilon：0.010
+回合：280/300，奖励：-13.0，Epsilon：0.010
+回合：300/300，奖励：-13.0，Epsilon：0.010
+```
+我们发现收敛值约在 $-13$ 左右波动，波动的原因是因为此时还存在 $0.01$ 的概率做随机探索。
 
 为了确保我们训练出来的策略是有效的，可以拿训好的策略去测试，测试的过程跟训练的过程差别不大，其一是智能体在测试的时候直接用模型预测的动作输出就行，即在训练中是采样动作（带探索），测试中就是预测动作，其二是训练过程中不需要更新策略，因为已经收敛了。
 
@@ -244,3 +255,46 @@ self.epsilon_decay = 200 #  e-greedy策略中epsilon的衰减率
 ```
 
 可以看到智能体学到的策略是先往上（即动作 $0$），然后一直往右（即动作 $1$）走十二格，最后再往下（即动作 $2$），这其实就是我们肉眼就能看出来的最优策略！
+
+
+#### 消融实验
+
+为了进一步探究 $\varepsilon$ 是随着采样步数衰减更好些，还是恒定不变更好，我们做了一个消融（Ablation）实验，即将 $\varepsilon$ 设置为恒定的 $0.1$，如下：
+
+```python
+# 将初始值和最终值设置为一样，这样 epsilon 就不会衰减
+self.epsilon_start = 0.1 #  e-greedy策略中epsilon的初始值
+self.epsilon_end = 0.1 #  e-greedy策略中epsilon的最终值
+self.epsilon_decay = 200 #  e-greedy策略中epsilon的衰减率
+```
+
+然后重新训练和测试，得到的训练曲线如图 5.6 所示：
+
+<div align=center>
+<img width="400" src="../figs/ch5/CliffWalking-v0_training_curve_1.png"/>
+</div>
+<div align=center>图 5.6 Q-learning 算法消融实验训练曲线 </div>
+
+测试曲线如图 5.7 所示
+
+<div align=center>
+<img width="400" src="../figs/ch5/CliffWalking-v0_testing_curve_1.png"/>
+</div>
+<div align=center>图 5.7 Q-learning 算法消融实验训练曲线 </div>
+
+不难发现，虽然最后也能收敛，但是相对来说没有那么稳定，在更复杂的环境中 $\varepsilon$ 随着采样步数衰减的好处会体现得更加明显。
+
+## Sarsa 算法
+
+Sarsa 算法虽然在刚提出的时候被认为是 Q-learning 算法的改进，但在今天看来是非常类似，但是模式却不同的两类算法，Q-learning 算法被认为是 Off-Policy 算法，而 Sarsa 算法相对地则是 On-policy 的，具体我们后面会展开说明。我们先来看 Sarsa 算法，我们讲到 Sarsa 算法跟 Q-learning 算法是非常类似的，这是因为两者之间在形式上只有 $Q$ 值更新公式是不同的，如下：
+
+$$
+Q(s_t,a_t) \leftarrow Q(s_t,a_t)+\alpha[r_t+\gamma Q(s_{t+1},a_{t+1})-Q(s_t,a_t)]
+$$
+
+也就是说，Sarsa 算法是直接用下一个状态和动作对应的 $Q$ 值来作为估计值的，而 Q-learning 算法则是用下一个状态对应的最大 $Q$ 值。然后我们就可以贴出伪代码了，
+
+<div align=center>
+<img width="400" src="../figs/ch5/sarsa_pseu.png"/>
+</div>
+<div align=center>图 5.8 Sarsa 算法伪代码 </div>
