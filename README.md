@@ -16,8 +16,8 @@
 
 `JoyRL`旨在建立一套帮助初学者或交叉学科研究者快速入门强化学习的代码生态，主要包括`JoyRL离线版`，`JoyRL在线版`，`JoyRL论文`等几大部分：
 
-* [JoyRL离线版](https://github.com/johnjim0816/joyrl-offline)：离线版开源框架。保留每个算法的完整结构，便于读者学习使用，配以中文注释，适合读者学习使用。在此基础上，编写完整的框架（例如配置多线程）帮助读者进行强化学习的高效应用。同时也是开发版框架，在开发新的算法时首先会在离线版中测试，然后同步到`JoyRL上线版`。
-* [JoyRL上线版](https://github.com/datawhalechina/joyrl)：以`PiP`包的形式开发开源框架，英文注释，会比离线版更加集成，更加高效，并且会去掉一些实际并不常用的基础算法，例如`Q-learning`等等，适合需要大规模环境应用的读者进阶使用
+* [JoyRL离线版](https://github.com/johnjim0816/joyrl-offline)：离线版开源框架。保留每个算法的完整结构，便于读者学习使用，配以中文注释，适合读者学习使用。在此基础上，编写完整的框架（例如配置多线程）帮助读者进行强化学习的高效应用。同时也是开发版框架，在开发新的算法时首先会在离线版中测试，然后同步到`JoyRL在线版`。
+* [JoyRL在线版](https://github.com/datawhalechina/joyrl)：以`PiP`包的形式开发开源框架，英文注释，会比离线版更加集成，更加高效，并且会去掉一些实际并不常用的基础算法，例如`Q-learning`等等，适合需要大规模环境应用的读者进阶使用
 * [JoyRL论文](https://github.com/datawhalechina/rl-papers)：定时收集强化学习各类子方向的前沿论文，帮助读者快速了解相关领域的研究
 
 ## 在线阅读
@@ -26,13 +26,17 @@
 
 ## 内容导航
 
-|               章节                |      | 代码 |
-| :-------------------------------: | ---- | :--: |
-|       [第一章 绪论](./docs/ch1/main.md)       |      |      |
-| [第二章 马尔可夫决策过程](./docs/ch2/main.md) |      |      |
-|     [第三章 动态规划](./docs/ch3/main.md)     |      |      |
-|    [第四章 免模型预测](./docs/ch4/main.md)    |      |      |
-|    [第五章 免模型控制](./docs/ch5/main.md)    |      |      |
+代码实战请转到[JoyRL离线版](https://github.com/johnjim0816/joyrl-offline)或者[JoyRL在线版](https://github.com/datawhalechina/joyrl)。
+
+|               章节                | 关键内容 |
+| :-------------------------------: | :--: |
+|       [第一章 绪论](./docs/ch1/main.md)       | 待更新 |
+| [第二章 马尔可夫决策过程](https://johnjim0816.com/joyrl_book/#/ch2/main) | 马尔可夫决策过程、状态转移矩阵 |
+|     [第三章 动态规划](https://johnjim0816.com/joyrl_book/#/ch3/main)     | 贝尔曼方程、策略迭代、价值迭代 |
+|    [第四章 免模型预测](https://johnjim0816.com/joyrl_book/#/ch4/main)    | 蒙特卡洛、时序差分 |
+|    [第五章 免模型控制](https://johnjim0816.com/joyrl_book/#/ch4/main)    | Q-learning 算法、Sarsa 算法 |
+| 第六章 深度学习基础 | 待更新 |
+| [第七章 DQN算法](https://johnjim0816.com/joyrl_book/#/ch7/main) | 目标网络、经验回放 |
 
 ## 贡献者
 
