@@ -55,7 +55,7 @@ $$
 到这里我们基本讲完了 DQN 算法的内容，可以直接贴出伪代码准备进入实战了，如下：
 
 <div align=center>
-<img width="600" src="../figs/ch7/dqn_network.png"/>
+<img width="600" src="../figs/ch7/dqn_pseu.png"/>
 </div>
 <div align=center>图 7.2 DQN 算法伪代码</div>
 
