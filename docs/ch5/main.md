@@ -116,14 +116,14 @@ class Agent:
         ''' 采样动作，训练时用
         '''
         self.sample_count += 1
-        self.epsilon = self.epsilon_end + (self.epsilon_start - self.epsilon_end) * \
-            math.exp(-1. * self.sample_count / self.epsilon_decay) # epsilon是会递减的，这里选择指数递减
+        # epsilon是会递减的，这里选择指数递减
+        self.epsilon = self.epsilon_end + (self.epsilon_start - self.epsilon_end) * math.exp(- self.sample_count / self.epsilon_decay) 
         # e-greedy 策略
         if np.random.uniform(0, 1) > self.epsilon:
             action = np.argmax(self.Q_table[str(state)]) # 选择Q(s,a)最大对应的动作
         else:
             action = np.random.choice(self.n_actions) # 随机选择动作
-        return action
+        return action     
 ```
 
 在这里我们用了 $\varepsilon-greedy$ 策略，其中 $\varepsilon$ 会随着采样的步数指数衰减，感兴趣的读者也可以直接设置固定的 $\varepsilon=0.1$ 试试。
