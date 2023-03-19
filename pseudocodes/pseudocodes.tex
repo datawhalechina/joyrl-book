@@ -533,4 +533,42 @@
 \footnotetext[1]{Generative Adversarial Imitation Learning}
 \footnotetext[2]{策略更新方式与策略模型$\pi _{\theta}$有关，如PP0-Clip等.}
 \clearpage
+\section{MAPPO算法}
+\begin{algorithm}[H] % [H]固定位置
+    \floatname{algorithm}{{MAPPO算法}\footnotemark[1]\footnotemark[2]} 
+	\renewcommand{\thealgorithm}{} % 去掉算法标号
+	\caption{} 
+	\begin{algorithmic}[1] % [1]显示步数
+		\STATE 初始化每个智能体$u$的Critic网络$Q_{\phi^u}$和参数为$\theta^u$的Actor网络，$u \in U$
+		\STATE 初始化每个智能体$u$的目标Actor网络$\pi_{old}^u$的参数$\theta_{old}^u\leftarrow\theta^u$和目标Critic网络$Q_{\overline{\phi}^u}$的参数$\overline{\phi}^u\leftarrow\phi^u$
+		\STATE 初始化epoch数$K$
+		\STATE 初始化经验回放$D$
+		\FOR {回合数 = $1,2,\cdots,M$}
+			\STATE 初始化状态$s_1$
+			\STATE 每个智能体$u$都根据各自策略采样$C$个时步数据,收集轨迹$\tau^u = {\{o_t^u, a_t^u, r_{t+1}}\}_{t=1}^T$\footnotemark[3]
+			\STATE 对每个时步的每条轨迹
+			\STATE 计算折扣奖励$\{\hat{R}_t^u\}_{t=1}^T$
+			\STATE 计算优势函数$\{A_t^u=V_{\phi_t}^u-\hat{R}_t^u\}_{t=1}^T$
+			\STATE 计算$y_t^u=V_{\phi_t}^u+A_t^u$
+			\STATE 将每个时步的数据$\{[o_t^u, a_t^u, y_t^u, A_t^u]_{u=1}^U\}_{t=1}^T$ 都存储到经验回放$D$中
+			\FOR {epoch数 $ k = 1,2,\cdots,K$}
+				\STATE 打乱$D$中数据顺序并重新编号
+				\FOR {$j=0,1,\cdots,\frac{T}{B}-1$}
+					\STATE 选择$B$条数据$\{o_i^u, a_i^u, y_i^u, A_i^u\}_{i=1+Bj}^{B(j+1)}$
+					\STATE 计算梯度：
+					\STATE $\bigtriangleup\theta^u=\frac{1}{B}\sum_{i=1}^B\{\bigtriangledown_{\theta^u}f(r_i(\theta^u),A_i^u)\}$\footnotetext[4]
+					
+					\STATE $\bigtriangleup\phi^u=\frac{1}{B}\sum_{i=1}^B\{\bigtriangledown_{\phi^u}(y_i^u-V_{\phi^u}(o_i^u))^2\}$
+					\STATE Adam梯度上升方法计算$\theta^u$，Adam梯度下降方法计算$\phi^u$
+				\ENDFOR
+			\ENDFOR
+		\STATE 更新$\theta_{old}^u\leftarrow\theta^u$, $\overline{\phi}^u\leftarrow\phi^u$
+		\ENDFOR
+	\end{algorithmic}
+\end{algorithm}
+\footnotetext[1]{Joint Optimization of Handover Control and Power Allocation Based on Multi-Agent Deep Reinforcement Learning}
+\footnotetext[2]{The Surprising Effectiveness of PPO in Cooperative Multi-Agent Games}
+\footnotetext[3]{$o_t^u$是智能体$u$在时刻$t$的观测值，是局部观测值，而$s_t$是全局状态}
+\footnotetext[4]{函数f是目标函数，不同的方法如Clip或者KL散度等目标函数不同}
+\clearpage
 \end{document}
