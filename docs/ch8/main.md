@@ -27,6 +27,22 @@ y_t = r_t+\gamma\max _{a}Q^{\prime}_{\theta^{\prime}}(s_{t+1},a^{max}_{\theta}(s
 $$
 
 到这里我们就讲完了 Double DQN 算法的核心，在原论文中还通过拟合曲线实验证明了过估计是真实存在且对实验结果有重大影响等相关细节，感兴趣的读者深入研究。为了方便读者理解，我们接着用皇帝与大臣的例子来举例说明为什么 Double DQN 算法能够估计得更准确。我们知道在 DQN 算法中策略网络直接与环境交互相当于大臣们搜集情报，然后定期更新到目标网络的过程相当于大臣向皇帝汇报然后皇帝做出最优决策。在 DQN 算法中，大臣是不管好的还是坏的情报都会汇报给皇帝的，而在  Double DQN 算法中大臣会根据自己的判断将自己认为最优的情报汇报给皇帝，即先在策略网络中找出最大 $Q$ 值对应的动作。这样一来皇帝这边得到的情报就更加精简并且质量更高了，以便于皇帝做出更好的判断和决策，也就是估计得更准确了。
+
+Double DQN 算法核心代码如下，完整代码参考 JoyRL ：
+
+```python
+# 计算当前Q(s_t|a=a_t)，即Q网络的输出，这里的gather函数的作用是根据action_batch中的值，从Q网络的输出中选出对应的Q值
+q_value_batch = self.policy_net(state_batch).gather(dim=1, index=action_batch) # shape(batchsize,1)
+# 计算 Q(s_t+1|a)
+next_q_value_batch = self.policy_net(next_state_batch)
+# 计算 Q'(s_t+1|a)，也是与DQN不同的地方
+next_target_value_batch = self.target_net(next_state_batch)
+# 计算 Q'(s_t+1|a=argmax Q(s_t+1|a))
+next_target_q_value_batch = next_target_value_batch.gather(1, torch.max(next_q_value_batch, 1)[1].unsqueeze(1)) # shape(batchsize,1)
+```
+
+整体代码跟 DQN 算法基本一致，只是在计算目标 $Q$ 值的时候多了一步，即先在策略网络中找出最大 $Q$ 值对应的动作，然后再在目标网络中计算目标 $Q$ 值。
+
 ## Dueling DQN 算法
 
 在 Double DQN 算法中我们是通过改进目标 $Q$ 值的计算来优化算法的，而在 Dueling DQN 算法<sup>②</sup>中则是通过优化神经网络的结构来优化算法的。
@@ -62,6 +78,37 @@ $$
 
 总的来讲，Dueling DQN 算法在某些情况下相对于 DQN 是有好处的，因为它分开评估每个状态的价值以及某个状态下采取某个动作的 $Q$ 值。当某个状态下采取一些动作对最终的回报都没有多大影响时，这个时候 Dueling DQN 这种结构的优越性就体现出来了。或者说，它使得目标值更容易计算，因为通过使用两个单独的网络，我们可以隔离每个网络输出上的影响，并且只更新适当的子网络，这有助于降低方差并提高学习**鲁棒性（Robustness）**。
 
+根据上面的分析，我们就可以写出 Dueling DQN 网络的代码，如下：
+
+```python
+class DuelingQNetwork(nn.Module):
+    def __init__(self, n_states, n_actions,hidden_dim=128):
+        super(DuelingQNetwork, self).__init__()
+        # 隐藏层
+        self.hidden_layer = nn.Sequential(
+            nn.Linear(n_states, hidden_dim),
+            nn.ReLU()
+        )
+        #  优势层
+        self.advantage_layer = nn.Sequential(
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, n_actions)
+        )
+        # 价值层
+        self.value_layer = nn.Sequential(
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, 1)
+        )
+        
+    def forward(self, state):
+        x = self.hidden_layer(state)
+        advantage = self.advantage_layer(x)
+        value     = self.value_layer(x)
+        return value + advantage - advantage.mean() # Q(s,a) = V(s) + A(s,a) - mean(A(s,a))
+```
+
 ## Noisy DQN 算法
 
 Noisy DQN 算法<sup>③</sup> 也是通过优化网络结构的方法来提升 DQN 算法的性能，但与 Dueling 算法不同的是，它的目的并不是为了提高 $Q$ 值的估计，而是增强网络的探索能力。
@@ -72,6 +119,102 @@ Noisy DQN 算法<sup>③</sup> 也是通过优化网络结构的方法来提升 
 
 回归正题，Noisy DQN 算法其实是在 DQN 算法基础上在神经网络中引入了噪声层来提高网络性能的，即将随机性应用到神经网络中的参数或者说权重，增加了 $Q$ 网络对于状态和动作空间的探索能力，从而提高收敛速度和稳定性。在实践上也比较简单，就是通过添加随机性参数到神经网络的线性层，对应的 $Q$ 值则可以表示为 $Q_{\theta+\epsilon}$，注意不要把这里的 $\epsilon$ 跟 $\varepsilon-greedy$ 策略中的 $\varepsilon$ 混淆了。虽然都叫做 epsilon，但这里 $\epsilon$ 是由高斯分布生成的总体分类噪声参数。
 
+在实战中，我们首先可以定义引入了噪声层的线性层，如下：
+
+```python
+class NoisyLinear(nn.Module):
+    '''在Noisy DQN中用NoisyLinear层替换普通的nn.Linear层
+    '''
+    def __init__(self, in_dim, out_dim, std_init=0.4):
+        super(NoisyLinear, self).__init__()
+        
+        self.in_dim  = in_dim
+        self.out_dim = out_dim
+        self.std_init  = std_init
+        
+        self.weight_mu    = nn.Parameter(torch.empty(out_dim, in_dim))
+        self.weight_sigma = nn.Parameter(torch.empty(out_dim, in_dim))
+        # 将一个 tensor 注册成 buffer，使得这个 tensor 不被当做模型参数进行优化。
+        self.register_buffer('weight_epsilon', torch.empty(out_dim, in_dim)) 
+        
+        self.bias_mu    = nn.Parameter(torch.empty(out_dim))
+        self.bias_sigma = nn.Parameter(torch.empty(out_dim))
+        self.register_buffer('bias_epsilon', torch.empty(out_dim))
+        
+        self.reset_parameters() # 初始化参数
+        self.reset_noise()  # 重置噪声
+    
+    def forward(self, x):
+        if self.training: 
+            weight = self.weight_mu + self.weight_sigma * self.weight_epsilon
+            bias   = self.bias_mu + self.bias_sigma * self.bias_epsilon
+        else:
+            weight = self.weight_mu
+            bias   = self.bias_mu
+        return F.linear(x, weight, bias)
+    
+    def reset_parameters(self):
+        mu_range = 1 / self.in_dim ** 0.5
+        self.weight_mu.data.uniform_(-mu_range, mu_range)
+        self.weight_sigma.data.fill_(self.std_init / self.in_dim ** 0.5)
+        self.bias_mu.data.uniform_(-mu_range, mu_range)
+        self.bias_sigma.data.fill_(self.std_init / self.out_dim ** 0.5)
+    
+    def reset_noise(self):
+        epsilon_in  = self._scale_noise(self.in_dim)
+        epsilon_out = self._scale_noise(self.out_dim)
+        self.weight_epsilon.copy_(epsilon_out.ger(epsilon_in))
+        self.bias_epsilon.copy_(self._scale_noise(self.out_dim))
+    
+    def _scale_noise(self, size):
+        x = torch.randn(size)
+        x = x.sign().mul(x.abs().sqrt())
+        return x
+```
+
+根据写好的 NoisyLinear 层，我们可以在 DQN 算法中将普通的线性层替换为 NoisyLinear 层，如下：
+
+```python
+class NoisyQNetwork(nn.Module):
+    def __init__(self, n_states, n_actions, hidden_dim=128):
+        super(NoisyQNetwork, self).__init__()
+        self.fc1 =  nn.Linear(n_states, hidden_dim)
+        self.noisy_fc2 = NoisyLinear(hidden_dim, hidden_dim)
+        self.noisy_fc3 = NoisyLinear(hidden_dim, n_actions)
+        
+    def forward(self, x):
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.noisy_fc2(x))
+        x = self.noisy_fc3(x)
+        return x
+
+    def reset_noise(self):
+        self.noisy_fc2.reset_noise()
+        self.noisy_fc3.reset_noise()
+```
+
+注意在训练过程中，我们需要在每个 mini-batch 中重置噪声，更多细节请参考 JoyRL 源码。另外，我们可以直接利用 torchrl 模块中中封装好的 NoisyLinear 层来构建 Noisy Q 网络，跟我们自己定义的功能是一样的，如下：
+
+```python
+import torchrl
+class NoisyQNetwork(nn.Module):
+    def __init__(self, n_states, n_actions, hidden_dim=128):
+        super(NoisyQNetwork, self).__init__()
+        self.fc1 =  nn.Linear(n_states, hidden_dim)
+        self.noisy_fc2 = torchrl.NoisyLinear(hidden_dim, hidden_dim,std_init=0.1)
+        self.noisy_fc3 = torchrl.NoisyLinear(hidden_dim, n_actions,std_init=0.1)
+        
+    def forward(self, x):
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.noisy_fc2(x))
+        x = self.noisy_fc3(x)
+        return x
+
+    def reset_noise(self):
+        self.noisy_fc2.reset_noise()
+        self.noisy_fc3.reset_noise()
+```
+
 ## PER DQN 算法
 
 在 DQN 算法章节中我们讲到经验回放，从另一个角度来说也是为了优化深度网络中梯度下降的方式，或者说网络参数更新的方式。在本节要讲的 PER DQN 算法<sup>④</sup>中，进一步优化了经验回放的设计从而提高模型的收敛能力和鲁棒性。PER 英文全称为 Prioritized Experience Replay，即优先经验回放，跟数据结构中优先队列与普通队列一样，会在采样过程中赋予经验回放中样本的优先级。
@@ -81,6 +224,14 @@ Noisy DQN 算法<sup>③</sup> 也是通过优化网络结构的方法来提升 
 具体以什么为依据来为经验回放中的样本赋予不同优先级呢？答案是TD误差。TD误差最开始我们是在时序差分方法的提到的，广义的定义是值函数（包括状态价值函数和动作价值函数）的估计值与实际值之差，在 DQN 算法中就是目标网络计算的 $Q$ 值和策略网络（当前网络）计算的 $Q$ 值之差，也就是 DQN 网络中损失函数的主要构成部分。我们每次从经验回访中取出一个批量的样本，进而计算的TD误差一般是不同的，对于 DQN 网络反向传播的作用也是不同的。**TD误差越大，损失函数的值也越大，对于反向传播的作用也就越大。** 这样一来如果TD误差较大的样本更容易被采到的话，那么我们的算法也会更加容易收敛。因此我们只需要设计一个经验回放，根据经验回放中的每个样本计算出的TD误差赋予对应的优先级，然后在采样的时候取出优先级较大的样本。
 
 原理听上去比较简单，但具体如何实现呢？在实践中，我们通常用 SumTree 这样的二叉树结构来实现。这里建议没有了解过数据结构或者二叉树的读者先花个十几分钟的时间快速了解一下二叉树的基本概念，比如根节点、叶节点、父节点与子节点等等。
+
+<div align=center>
+<img width="300" src="../figs/ch8/sumtree.png"/>
+</div>
+<div align=center>图 8.3 SumTree 结构</div>
+
+如图
+
 ## HER DQN 算法
 
 ## QR DQN 算法
