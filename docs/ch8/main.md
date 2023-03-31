@@ -234,6 +234,220 @@ class NoisyQNetwork(nn.Module):
 
 每个叶节点的值就是对应样本的 TD 误差（例如途中的）。我们可以通过根节点的值来计算出每个样本的 TD 误差占所有样本 TD 误差的比例，这样就可以根据比例来采样样本。在实际的实现中，我们可以将每个叶节点的值设置为一个元组，其中包含样本的 TD 误差和样本的索引，这样就可以通过索引来找到对应的样本。
 
+基于以上原理，我们可以新建一个 Python 类来实现 SumTree 结构，代码如下：
+
+```python
+class SumTree:
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.tree = np.zeros(2 * capacity - 1)
+        self.data = np.zeros(capacity, dtype=object) # 存储样本
+        self.write_idx = 0 # 写入样本的索引
+        self.count = 0 # 当前存储的样本数量
+    
+    def add(self, priority, exps):
+        ''' 添加一个样本到叶子节点，并更新其父节点的优先级
+        '''
+        idx = self.write_idx + self.capacity - 1 # 样本的索引
+        self.data[self.write_idx] = exps # 写入样本
+        self.update(idx, priority) # 更新样本的优先级
+        self.write_idx = (self.write_idx + 1) % self.capacity # 更新写入样本的索引
+        if self.count < self.capacity:
+            self.count += 1
+    
+    def update(self, idx, priority):
+        ''' 更新叶子节点的优先级，并更新其父节点的优先级
+        Args:
+            idx (int): 样本的索引
+            priority (float): 样本的优先级
+        '''
+        diff = priority - self.tree[idx] # 优先级的差值
+        self.tree[idx] = priority
+        while idx != 0: 
+            idx = (idx - 1) // 2
+            self.tree[idx] += diff
+    
+    def get_leaf(self, v):
+        ''' 根据优先级的值采样对应区间的叶子节点样本
+        '''
+        idx = 0
+        while True:
+            left = 2 * idx + 1
+            right = left + 1
+            if left >= len(self.tree):
+                break
+            if v <= self.tree[left]:
+                idx = left
+            else:
+                v -= self.tree[left]
+                idx = right
+        data_idx = idx - self.capacity + 1
+        return idx, self.tree[idx], self.data[data_idx]
+    def get_data(self, indices):
+        return [self.data[idx - self.capacity + 1] for idx in indices]
+    
+    def total(self):
+        ''' 返回所有样本的优先级之和，即根节点的值
+        '''
+        return self.tree[0]
+    
+    def max_prior(self):
+        ''' 返回所有样本的最大优先级
+        '''
+        return np.max(self.tree[self.capacity-1:self.capacity+self.write_idx-1])
+```
+其中，除了需要存放各个节点的值（`tree`）之外，我们需要定义要给`data`来存放叶子节点的样本。此外，`add` 函数用于添加一个样本到叶子节点，并更新其父节点的优先级；`update` 函数用于更新叶子节点的优先级，并更新其父节点的优先级；`get_leaf` 函数用于根据优先级的值采样对应区间的叶子节点样本；`get_data` 函数用于根据索引获取对应的样本；`total` 函数用于返回所有样本的优先级之和，即根节点的值；`max_prior` 函数用于返回所有样本的最大优先级。
+
+基于以上的 SumTree 结构，我们可以实现优先经验回放的功能。然而，论文原作者认为，直接使用 TD 误差作为优先级存在一些问题。首先，考虑到算法效率问题，我们在每次更新时不会把经验回放中的所有样本都计算 TD 误差并更新对应的优先级，而是只更新当前取到的一定批量的样本。这样一来，每次计算的 TD 误差是对应之前的网络，而不是当前待更新的网络。换句话说，如果某批量样本的 TD 误差较低，只能说明它们对于之前的网络来说“信息量”不大，但不能说明对当前的网络“信息量”不大，因此单纯根据 TD 误差进行优先采样有可能会错过对当前网络“信息量”更大的样本。其次，被选中样本的 TD 误差会在当前更新后下降，然后优先级会排到后面去，下次这些样本就不会被选中，这样来来回回都是那几个样本，很容易出现“旱的旱死，涝的涝死”的情况，导致过拟合。
+
+**随机优先级采样**。为了解决上面提到的两个问题，我们首先引入随机优先级采样（Stochastic Prioritization）的技巧。即在每次更新时，我们不再是直接采样 TD 误差最大的样本，而是定义一个采样概率，如下：
+
+$$
+P(i) = \frac{p_i^\alpha}{\sum_k p_k^\alpha}
+$$
+
+其中，$p_i$ 是样本 $i$ 的优先级，$\alpha$ 是一个超参数，用于调节优先采样的程序，通常在 $(0,1)$ 的区间内。当 $\alpha = 0$ 时，采样概率为均匀分布；当 $\alpha = 1$ 时，采样概率为优先级的线性分布。同时，即使对于最低优先级的样本，我们也不希望它们的采样概率为 0，因此我们可以在优先级上加上一个常数 $\epsilon$，即：
+
+$$
+p_i = |\delta_i| + \epsilon
+$$
+
+其中，$|\delta_i|$ 是样本 $i$ 的 TD 误差。当然，我们也可以使用其他的优先级计算方式，如：
+
+$$
+p_i = \frac{1}{rank(i)}
+$$
+
+其中，$rank(i)$ 是样本 $i$ 的优先级排名，这种方式也能保证每个样本的采样概率都不为 0，但在实践中，我们更倾向于直接增加一个常数 $\epsilon$ 的方式。
+
+**重要性采样**。除了随机优先级采样之外，我们还引入了另外一个技巧，在讲解该技巧之前，我们需要简单了解一下重要性采样。重要性采样（Importance Sampling）是一种用于估计某一分布性质的方法，它的基本思想是，我们可以通过与待估计分布不同的另一个分布中采样，然后通过采样样本的权重来估计待估计分布的性质，数学表达式如下：
+
+$$
+\begin{aligned}
+\mathbb{E}_{x \sim p(x)}[f(x)] &= \int f(x) p(x) dx \\
+&= \int f(x) \frac{p(x)}{q(x)} q(x) dx \\
+&= \int f(x) \frac{p(x)}{q(x)} \frac{q(x)}{p(x)} p(x) dx \\
+&= \mathbb{E}_{x \sim q(x)}\left[\frac{p(x)}{q(x)} f(x)\right]
+\end{aligned}
+$$
+
+其中，$p(x)$ 是待估计分布，$q(x)$ 是采样分布，$f(x)$ 是待估计分布的性质。在前面我们讲到，每次计算的 TD 误差是对应之前的网络，而不是当前待更新的网络。也就是说，我们已经从之前的网络中采样了一批样本，也就是 $q(x)$ 已知，然后只要找到之前网络分布与当前网络分布之前的权重 $\frac{p(x)}{q(x)}$，就可以利用重要性采样来估计出当前网络的性质。我们可以定义权重为：
+
+$$
+w_i = \left(\frac{1}{N} \frac{1}{P(i)}\right)^\beta
+$$
+
+其中，$N$ 是经验回放中的样本数量，$P(i)$ 是样本 $i$ 的采样概率。同时，为了避免出现权重过大或过小的情况，我们可以对权重进行归一化处理：
+
+$$
+w_i = \frac{\left(N*P(i)\right)^{-\beta}}{\max_j (w_j)}
+$$
+
+**热偏置**。注意到，我们引入了一个超参数 $\beta$，用于调节重要性采样的程度。当 $\beta = 0$ 时，重要性采样的权重为 1，即不考虑重要性采样；当 $\beta = 1$ 时，重要性采样的权重为 $w_i$，即完全考虑重要性采样。在实践中，我们希望 $\beta$ 从 0 开始，随着训练步数的增加而逐渐增加，以便更好地利用重要性采样，这就是热偏置（Annealing The Bias）的思想。数学表达式如下：
+
+$$
+\beta = \min(1, \beta + \beta_{\text{step}})
+$$
+
+其中，$\beta_{\text{step}}$ 是每个训练步数对应的 $\beta$ 的增量。在实践中，我们可以将 $\beta_{\text{step}}$ 设置为一个很小的常数，如 $0.0001$。这样一来，我们就可以在训练刚开始时，使用随机优先级采样，以便更快地收敛；在训练后期，使用重要性采样，以便更好地利用经验回放中的样本。
+
+结合上面的优先级采样和重要性采样，我们可以基于 SumTree 实现一个带有优先级的经验回放，代码如下：
+
+```python
+class PrioritizedReplayBuffer:
+    def __init__(self, cfg):
+        self.capacity = cfg.buffer_size
+        self.alpha = cfg.per_alpha # 优先级的指数参数，越大越重要，越小越不重要
+        self.epsilon = cfg.per_epsilon # 优先级的最小值，防止优先级为0
+        self.beta = cfg.per_beta # importance sampling的参数
+        self.beta_annealing = cfg.per_beta_annealing # beta的增长率
+        self.tree = SumTree(self.capacity)
+        self.max_priority = 1.0
+    
+    def push(self, exps):
+        ''' 添加样本
+        '''
+        priority = self.max_priority if self.tree.total() == 0 else self.tree.max_prior()
+        self.tree.add(priority, exps)
+    
+    def sample(self, batch_size):
+        ''' 采样一个批量样本
+        '''
+        indices = [] # 采样的索引
+        priorities = [] # 采样的优先级
+        exps = [] # 采样的样本
+        segment = self.tree.total() / batch_size
+        self.beta = min(1.0, self.beta  + self.beta_annealing)
+        for i in range(batch_size):
+            a = segment * i
+            b = segment * (i + 1)
+            p = np.random.uniform(a, b) # 采样一个优先级
+            idx, priority, exp = self.tree.get_leaf(p) # 采样一个样本
+            indices.append(idx)
+            priorities.append(priority)
+            exps.append(exp)
+        # 重要性采样, weight = (N * P(i)) ^ (-beta) / max_weight
+        sample_probs = np.array(priorities) / self.tree.total()
+        weights = (self.tree.count * sample_probs) ** (-self.beta) # importance sampling的权重
+        weights /= weights.max() # 归一化
+        indices = np.array(indices)
+        return zip(*exps), indices, weights
+    
+    def update_priorities(self, indices, priorities):
+        ''' 更新样本的优先级
+        '''
+        priorities = np.abs(priorities) # 取绝对值
+        for idx, priority in zip(indices, priorities):
+            # 控制衰减的速度, priority = (priority + epsilon) ^ alpha
+            priority = (priority + self.epsilon) ** self.alpha
+            priority = np.minimum(priority, self.max_priority)
+            self.tree.update(idx, priority)
+    def __len__(self):
+        return self.tree.count
+```
+
+我们可以看到，优先级经验回放的核心是 SumTree，它可以在 $O(\log N)$ 的时间复杂度内完成添加、更新和采样操作。在实践中，我们可以将经验回放的容量设置为 $10^6$，并将 $\alpha$ 设置为 $0.6$，$\epsilon$ 设置为 $0.01$，$\beta$ 设置为 $0.4$，$\beta_{\text{step}}$ 设置为 $0.0001$。 当然我们也可以利用 Python 队列的方式实现优先级经验回放，形式上会更加简洁，并且在采样的时候减少了 for 循环的操作，会更加高效，如下：
+
+```python
+class PrioritizedReplayBufferQue:
+    def __init__(self, cfg):
+        self.capacity = cfg.buffer_size
+        self.alpha = cfg.per_alpha # 优先级的指数参数，越大越重要，越小越不重要
+        self.epsilon = cfg.per_epsilon # 优先级的最小值，防止优先级为0
+        self.beta = cfg.per_beta # importance sampling的参数
+        self.beta_annealing = cfg.per_beta_annealing # beta的增长率
+        self.buffer = deque(maxlen=self.capacity)
+        self.priorities = deque(maxlen=self.capacity)
+        self.count = 0 # 当前存储的样本数量
+        self.max_priority = 1.0
+    def push(self,exps):
+        self.buffer.append(exps)
+        self.priorities.append(max(self.priorities, default=self.max_priority))
+        self.count += 1
+    def sample(self, batch_size):
+        priorities = np.array(self.priorities)
+        probs = priorities/sum(priorities)
+        indices = np.random.choice(len(self.buffer), batch_size, p=probs)
+        weights = (self.count*probs[indices])**(-self.beta)
+        weights /= weights.max()
+        exps = [self.buffer[i] for i in indices]
+        return zip(*exps), indices, weights
+    def update_priorities(self, indices, priorities):
+        priorities = np.abs(priorities)
+        priorities = (priorities + self.epsilon) ** self.alpha
+        priorities = np.minimum(priorities, self.max_priority).flatten()
+        for idx, priority in zip(indices, priorities):
+            self.priorities[idx] = priority
+    def __len__(self):
+        return self.count
+```
+最后，我们可以将优先级经验回放和 DQN 结合起来，实现一个带有优先级的 DQN 算法，伪代码如下：
+
+<div align=center>
+<img width="500" src="../figs/ch8/per_dqn_pseu.png"/>
+</div>
+<div align=center>图 8.3 SumTree 结构</div>
+
 ## HER DQN 算法
 
 ## QR DQN 算法

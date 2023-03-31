@@ -277,7 +277,7 @@
 				\STATE 计算实际的$Q$值，即$y_{j}$\footnotemark[2]
 				\STATE 根据重要性采样权重调整损失 $L(\theta)=\left(y_{j}-Q\left(s_{j}, a_{j} ; \theta\right)\cdot w_j \right)^{2}$，并将其关于参数$\theta$做随机梯度下降\footnotemark[3]
 			\ENDFOR
-			\STATE 每$C$个回合复制参数$\hat{Q}\leftarrow Q$\footnotemark[4]]
+			\STATE 每$C$个回合复制参数$\hat{Q}\leftarrow Q$\footnotemark[4]
 		\ENDFOR
 	\end{algorithmic}
 \end{algorithm}
