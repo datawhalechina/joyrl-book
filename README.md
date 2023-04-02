@@ -23,7 +23,7 @@
 
 ## 在线阅读
 
-地址：https://johnjim0816.com/joyrl_book/
+地址：https://johnjim0816.com/joyrl-book/
 
 ## 内容导航
 
