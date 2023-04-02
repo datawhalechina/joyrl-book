@@ -59,18 +59,19 @@ next_target_q_value_batch = next_target_value_batch.gather(1, torch.max(next_q_v
 
 > ② Dueling DQN 算法论文：Dueling Network Architectures for Deep Reinforcement Learning
 
-回忆 DQN 算法的网络结构，如图 8.1 所示，输入层的维度就是状态数，输出层的维度就是动作数。
+回忆 DQN 算法的网络结构，如图 8.2 所示，输入层的维度就是状态数，输出层的维度就是动作数。
 
 <div align=center>
 <img width="300" src="../figs/ch8/dqn_network.png"/>
 </div>
-<div align=center>图 8.1 DQN 网络结构</div>
+<div align=center>图 8.2 DQN 网络结构</div>
 
 而 Dueling DQN 算法中则是在输出层之前分流（Dueling）出了两个层，一个是优势层（Advantage Layer），用于估计每个动作带来的优势，输出维度为动作数一个是价值层（Value Layer），用于估计每个状态的价值，输出维度为 $1$ 。
+
 <div align=center>
 <img width="400" src="../figs/ch8/dueling_network.png"/>
 </div>
-<div align=center>图 8.2 Dueling DQN 网络结构</div>
+<div align=center>图 8.3 Dueling DQN 网络结构</div>
 
 在 DQN 算法中我们用 $Q_{\theta}(\boldsymbol{s},\boldsymbol{a})$ 表示 一个 $Q$ 网络，而在这里优势层可以表示为 $A_{\theta,\alpha}(\boldsymbol{s},\boldsymbol{a})$，这里 $\theta$ 表示共享隐藏层的参数，$\alpha$ 表示优势层自己这部分的参数，相应地价值层可以表示为 $V_{\theta,\beta}(\boldsymbol{s})$。这样 Dueling DQN 算法中网络结构可表示为：
 
@@ -238,9 +239,9 @@ class NoisyQNetwork(nn.Module):
 <div align=center>
 <img width="300" src="../figs/ch8/sumtree.png"/>
 </div>
-<div align=center>图 8.3 SumTree 结构</div>
+<div align=center>图 8.4 SumTree 结构</div>
 
-如图 8.3 所示，每个父节点的值等于左右两个子节点值之和。在强化学习中，所有的样本只保存在最下面的叶子节点中，并且除了保存样本数据之外，还会保存对应的优先级，即对应叶子节点中的值（例如图中的31、13、14以及8等，也对应样本的 TD 误差）。并且根据叶子节点的值，我们从 $0$ 开始依次划分采样区间。然后在采样中，例如这里根节点值为 66，那么我们就可以在$[0,66)$这个区间均匀采样，采样到的值落在哪个区间中，就说明对应的样本就是我们要采样的样本。例如我们采样到了 $25$ 这个值，即对应区间 $[0,31)$,那么我们就采样到了第一个叶子节点对应的样本。注意到，第一个样本对应的区间也是最长的，这意味着第一个样本的优先级最高，也就是 TD 误差最大，反之第四个样本的区间最短，优先级也最低。这样一来，我们就可以通过采样来实现优先经验回放的功能。
+如图 8.4 所示，每个父节点的值等于左右两个子节点值之和。在强化学习中，所有的样本只保存在最下面的叶子节点中，并且除了保存样本数据之外，还会保存对应的优先级，即对应叶子节点中的值（例如图中的31、13、14以及8等，也对应样本的 TD 误差）。并且根据叶子节点的值，我们从 $0$ 开始依次划分采样区间。然后在采样中，例如这里根节点值为 66，那么我们就可以在$[0,66)$这个区间均匀采样，采样到的值落在哪个区间中，就说明对应的样本就是我们要采样的样本。例如我们采样到了 $25$ 这个值，即对应区间 $[0,31)$,那么我们就采样到了第一个叶子节点对应的样本。注意到，第一个样本对应的区间也是最长的，这意味着第一个样本的优先级最高，也就是 TD 误差最大，反之第四个样本的区间最短，优先级也最低。这样一来，我们就可以通过采样来实现优先经验回放的功能。
 
 每个叶节点的值就是对应样本的 TD 误差（例如途中的）。我们可以通过根节点的值来计算出每个样本的 TD 误差占所有样本 TD 误差的比例，这样就可以根据比例来采样样本。在实际的实现中，我们可以将每个叶节点的值设置为一个元组，其中包含样本的 TD 误差和样本的索引，这样就可以通过索引来找到对应的样本。
 
@@ -456,11 +457,20 @@ class PrioritizedReplayBufferQue:
 <div align=center>
 <img width="500" src="../figs/ch8/per_dqn_pseu.png"/>
 </div>
-<div align=center>图 8.3 SumTree 结构</div>
+<div align=center>图 8.4 SumTree 结构</div>
 
 ## C51 算法
 
-分布式 DQN 算法，即 Distributed DQN，有时也会看到它也叫 Categorical DQN 这个名字，但最常见的名字是 C51 算法。该算法跟 PER 算法一样，是从不同的角度改进强化学习算法，而不单单指 DQN 算法，而是能适用于任何基于 Q-learning 的强化学习算法。该算法的核心思想是将传统 DQN 算法中的值函数 $Q(s,a)$ 换成了值分布 $Z(x,a)$，即将值函数的输出从一个数值变成了一个分布，这样就能更好地处理值函数估计不准确以及离散动作空间的问题。
+分布式 DQN 算法，即 Distributed DQN，有时也会看到它也叫 Categorical DQN 这个名字，但最常见的名字是 C51 算法<sup>⑤</sup> 。该算法跟 PER 算法一样，是从不同的角度改进强化学习算法，而不单单指 DQN 算法，而是能适用于任何基于 Q-learning 的强化学习算法。该算法的核心思想是将传统 DQN 算法中的值函数 $Q(s,a)$ 换成了值分布 $Z(x,a)$，即将值函数的输出从一个数值变成了一个分布，这样就能更好地处理值函数估计不准确以及离散动作空间的问题。
 
+> ⑤ 论文链接：https://arxiv.org/abs/1707.06887
+
+在之前讲到的经典强化学习算法中我们优化的其实是值分布的均值，也就是 $Q$ 函数，但实际上由于状态转移的随机性、函数近似等原因，智能体与环境之间也存在着随机性，这也导致了最终累积的回报也会是一个随机变量，使用一个确定的均值会忽略整个分布所提供的信息。。因此，我们可以将值函数 $Q$ 看成是一个随机变量，它的期望值就是 $Q$ 函数，而它的方差就是 $Q$ 函数的不确定性，公式表示如下：
+
+$$
+Q^\pi(x, a):=\mathbb{E} Z^\pi(x, a)=\mathbb{E}\left[\sum_{t=0}^{\infty} \gamma^t R\left(x_t, a_t\right)\right]
+$$
+
+其中状态分布 $x_t \sim P\left(\cdot \mid x_{t-1}, a_{t-1}\right), a_t \sim \pi\left(\cdot \mid x_t\right), x_0=x, a_0=a \text {. }$
 
 ## Rainbow DQN 算法
