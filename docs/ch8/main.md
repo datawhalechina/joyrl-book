@@ -41,7 +41,17 @@ next_target_value_batch = self.target_net(next_state_batch)
 next_target_q_value_batch = next_target_value_batch.gather(1, torch.max(next_q_value_batch, 1)[1].unsqueeze(1)) # shape(batchsize,1)
 ```
 
-整体代码跟 DQN 算法基本一致，只是在计算目标 $Q$ 值的时候多了一步，即先在策略网络中找出最大 $Q$ 值对应的动作，然后再在目标网络中计算目标 $Q$ 值。
+整体代码跟 DQN 算法基本一致，只是在计算目标 $Q$ 值的时候多了一步，即当前策略网络中找出最大 $Q$ 值对应的动作，然后再在目标网络中计算目标 $Q$ 值。
+
+细心的读者可能会发现，这里似乎并没有体现出 Double DQN 算法中的 “Double”是在哪里。
+
+
+<div align=center>
+<img width="500" src="../figs/ch8/double_dqn_pseu.png"/>
+</div>
+<div align=center>图 8.1 Double DQN 伪代码</div>
+
+实际上在原论文中是有这样的描述的，如图 8.1 所示，它定义了两个网络，在更新的时候随机选择其中一个网络进行更新，其实跟这里的策略网络和目标网络是一样的。这是因为 Double DQN 算法论文比 Nature DQN 算法论文发表的时间更早，在后面 Nature DQN 算法论文中其实已经引入了两个网络的概念了，只是更新的方式略有差异。在 Nature DQN 算法论文中，两个网络是交替更新的，而在 Double DQN 算法论文中则是随机选择其中一个网络进行更新，实践证明交替更新的方式会更加稳定一些。但由于 Double DQN 算法的重点其实不在于 Double，而在于前面讲的估计目标 $Q$ 值的方式，加上讲解 DQN 算法的时候已经引入了两个网络的概念，所以这里就不再赘述了。
 
 ## Dueling DQN 算法
 

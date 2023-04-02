@@ -35,7 +35,7 @@
 |    [第五章 免模型控制](/ch5/main.md)    | Q-learning 算法、Sarsa 算法 |
 |    [第六章 深度学习基础](/ch6/main.md)    | 待更新 |
 |    [第七章 DQN算法](/ch7/main.md)    | 目标网络、经验回放 |
-|    [第八章 DQN算法进阶](/ch8/main.md)    | Double DQN、Dueling DQN、 |
+|    [第八章 DQN算法进阶](/ch8/main.md)    | Double DQN、Dueling DQN、Noisy DQN、PER DQN |
 |    [第九章 策略梯度](/ch9/main.md)    |      |
 |    [第十章 Actor-Critic 算法](/ch10/main.md)    |      |
 |    [第十一章 DDPG 算法](/ch11/main.md)    |      |
