@@ -39,6 +39,7 @@
 | 第六章 深度学习基础 | 待更新 |
 | [第七章 DQN算法](https://johnjim0816.com/joyrl_book/#/ch7/main) | 目标网络、经验回放 |
 | [第九章 策略梯度](https://johnjim0816.com/joyrl_book/#/ch9/main) | 策略梯度、REINFORCE |
+| [第十章 Actor-Critic 算法](https://johnjim0816.com/joyrl_book/#/ch10/main) |  |
 
 ## 贡献者
 
