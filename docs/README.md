@@ -32,14 +32,14 @@
 |               章节                | 关键内容 |
 | :-------------------------------: | :--: |
 |       [第一章 绪论](./docs/ch1/main.md)       | 待更新 |
-| [第二章 马尔可夫决策过程](https://johnjim0816.com/joyrl_book/#/ch2/main) | 马尔可夫决策过程、状态转移矩阵 |
-|     [第三章 动态规划](https://johnjim0816.com/joyrl_book/#/ch3/main)     | 贝尔曼方程、策略迭代、价值迭代 |
-|    [第四章 免模型预测](https://johnjim0816.com/joyrl_book/#/ch4/main)    | 蒙特卡洛、时序差分 |
-|    [第五章 免模型控制](https://johnjim0816.com/joyrl_book/#/ch4/main)    | Q-learning 算法、Sarsa 算法 |
+| [第二章 马尔可夫决策过程](https://johnjim0816.com/joyrl-book/#/ch2/main) | 马尔可夫决策过程、状态转移矩阵 |
+|     [第三章 动态规划](https://johnjim0816.com/joyrl-book/#/ch3/main)     | 贝尔曼方程、策略迭代、价值迭代 |
+|    [第四章 免模型预测](https://johnjim0816.com/joyrl-book/#/ch4/main)    | 蒙特卡洛、时序差分 |
+|    [第五章 免模型控制](https://johnjim0816.com/joyrl-book/#/ch4/main)    | Q-learning 算法、Sarsa 算法 |
 | 第六章 深度学习基础 | 待更新 |
-| [第七章 DQN算法](https://johnjim0816.com/joyrl_book/#/ch7/main) | 目标网络、经验回放 |
-| [第九章 策略梯度](https://johnjim0816.com/joyrl_book/#/ch9/main) | 策略梯度、REINFORCE |
-| [第十章 Actor-Critic 算法](https://johnjim0816.com/joyrl_book/#/ch10/main) |  |
+| [第七章 DQN算法](https://johnjim0816.com/joyrl-book/#/ch7/main) | 目标网络、经验回放 |
+| [第九章 策略梯度](https://johnjim0816.com/joyrl-book/#/ch9/main) | 策略梯度、REINFORCE |
+| [第十章 Actor-Critic 算法](https://johnjim0816.com/joyrl-book/#/ch10/main) |  |
 
 ## 贡献者
 
