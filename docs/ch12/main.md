@@ -54,7 +54,7 @@ $$
 J^{\mathrm{TRPO}}(\theta)=E_{\left(s_t, a_t\right) \sim \pi_{\theta^{\prime}}}\left[\frac{p_\theta\left(a_t \mid s_t\right)}{p_{\theta^{\prime}}\left(a_t \mid s_t\right)} A^{\theta^{\prime}}\left(s_t, a_t\right) \nabla \log p_\theta\left(a_t^n \mid s_t^n\right)\right]
 $$
 
-换句话说，本质上 `PPO` 算法就是在 `Actor-Critic` 算法的基础上增加了重要性采样的约束而已，从而确保每次的策略梯度估计都不会过分偏离当前的策略，换句话说就是减少了策略梯度估计的方差，从而提高算法的稳定性和收敛性。
+换句话说，本质上 `PPO` 算法就是在 `Actor-Critic` 算法的基础上增加了重要性采样的约束而已，从而确保每次的策略梯度估计都不会过分偏离当前的策略，也就是减少了策略梯度估计的方差，从而提高算法的稳定性和收敛性。
 
 前面我们提到过，重要性权重最好尽可能地等于 $1$，而在训练过程中这个权重它是不会自动地约束到 $1$ 附近的，因此我们需要在损失函数中加入一个约束项或者说正则项，保证重要性权重不会偏离 $1$ 太远。具体的约束方法有很多种，比如 `KL` 散度、`JS` 散度等等，但通常我们会使用两种约束方法，一种是 `Clip` 约束 ，另一种是 `KL` 散度。`Clip` 约束定义如下：
 
