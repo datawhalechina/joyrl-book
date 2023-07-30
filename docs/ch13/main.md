@@ -180,4 +180,140 @@ $$
 \end{aligned}
 $$
 
-注意第一个版本和 `Soft Q-learning` 都存在一个温度因子 $\alpha$的超参，并且这个超参是比较敏感的。第二个版本则设计了一个可以自动调节温度因子的方法。
+## 自动调节温度因子
+
+注意第一个版本和 `Soft Q-learning` 都存在一个温度因子 $\alpha$ 的超参，并且这个超参是比较敏感的，第二个版本则设计了一个可以自动调节温度因子的方法。首先回顾一下累积奖励期望公式：
+
+$$
+\pi_{\mathrm{MaxEnt}}^*=\arg \max _\pi \sum_t \mathbb{E}_{\left(\mathbf{s}_t, \mathbf{a}_t\right) \sim \rho_\pi}\left[\gamma^t\left(r\left(\mathbf{s}_t, \mathbf{a}_t\right)+\alpha \mathcal{H}\left(\pi\left(\cdot \mid \mathbf{s}_t\right)\right)\right)\right]
+$$
+
+其中左边项是奖励部分，右边项是熵部分，我们的目标是同时最大化这两个部分，但是由于这两个部分的量纲不同，因此需要引入一个温度因子 $\alpha$ 来平衡这两个部分。第二版 `SAC` 的思路就是，我们可以把熵的部分转换成一个约束项，即只需要满足：
+
+$$
+\mathcal{H}\left(\pi\left(\cdot \mid \mathbf{s}_t\right)\right) = \mathbb{E}_{\left(\mathbf{s}_t, \mathbf{a}_t\right) \sim \rho_\pi}\left[-\log \left(\pi_t\left(\mathbf{a}_t \mid \mathbf{s}_t\right)\right)\right] \geq \mathcal{H}_0 
+$$
+
+换句话说，我们只需要让策略的熵大于一个固定的值 $\mathcal{H}_0$ 即可，这样就可以不需要温度因子了。这样一来我们的目标就变成了在最小期望熵的约束条件下最大化累积奖励期望，即：
+
+$$
+\max _{\pi_{0: T}} \mathbb{E}_{\rho_\pi}\left[\sum_{t=0}^T r\left(\mathbf{s}_t, \mathbf{a}_t\right)\right] \text { s.t. } \mathbb{E}_{\left(\mathbf{s}_t, \mathbf{a}_t\right) \sim \rho_\pi}\left[-\log \left(\pi_t\left(\mathbf{a}_t \mid \mathbf{s}_t\right)\right)\right] \geq \mathcal{H}_0 \quad \forall t
+$$
+
+可以看出，当我们忽略掉这个约束条件时，就变成了一个标准的强化学习问题。这里将策略 $\pi$ 拆分成了每一时刻的策略 $\pi_{o: T}=\left\{\pi_1, \ldots, \pi_T\right\}$，以便于求解每一时刻 $t$ 的最优温度因子 $\alpha^*_t$。由于每一时刻 $t$ 的策略只会对未来奖励造成影响（马尔可夫性质），因此可以利用动态规划的思想，自顶向下（从后往前）对策略进行求解，即分解为：
+
+$$
+\underbrace{\max _{\pi_0}(\mathbb{E}\left[r\left(s_0, a_0\right)\right]+\underbrace{\max _{\pi_1}(\mathbb{E}[\ldots]+\underbrace{\max _{\pi_T} \mathbb{E}\left[r\left(s_T, a_T\right)\right]}_{1 \text { 第一次最大（子问题一） }})}_{\text { 倒数第二次最大 }})}_{\text { 倒数第一次最大 }}
+$$
+
+这样一来我们只需要求出第一个子问题，即：
+
+$$
+\max _{\pi_T} \mathbb{E}_{\left(\mathbf{s}_T, \mathbf{a}_T\right) \sim \rho_{\pi_T}}\left[r\left(\mathbf{s}_T, \mathbf{a}_T\right)\right] \text { s.t. } \mathbb{E}_{\left(\mathbf{s}_T, \mathbf{a}_T\right) \sim \rho_{\pi_T}}\left[-\log \left(\pi_t\left(\mathbf{a}_T \mid \mathbf{s}_T\right)\right)\right] \geq \mathcal{H}_0 \quad \forall t
+$$
+
+这个问题可以通过拉格朗日乘子法求解，首先我们做一个简化，即：
+
+$$
+\begin{aligned}
+& h\left(\pi_T\right)=\mathcal{H}\left(\pi_T\right)-\mathcal{H}_0=\mathbb{E}_{\left(s_T, a_T\right) \sim \rho_\pi}\left[-\log \pi_T\left(a_T \mid s_T\right)\right]-\mathcal{H}_0 \\
+& f\left(\pi_T\right)= \begin{cases}\mathbb{E}_{\left(s_T, a_T\right) \sim \rho_\pi}\left[r\left(s_T, a_T\right)\right], & \text { if } h\left(\pi_T\right) \geq 0 \\
+-\infty, & \text { 否则 }\end{cases}
+\end{aligned}
+$$
+
+进而原问题简化为：
+
+$$
+\operatorname{maximize} f\left(\pi_T\right) \text { s.t. } h\left(\pi_T\right) \geq 0
+$$
+
+通过乘上一个拉格朗日乘子 $\alpha_T$ （也叫做对偶变量，也相当于温度因子），我们可以得到：
+
+$$
+L\left(\pi_T, \alpha_T\right)=f\left(\pi_T\right)+\alpha_T h\left(\pi_T\right)
+$$
+
+当 $\alpha_T=0$ 时，可得到 $L(\pi_T, 0) = f\left(\pi_T\right)$，当 $\alpha_T \rightarrow \infty$ 时，可得到 $L\left(\pi_T, \alpha_T\right) = \alpha_T h\left(\pi_T\right)$，一般来说 $h\left(\pi_T\right) < 0$， 因此 $L\left(\pi_T, \alpha_T\right) = \alpha_T h\left(\pi_T\right) = f\left(\pi_T\right)$。
+
+我们的目标是最大化 $f\left(\pi_T\right)$，即：
+
+$$
+\max _{\pi_T} f\left(\pi_T\right)=\min _{\alpha_T \geq 0} \max _{\pi_T} L\left(\pi_T, \alpha_T\right)
+$$
+
+因此原问题可以转化为以下的对偶问题：
+
+$$
+\begin{aligned}
+\max _{\pi_T} \mathbb{E}\left[r\left(s_T, a_T\right)\right] & =\max _{\pi_T} f\left(\pi_T\right) \\
+& =\min _{\alpha_T \geq 0} \max _{\pi_T} L\left(\pi_T, \alpha_T\right) \\
+& =\min _{\alpha_T \geq 0} \max _{\pi_T} f\left(\pi_T\right)+\alpha_T h\left(\pi_T\right) \\
+& =\min _{\alpha_T \geq 0} \max _{\pi_T} \mathbb{E}_{\left(s_T, a_T\right) \sim \rho_\pi}\left[r\left(s_T, a_T\right)\right]+\alpha_T\left(\mathbb{E}_{\left(s_T, a_T\right) \sim \rho_\pi}\left[-\log \pi_T\left(a_T \mid s_T\right)\right]-\mathcal{H}_0\right) \\
+& =\min _{\alpha_T \geq 0} \max _{\pi_T} \mathbb{E}_{\left(s_T, a_T\right) \sim \rho_\pi}\left[r\left(s_T, a_T\right)-\alpha_T \log \pi_T\left(a_T \mid s_T\right)\right]-\alpha_T \mathcal{H}_0 \\
+& =\min _{\alpha_T \geq 0} \max _{\pi_T} \mathbb{E}_{\left(s_T, a_T\right) \sim \rho_\pi}\left[r\left(s_T, a_T\right)+\alpha_T \mathcal{H}\left(\pi_T\right)-\alpha_T \mathcal{H}_0\right]
+\end{aligned}
+$$
+
+首先固定住温度因子 $\alpha_T$，就能够得到最佳策略 $\pi_T^*$ 使得 $f\left(\pi_T^*\right)$ 最大化，即：
+
+$$
+\pi_T^*=\arg \max _{\pi_T} \mathbb{E}_{\left(s_T, a_T\right) \sim \rho_\pi}\left[r\left(s_T, a_T\right)+\alpha_T \mathcal{H}\left(\pi_T\right)-\alpha_T \mathcal{H}_0\right]
+$$
+
+求出最佳策略之后，就可以求出最佳的温度因子 $\alpha_T^*$，即：
+
+$$
+\alpha_T^*=\arg \min _{\alpha_T \geq 0} \mathbb{E}_{\left(s_T, a_T\right) \sim \rho_\pi}\left[r\left(s_T, a_T\right)+\alpha_T \mathcal{H}\left(\pi_T^*\right)-\alpha_T \mathcal{H}_0\right]
+$$
+
+这样回到第一个子问题，即在时刻 $T$ 下的奖励期望：
+
+$$
+\max _{\pi_T} \mathbb{E}\left[r\left(s_T, a_T\right)\right]=\mathbb{E}_{\left(s_T, a_T\right) \sim \rho_{\pi^*}}\left[r\left(s_T, a_T\right)+\alpha_T^* \mathcal{H}\left(\pi_T^*\right)-\alpha_T^* \mathcal{H}_0\right]
+$$
+
+接下来我们就可以求解第二个子问题，即在时刻 $T-1$ 下的奖励期望。回顾一下 `Soft Q` 函数公式，即：
+
+$$
+\begin{aligned}
+Q_{T-1}\left(s_{T-1}, a_{T-1}\right) & =r\left(s_{T-1}, a_{T-1}\right)+\mathbb{E}\left[Q\left(s_T, a_T\right)-\alpha_T \log \pi\left(a_T \mid s_T\right)\right] \\
+& =r\left(s_{T-1}, a_{T-1}\right)+\mathbb{E}\left[r\left(s_T, a_T\right)\right]+\alpha_T \mathcal{H}\left(\pi_T\right)
+\end{aligned}
+$$
+
+代入第一个子问题的最优策略 $\pi_T^*$ 之后，就可以得到：
+
+$$
+Q_{T-1}^*\left(s_{T-1}, a_{T-1}\right)=r\left(s_{T-1}, a_{T-1}\right)+\max _{\pi_T} \mathbb{E}\left[r\left(s_T, a_T\right)\right]+\alpha_T \mathcal{H}\left(\pi_T^*\right)
+$$
+
+同样地，利用拉格朗日乘子法，就能得到第二个子问题即 $T-1$ 下的奖励期望最大化为：
+
+$$
+\begin{aligned}
+& \max _{\pi_{T-1}}\left(\mathbb{E}\left[r\left(s_{T-1}, a_{T-1}\right)\right]+\max _{\pi_T} \mathbb{E}\left[r\left(s_T, a_T\right]\right)\right. \\
+& =\max _{\pi_{T-1}}\left(Q_{T-1}^*\left(s_{T-1}, a_{T-1}\right)-\alpha_T^* \mathcal{H}\left(\pi_T^*\right)\right) \\
+& =\min _{\alpha_{T-1} \geq 0} \max _{\pi_{T-1}}\left(Q_{T-1}^*\left(s_{T-1}, a_{T-1}\right)-\alpha_T^* \mathcal{H}\left(\pi_T^*\right)+\alpha_{T-1}\left(\mathcal{H}\left(\pi_{T-1}\right)-\mathcal{H}_0\right)\right) \\
+& =\min _{\alpha_{T-1} \geq 0} \max _{\pi_{T-1}}\left(Q_{T-1}^*\left(s_{T-1}, a_{T-1}\right)+\alpha_{T-1} \mathcal{H}\left(\pi_{T-1}\right)-\alpha_{T-1} \mathcal{H}_0\right)-\alpha_T^* \mathcal{H}\left(\pi_T^*\right)
+\end{aligned}
+$$
+
+进而得到：
+
+$$
+\begin{aligned}
+& \pi_{T-1}^*=\arg \max _{\pi_{T-1}} \mathbb{E}_{\left(s_{T-1}, a_{T-1}\right) \sim \rho_\pi}\left[Q_{T-1}^*\left(s_{T-1}, a_{T-1}\right)+\alpha_{T-1} \mathcal{H}\left(\pi_{T-1}\right)-\alpha_{T-1} \mathcal{H}_0\right] \\
+& \alpha_{T-1}^*=\arg \min _{\alpha_{T-1} \geq 0} \mathbb{E}_{\left(s_{T-1}, a_{T-1}\right) \sim \rho_{\pi^*}}\left[\alpha_{T-1} \mathcal{H}\left(\pi_{T-1}^*\right)-\alpha_{T-1} \mathcal{H}_0\right]
+\end{aligned}
+$$
+
+我们会发现第二个子问题的答案形式其实和第一个子问题是一样的，依此类推，我们就可以得到温度因子的损失函数为：
+
+$$
+J(\alpha)=\mathbb{E}_{a_t \sim \pi_t}\left[-\alpha \log \pi_t\left(a_t \mid s_t\right)-\alpha \mathcal{H}_0\right]
+$$
+
+这样一来就能实现温度因子的自动调节了。
+
+## 实战：SAC 算法

@@ -38,8 +38,12 @@
 |    [第五章 免模型控制](https://johnjim0816.com/joyrl-book/#/ch4/main)    | Q-learning 算法、Sarsa 算法 |
 | 第六章 深度学习基础 | 待更新 |
 | [第七章 DQN算法](https://johnjim0816.com/joyrl-book/#/ch7/main) | 目标网络、经验回放 |
+| [第八章 DQN 算法进阶](https://johnjim0816.com/joyrl-book/#/ch8/main) | |
 | [第九章 策略梯度](https://johnjim0816.com/joyrl-book/#/ch9/main) | 策略梯度、REINFORCE |
 | [第十章 Actor-Critic 算法](https://johnjim0816.com/joyrl-book/#/ch10/main) |  |
+| [第十一章 TDDPG 与 TD3 算法](https://johnjim0816.com/joyrl-book/#/ch11/main) |  |
+| [第十二章 PPO 算法](https://johnjim0816.com/joyrl-book/#/ch12/main) |  |
+| [第十三章 SAC 算法](https://johnjim0816.com/joyrl-book/#/ch13/main) |  |
 
 ## 贡献者
 
