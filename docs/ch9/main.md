@@ -240,7 +240,7 @@ $$
     \nabla_\theta \log \pi_\theta(s \mid a)= \log p_\theta(s, a)
 $$
 
-在很多代码实践中，一般都把它写作 `logits_p`，对应的 $p_\theta(s, a)$ 叫做 `probs`， 这个在后面实战中我们会看到。
+在很多代码实践中，一般都把它写作 `logits_p`，对应的 $p_\theta(s, a)$ 叫做 `probs`， 这个在后面实战中我们会看到。在实践中，我们算出 `probs` 之后，还会根据 `probs` 形成一个 `Categorical` 分布，然后再采样，这个在后面实战中我们也会看到。
 
 ### 连续动作的策略函数
 
