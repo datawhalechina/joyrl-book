@@ -203,7 +203,7 @@ $$
 可以看出，当我们忽略掉这个约束条件时，就变成了一个标准的强化学习问题。这里将策略 $\pi$ 拆分成了每一时刻的策略 $\pi_{o: T}=\left\{\pi_1, \ldots, \pi_T\right\}$，以便于求解每一时刻 $t$ 的最优温度因子 $\alpha^*_t$。由于每一时刻 $t$ 的策略只会对未来奖励造成影响（马尔可夫性质），因此可以利用动态规划的思想，自顶向下（从后往前）对策略进行求解，即分解为：
 
 $$
-\underbrace{\max _{\pi_0}(\mathbb{E}\left[r\left(s_0, a_0\right)\right]+\underbrace{\max _{\pi_1}(\mathbb{E}[\ldots]+\underbrace{\max _{\pi_T} \mathbb{E}\left[r\left(s_T, a_T\right)\right]}_{1 \text { 第一次最大（子问题一） }})}_{\text { 倒数第二次最大 }})}_{\text { 倒数第一次最大 }}
+\underbrace{\max _{\pi_0}(\mathbb{E}\left[r\left(s_0, a_0\right)\right]+\underbrace{\max _{\pi_1}(\mathbb{E}[\ldots]+\underbrace{\max _{\pi_T} \mathbb{E}\left[r\left(s_T, a_T\right)\right]}_{ \text { 第一次最大（子问题一） }})}_{\text { 倒数第二次最大 }})}_{\text { 倒数第一次最大 }}
 $$
 
 这样一来我们只需要求出第一个子问题，即：
