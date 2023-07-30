@@ -314,6 +314,5 @@ $$
 J(\alpha)=\mathbb{E}_{a_t \sim \pi_t}\left[-\alpha \log \pi_t\left(a_t \mid s_t\right)-\alpha \mathcal{H}_0\right]
 $$
 
-这样一来就能实现温度因子的自动调节了。
-
+这样一来就能实现温度因子的自动调节了。这一版本由于引入了温度因子的自动调节，因此不需要额外的 `V` 值网络，直接使用两个 `Q` 网络（包含目标网络和当前网络）来作为 `Critic` 估计价值即可。
 ## 实战：SAC 算法
