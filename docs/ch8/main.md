@@ -1,13 +1,13 @@
 # DQN 算法进阶
 
-本章开始介绍一些基于 DQN 改进的一些算法，由于本章的算法都是网络模型、经验回放等层面的改进，整体的训练模式跟 DQN 算法是一模一样的，因此出于简洁考虑，本章算法不再贴出对应的伪代码。另一方面来讲，建议读者在阅读本章之前，牢牢掌握 DQN 算法的原理。
+本章开始介绍一些基于 $\text{DQN}$ 改进的一些算法，由于本章的算法都是网络模型、经验回放等层面的改进，整体的训练模式跟 $\text{DQN}$ 算法是一模一样的，因此出于简洁考虑，本章算法不再贴出对应的伪代码。另一方面来讲，建议读者在阅读本章之前，牢牢掌握 $\text{DQN}$ 算法的原理。
 ## Double DQN 算法
 
-Double DQN 算法<sup>①</sup>是谷歌 DeepMind 于 2015 年 12 月提出的一篇解决 $Q$ 值过估计（overestimate）的论文。
+$\text{Double DQN}$ 算法<sup>①</sup>是谷歌 DeepMind 于 2015 年 12 月提出的一篇解决 $Q$ 值过估计（overestimate）的论文。
 
 > ① 论文链接：http://papers.neurips.cc/paper/3964-double-q-learning.pdf
 
-回忆一下 DQN 算法的更新公式，如下：
+回忆一下 $\text{DQN}$ 算法的更新公式，如下：
 $$
 Q(s_t,a_t) \leftarrow Q(s_t,a_t)+\alpha[r_t+\gamma\max _{a}Q^{\prime}(s_{t+1},a)-Q(s_t,a_t)]
 $$
