@@ -1,34 +1,35 @@
 # DQN 算法
 
-本章开始进入深度强化学习的部分，我们首先从 $\text{DQN}$ 算法开始讲起。$\text{DQN}$ 算法，英文全称 $\text{Deep Q-Network}$ , 顾名思义就是基于深度网络模型的 $\text{Q-learning}$ 算法，主要由 $\text{DeepMind}$ 公司于 $\text{2013}$ 年<sup>①</sup>和 $\text{2015}$ 年<sup>②</sup>分别提出的两篇论文来实现。除了用深度网络代替 $Q$ 之外，$\text{DQN}$ 算法还引入了两个技巧，即经验回放和目标网络，我们将逐一介绍。
+$\qquad$ 本章开始进入深度强化学习的部分，我们首先从 $\text{DQN}$ 算法开始讲起。$\text{DQN}$ 算法，英文全称 $\text{Deep Q-Network}$ , 顾名思义就是基于深度网络模型的 $\text{Q-learning}$ 算法，主要由 $\text{DeepMind}$ 公司于 $\text{2013}$ 年<sup>①</sup>和 $\text{2015}$ 年<sup>②</sup>分别提出的两篇论文来实现。除了用深度网络代替 $Q$ 之外，$\text{DQN}$ 算法还引入了两个技巧，即经验回放和目标网络，我们将逐一介绍。其实，$\text{DQN}$ 算法相对于 $\text{Q-learning}$ 算法来说更新方法本质上是一样的，而 $\text{DQN}$ 算法最重要的贡献之一就是，用神经网络替换表格的形式来近似动作价值函数$Q(\boldsymbol{s},\boldsymbol{a})$。
 
-$\text{DQN}$ 算法相对于 $\text{Q-learning}$ 算法来说更新方法本质上是一样的，而 $\text{DQN}$ 算法最重要的贡献之一就是本章节开头讲的，用神经网络替换表格的形式来近似动作价值函数$Q(\boldsymbol{s},\boldsymbol{a})$。
+> ① Mnih V , Kavukcuoglu K , Silver D ,et al.Playing Atari with Deep Reinforcement Learning[J].Computer Science, 2013.DOI:10.48550/arXiv.1312.5602.
 
-> ① 《Playing Atari with Deep Reinforcement Learning》
-
-> ② 《Human-level Control through Deep Reinforcement Learning》
+> ② Human-level control through deep reinforcement learning[J].Nature, 2015.
 
 ## 深度网络
 
-在 $\text{Q-learning}$ 算法中，我们使用 $Q$ 表的形式来实现动作价值函数 $Q(\boldsymbol{s},\boldsymbol{a})$。但是用 $Q$ 表只适用于状态和动作空间都是离散的，并且不利于处理高维的情况，因为在高维状态空间下每次更新维护 $Q$ 表的计算成本会高得多。因此，在 $\text{DQN}$ 算法中，使用深度神经网络的形式来更新 $Q$ 值，这样做的好处就是能够处理高维的状态空间，并且也能处理连续的状态空间。
+$\qquad$ 在 $\text{Q-learning}$ 算法中，我们使用 $Q$ 表的形式来实现动作价值函数 $Q(\boldsymbol{s},\boldsymbol{a})$。但是用 $Q$ 表只适用于状态和动作空间都是离散的，并且不利于处理高维的情况，因为在高维状态空间下每次更新维护 $Q$ 表的计算成本会高得多。因此，在 $\text{DQN}$ 算法中，使用深度神经网络的形式来更新 $Q$ 值，这样做的好处就是能够处理高维的状态空间，并且也能处理连续的状态空间。
 
-如图 $\text{7.1}$ 所示，在 $\text{DQN}$ 的网络模型中，我们将当前状态 $s_t$ 作为输入，并输出动作空间中所有动作（假设这里只有两个动作，即1和2）对应的 $Q$ 值，我们记做 $Q(s_t,\boldsymbol{a})$ 。对于其他状态，该网络模型同样可以输出所有动作对应的价值，这样一来神经网络近似的动作价值函数可以表示为 $Q_{\theta}(\boldsymbol{s},\boldsymbol{a})$ 。其中 $\theta$ 就是神经网络模型的参数，可以结合梯度下降的方法求解。
+$\qquad$ 如图 $\text{7-1}$ 所示，在 $\text{DQN}$ 的网络模型中，我们将当前状态 $s_t$ 作为输入，并输出动作空间中所有动作（假设这里只有两个动作，即1和2）对应的 $Q$ 值，我们记做 $Q(s_t,\boldsymbol{a})$ 。对于其他状态，该网络模型同样可以输出所有动作对应的价值，这样一来神经网络近似的动作价值函数可以表示为 $Q_{\theta}(\boldsymbol{s},\boldsymbol{a})$ 。其中 $\theta$ 就是神经网络模型的参数，可以结合梯度下降的方法求解。
 
 <div align=center>
 <img width="600" src="../figs/ch7/dqn_network.png"/>
 </div>
-<div align=center>图 $\text{7.1}$ $\text{DQN}$ 网络结构</div>
+<div align=center>图 $\text{7-1}$ $\text{DQN}$ 网络结构</div>
 
-具体该怎么结合梯度下降来更新 $Q$ 函数的参数呢？我们首先回顾一下 $\text{Q-learning}$ 算法的更新公式如式 $\text(7.1)$ 所示：
+$\qquad$ 具体该怎么结合梯度下降来更新 $Q$ 函数的参数呢？我们首先回顾一下 $\text{Q-learning}$ 算法的更新公式，如式 $\text(7.1)$ 所示。
 
 $$
 \tag{7.1}
 Q(s_t,a_t) \leftarrow Q(s_t,a_t)+\alpha[r_t+\gamma\max _{a}Q^{\prime}(s_{t+1},a)-Q(s_t,a_t)]
 $$
 
-我们注意到公式右边两项 $r_t+\gamma\max _{a}Q^{\prime}(s_{t+1},a)$ 和 $Q(s_t,a_t)$ 分别表示期望的 $Q$ 值和实际的 $Q$ 值，其中预测的 $Q$ 值是用目标网络中下一个状态对应$Q$值的最大值来近似的。换句话说，在更新 $Q$ 值并达到收敛的过程中，期望的 $Q$ 值也应该接近实际的 $Q$ 值，即我们希望最小化 $r_t+\gamma\max _{a}Q(s_{t+1},a)$ 和 $Q(s_t,a_t)$ 之间的损失，其中 $\alpha$ 是学习率，尽管优化参数的公式跟深度学习中梯度下降法优化参数的公式有一些区别（比如增加了 $\gamma$ 和 $r_t$ 等参数）。从这个角度上来看，强化学习跟深度学习的训练方式其实是一样的，不同的地方在于强化学习用于训练的样本（包括状态、动作和奖励等等）是与环境实时交互得到的，而深度学习则是事先准备好的训练集。当然训练方式类似并不代表强化学习和深度学习之间的区别就很小，本质上来说强化学习和深度学习解决的问题是完全不同的，前者用于解决序列决策问题，后者用于解决静态问题例如回归、分类、识别等等。在 $\text{Q-learning}$ 算法中，我们是直接优化 $Q$ 值的，而在 DQN 中使用神经网络来近似 $Q$ 函数，我们则需要优化网络模型对应的参数 $\theta$ ，如下：
+$\qquad$ 我们注意到公式右边两项 $r_t+\gamma\max _{a}Q^{\prime}(s_{t+1},a)$ 和 $Q(s_t,a_t)$ 分别表示期望的 $Q$ 值和实际的 $Q$ 值，其中预测的 $Q$ 值是用目标网络中下一个状态对应$Q$值的最大值来近似的。换句话说，在更新 $Q$ 值并达到收敛的过程中，期望的 $Q$ 值也应该接近实际的 $Q$ 值，即我们希望最小化 $r_t+\gamma\max _{a}Q(s_{t+1},a)$ 和 $Q(s_t,a_t)$ 之间的损失，其中 $\alpha$ 是学习率，尽管优化参数的公式跟深度学习中梯度下降法优化参数的公式有一些区别（比如增加了 $\gamma$ 和 $r_t$ 等参数）。
+
+$\qquad$ 从这个角度上来看，强化学习跟深度学习的训练方式其实是一样的，不同的地方在于强化学习用于训练的样本（包括状态、动作和奖励等等）是与环境实时交互得到的，而深度学习则是事先准备好的训练集。当然训练方式类似并不代表强化学习和深度学习之间的区别就很小，本质上来说强化学习和深度学习解决的问题是完全不同的，前者用于解决序列决策问题，后者用于解决静态问题例如回归、分类、识别等等。在 $\text{Q-learning}$ 算法中，我们是直接优化 $Q$ 值的，而在 DQN 中使用神经网络来近似 $Q$ 函数，我们则需要优化网络模型对应的参数 $\theta$ ，如式 $\text(7.2)$ 所示。
 
 $$
+\tag{7.2}
 \begin{split}
     y_{i}= \begin{cases}r_{i} & \text {对于终止状态} s_{i} \\ r_{i}+\gamma \max _{a^{\prime}} Q\left(s_{i+1}, a^{\prime} ; \theta\right) & \text {对于非终止状态} s_{i}\end{cases}\\
     L(\theta)=\left(y_{i}-Q\left(s_{i}, a_{i} ; \theta\right)\right)^{2}\\
@@ -36,7 +37,7 @@ $$
 \end{split}
 $$
 
-这里 $\text{DQN}$ 算法也是基于 $\text{TD}$ 更新的，因此依然需要判断终止状态，在 $\text{Q-learning}$ 算法中也有同样的操作。
+$\qquad$ 这里 $\text{DQN}$ 算法也是基于 $\text{TD}$ 更新的，因此依然需要判断终止状态，在 $\text{Q-learning}$ 算法中也有同样的操作。
 
 ## 经验回放
 
