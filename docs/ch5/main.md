@@ -395,5 +395,5 @@ self.epsilon_decay = 200 #  e-greedy策略中epsilon的衰减率
 </div>
 <div align=center>图 $\text{5.11}$ $\text{Sarsa}$ 算法测试曲线 </div>
 
-我们发现相比于 $\text{Q-learning}$ 算法的 $300$ 回合收敛，$\text{Sarsa}$ 算法需要额外的 $100$ 个回合收敛，但是收敛之后会更稳定，没有一些波动过大的值，这就是我们接下来要讲的同策略（ $\text{on-policy}$ ）与异策略（ $\text{off-policy}$ ）的内容。
+我们发现相比于 $\text{Q-learning}$ 算法的 $300$ 回合收敛，$\text{Sarsa}$ 算法需要额外的 $100$ 个回合收敛，但是收敛之后会更稳定，没有一些波动过大的值。
 
