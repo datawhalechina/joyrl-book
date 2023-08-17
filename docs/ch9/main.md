@@ -269,7 +269,7 @@ $$
 对于连续动作空间，通常策略对应的动作可以从高斯分布${\mathbb{N}}\left(\phi(s)^{\mathbb{T}} \theta, \sigma^2\right)$，对应的梯度也可求得，如式 $\text(9.18)$ ：
 $$
 \tag{9.18}
-    \nabla_\theta \log \pi_\theta(s, a)==\frac{\left(a-\phi(s)^T \theta\right) \phi(s)}{\sigma^2}
+    \nabla_\theta \log \pi_\theta(s, a)=\frac{\left(a-\phi(s)^T \theta\right) \phi(s)}{\sigma^2}
 $$
 
 这个公式虽然看起来很复杂，但实现起来其实很简单，只需要在模型最后一层输出两个值，一个是均值，一个是方差，然后再用这两个值来构建一个高斯分布，然后采样即可，具体同样在实战中展开。
