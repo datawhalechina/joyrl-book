@@ -4,97 +4,84 @@ $\qquad$ 本章将介绍一些基于 $\text{DQN}$ 改进的一些算法。这些
 
 ## Double DQN 算法
 
-$\qquad$ $\text{Double DQN}$ 算法<sup>①</sup>是谷歌 $\text{DeepMind}$ 于 $\text{2015}$ 年 $\text{12}$ 月提出的一篇论文，
+$\qquad$ $\text{Double DQN}$ 算法<sup>①</sup>是谷歌 $\text{DeepMind}$ 于 $\text{2015}$ 年 $\text{12}$ 月提出的一篇论文，主要贡献是通过引入两个网络用于解决 $Q$ 值过估计（ $\text{overestimate}$ ）的问题。顺便说一句，这里两个网络其实跟前面 $\text{DQN}$ 算法讲的目标网络是类似的，读者可能会产生混淆。实际上它们之间的关系是这样的，我们知道 $\text{DQN}$ 分别于 $\text{2013}$ 和 $\text{2015}$ 年提出了两个版本，后者就是目前较为成熟的 $\text{Nature DQN}$ 版本，前者就是单纯在 $\text{Q-learning}$ 算法基础上引入了深度网络而没有额外的技巧。而在中间的过程中 $\text{Double DQN}$ 算法被提出，因此 $\text{Nature DQN}$ 在发表的时候也借鉴了 $\text{Double DQN}$ 的思想，所以才会有目标网络的概念。尽管如此， $\text{Double DQN}$ 算法仍然有其独特的地方，因此我们还是将其单独拿出来讲。
 
-主要目的是用于解决 $Q$ 值过估计（ $\text{overestimate}$ ）的问题。
+> ① [1] Hasselt H V , Guez A , Silver D .Deep Reinforcement Learning with Double Q-learning[J].Computer ence, 2015.DOI:10.48550/arXiv.1509.06461.
 
-解决 $Q$ 值过估计（overestimate）的论文。
 
-$\text{Double DQN}$ 算法<sup>①</sup>是谷歌 DeepMind 于 2015 年 12 月提出的一篇解决 $Q$ 值过估计（overestimate）的论文。
-
-> ① 论文链接：http://papers.neurips.cc/paper/3964-double-q-learning.pdf
-
-回忆一下 $\text{DQN}$ 算法的更新公式，如下：
-$$
-Q(s_t,a_t) \leftarrow Q(s_t,a_t)+\alpha[r_t+\gamma\max _{a}Q^{\prime}(s_{t+1},a)-Q(s_t,a_t)]
-$$
-
-其中 $y_t = r_t+\gamma\max _{a}Q^{\prime}(s_{t+1},a)$ 是估计值，注意这里的 $Q^{\prime}$ 是目标网络（DQN 算法中有两个网络，一个是目标网络，一个是当前网络或者说策略网络）。
-
-在 Double DQN 算法中则不再是直接在目标网络中寻找各动作最大的 $Q$ 值，而是现在策略网络中找出最大 $Q$ 值对应的动作如下：
+$\qquad$ 先回顾一下 $\text{DQN}$ 算法的更新公式，如式 $\text{(8.1)}$ 所示。
 
 $$
+\tag{8.1}
+Q_{\theta}(s_t,a_t) \leftarrow Q_{\theta}(s_t,a_t)+\alpha[r_t+\gamma\max _{a}Q_{\hat{\theta}}(s_{t+1},a_{t+1})-Q_{\theta}(s_t,a_t)]
+$$
+
+$\qquad$ 其中 $y_t = r_t+\gamma\max _{a}Q_{\hat{\theta}}(s_{t+1},a_{t+1})$ 是估计值，注意这里的 $Q_{\hat{\theta}}$ 指的是目标网络。这个意思就是直接拿目标网络中各个动作对应的最大的 $Q$ 值来当作估计值，这样一来就会存在过估计的问题。为了解决这个问题， $\text{Double DQN}$ 算法提出了一个很简单的思路，就是现在当前网络中找出最大 $Q$ 值对应的动作，然后再将这个动作代入到目标网络中去计算 $Q$ 值，如式 $\text{(8.2)}$ 所示。
+
+$$
+\tag{8.2}
 a^{max}_{\theta}(s_{t+1}) = \arg \max _{a}Q_{\theta}(s_{t+1},a)
 $$
 
-然后将这个找出来的动作代入到目标网络里面去计算目标的 $Q$ 值，进而计算估计值，如下：
+然后将这个找出来的动作代入到目标网络里面去计算目标的 $Q$ 值，进而计算估计值，如式 $\text{(8.3)}$ 所示。
 
 $$
-y_t = r_t+\gamma\max _{a}Q^{\prime}_{\theta^{\prime}}(s_{t+1},a^{max}_{\theta}(s_{t+1}))
+\tag{8.3}
+y_t = r_t+\gamma\max _{a}Q_{\hat{\theta}}(s_{t+1},a^{max}_{\theta}(s_{t+1}))
 $$
 
-到这里我们就讲完了 Double DQN 算法的核心，在原论文中还通过拟合曲线实验证明了过估计是真实存在且对实验结果有重大影响等相关细节，感兴趣的读者深入研究。为了方便读者理解，我们接着用皇帝与大臣的例子来举例说明为什么 Double DQN 算法能够估计得更准确。我们知道在 DQN 算法中策略网络直接与环境交互相当于大臣们搜集情报，然后定期更新到目标网络的过程相当于大臣向皇帝汇报然后皇帝做出最优决策。在 DQN 算法中，大臣是不管好的还是坏的情报都会汇报给皇帝的，而在  Double DQN 算法中大臣会根据自己的判断将自己认为最优的情报汇报给皇帝，即先在策略网络中找出最大 $Q$ 值对应的动作。这样一来皇帝这边得到的情报就更加精简并且质量更高了，以便于皇帝做出更好的判断和决策，也就是估计得更准确了。
+$\qquad$ 这样做相当于是把动作选择和动作评估这两个过程分离开来，从而减轻了过估计问题。为了方便读者理解，我们接着用皇帝与大臣的例子来举例说明为什么 $\text{Double DQN}$ 算法能够估计得更准确。我们知道在 $\text{Nature DQN}$ 算法中策略网络直接与环境交互相当于大臣们搜集情报，然后定期更新到目标网络的过程相当于大臣向皇帝汇报然后皇帝做出最优决策。在 $\text{Nature DQN}$ 算法中，大臣是不管好的还是坏的情报都会汇报给皇帝的，而在 $\text{Double DQN}$ 算法中大臣会根据自己的判断将自己认为最优的情报汇报给皇帝，即先在策略网络中找出最大 $Q$ 值对应的动作。这样一来皇帝这边得到的情报就更加精简并且质量更高了，以便于皇帝做出更好的判断和决策，也就是估计得更准确了。
 
-Double DQN 算法核心代码如下，完整代码参考 JoyRL ：
+$\qquad$ 注意，虽然 $\text{Double DQN}$ 算法和  $\text{Nature DQN}$ 算法都用了两个网络，但实际上 $\text{Double DQN}$ 算法训练方式是略有不同的。$\text{Double DQN}$ 并不是每隔 $C$ 步复制参数到目标网络，而是每次随机选择其中一个网络选择动作进行更新。假设两个网络分别为 $Q^A$ 和 $Q^B$ ，那么在更新 $Q_A$ 的时候就用把 $Q^B$ 当作目标网络估计动作值，同时 $Q_A$ 也是用来选择动作的，如式 $\text{(8.4)}$ 所示，反之亦然。
 
-```python
-# 计算当前Q(s_t|a=a_t)，即Q网络的输出，这里的gather函数的作用是根据action_batch中的值，从Q网络的输出中选出对应的Q值
-q_value_batch = self.policy_net(state_batch).gather(dim=1, index=action_batch) # shape(batchsize,1)
-# 计算 Q(s_t+1|a)
-next_q_value_batch = self.policy_net(next_state_batch)
-# 计算 Q'(s_t+1|a)，也是与DQN不同的地方
-next_target_value_batch = self.target_net(next_state_batch)
-# 计算 Q'(s_t+1|a=argmax Q(s_t+1|a))
-next_target_q_value_batch = next_target_value_batch.gather(1, torch.max(next_q_value_batch, 1)[1].unsqueeze(1)) # shape(batchsize,1)
-```
+$$
+\tag{8.4}
+\begin{split}
+a^* = \arg \max _{a}Q^A(s_{t},a) \\
+Q^A(s_{t},a) \leftarrow Q^A(s_{t},a)+\alpha[r_t+\gamma Q^B(s_{t+1},a^*)-Q^A(s_{t},a)]
+\end{split}
+$$
 
-整体代码跟 DQN 算法基本一致，只是在计算目标 $Q$ 值的时候多了一步，即当前策略网络中找出最大 $Q$ 值对应的动作，然后再在目标网络中计算目标 $Q$ 值。
-
-细心的读者可能会发现，这里似乎并没有体现出 Double DQN 算法中的 “Double”是在哪里。
-
-
-<div align=center>
-<img width="500" src="../figs/ch8/double_dqn_pseu.png"/>
-</div>
-<div align=center>图 8.1 Double DQN 伪代码</div>
-
-实际上在原论文中是有这样的描述的，如图 8.1 所示，它定义了两个网络，在更新的时候随机选择其中一个网络进行更新，其实跟这里的策略网络和目标网络是一样的。这是因为 Double DQN 算法论文比 Nature DQN 算法论文发表的时间更早，在后面 Nature DQN 算法论文中其实已经引入了两个网络的概念了，只是更新的方式略有差异。在 Nature DQN 算法论文中，两个网络是交替更新的，而在 Double DQN 算法论文中则是随机选择其中一个网络进行更新，实践证明交替更新的方式会更加稳定一些。但由于 Double DQN 算法的重点其实不在于 Double，而在于前面讲的估计目标 $Q$ 值的方式，加上讲解 DQN 算法的时候已经引入了两个网络的概念，所以这里就不再赘述了。
+$\qquad$ 但其实这种训练方式的效果跟单纯每隔 $C$ 步复制参数到目标网络的方式差不多，而且后者更加简单，所以实践中一般都是采用后者。
 
 ## Dueling DQN 算法
 
-在 Double DQN 算法中我们是通过改进目标 $Q$ 值的计算来优化算法的，而在 Dueling DQN 算法<sup>②</sup>中则是通过优化神经网络的结构来优化算法的。
+$\qquad$ 在 $\text{Double DQN}$ 算法中我们是通过改进目标 $Q$ 值的计算来优化算法的，而在 $\text{Dueling DQN}$ 算法<sup>②</sup>中则是通过优化神经网络的结构来优化算法的。
 
-> ② Dueling DQN 算法论文：Dueling Network Architectures for Deep Reinforcement Learning
+> ② Wang, Z., Schaul, T., Hessel, M., van Hasselt, H., Lanctot, M. & de Freitas, N. (2015). Dueling Network Architectures for Deep Reinforcement Learning.s
 
-回忆 DQN 算法的网络结构，如图 8.2 所示，输入层的维度就是状态数，输出层的维度就是动作数。
+
+$\qquad$ 回顾我们在 $\text{DQN}$ 算法所使用的最基础的网络结构，如图 $\text{8-1}$ 所示，它是一个全连接网络，包含一个输入层、一个隐藏层和输出层。输入层的维度为状态的维度，输出层的维度为动作的维度。
 
 <div align=center>
-<img width="300" src="../figs/ch8/dqn_network.png"/>
+<img width="200" src="../figs/ch8/dqn_network.png"/>
 </div>
-<div align=center>图 8.2 DQN 网络结构</div>
+<div align=center>图 $\text{8-1}$ $\text{DQN}$ 网络结构</div>
 
-而 Dueling DQN 算法中则是在输出层之前分流（Dueling）出了两个层，一个是优势层（Advantage Layer），用于估计每个动作带来的优势，输出维度为动作数一个是价值层（Value Layer），用于估计每个状态的价值，输出维度为 $1$ 。
+$\qquad$ 而 $\text{Dueling DQN}$ 算法中则是在输出层之前分流（ $\text{dueling}$ ）出了两个层，如图 $\text{8-2}$ 所示，一个是优势层（$\text{advantage layer}$），用于估计每个动作带来的优势，输出维度为动作数一个是价值层（$\text{value layer}$），用于估计每个状态的价值，输出维度为 $1$ 。
 
 <div align=center>
 <img width="400" src="../figs/ch8/dueling_network.png"/>
 </div>
-<div align=center>图 8.3 Dueling DQN 网络结构</div>
+<div align=center>图 $\text{8-2}$ $\text{Dueling DQN}$ 网络结构</div>
 
-在 DQN 算法中我们用 $Q_{\theta}(\boldsymbol{s},\boldsymbol{a})$ 表示 一个 $Q$ 网络，而在这里优势层可以表示为 $A_{\theta,\alpha}(\boldsymbol{s},\boldsymbol{a})$，这里 $\theta$ 表示共享隐藏层的参数，$\alpha$ 表示优势层自己这部分的参数，相应地价值层可以表示为 $V_{\theta,\beta}(\boldsymbol{s})$。这样 Dueling DQN 算法中网络结构可表示为：
+$\qquad$ 在 $\text{DQN}$ 算法中我们用 $Q_{\theta}(\boldsymbol{s},\boldsymbol{a})$ 表示 一个 $Q$ 网络，而在这里优势层可以表示为 $A_{\theta,\alpha}(\boldsymbol{s},\boldsymbol{a})$，这里 $\theta$ 表示共享隐藏层的参数，$\alpha$ 表示优势层自己这部分的参数，相应地价值层可以表示为 $V_{\theta,\beta}(\boldsymbol{s})$。这样 $\text{Dueling DQN}$ 算法中网络结构可表示为式 $\text{(8.5)}$ 。
 
 $$
+\tag{8.5}
 Q_{\theta,\alpha,\beta}(\boldsymbol{s},\boldsymbol{a}) = A_{\theta,\alpha}(\boldsymbol{s},\boldsymbol{a}) + V_{\theta,\beta}(\boldsymbol{s})
 $$
 
-去掉这里的价值层即优势层就是普通的 $Q$ 网络了，另外我们会对优势层做一个中心化处理，即减掉均值，如下：
+$\qquad$ 去掉这里的价值层即优势层就是普通的 $Q$ 网络了，另外我们会对优势层做一个中心化处理，即减掉均值，如式 $\text{(8.6)}$ 所示。
 
 $$
+\tag{8.6}
 Q_{\theta,\alpha,\beta}(\boldsymbol{s},\boldsymbol{a}) = (A_{\theta,\alpha}(\boldsymbol{s},\boldsymbol{a})-\frac{1}{\mathcal{A}} \sum_{a \in \mathcal{A}} A_{\theta,\alpha}\left(\boldsymbol{s}, a\right)) - + V_{\theta,\beta}(\boldsymbol{s})
 $$
 
-其实 Dueling DQN 的网络结构跟我们后面要讲的 Actor-Critic 算法是类似的，这里优势层相当于 Actor，价值层相当于 Critic，不同的是在 Actor-Critic 算法中 Actor 和 Critic 是独立的两个网络，而在这里是合在一起的，在计算量以及拓展性方面都完全不同，具体我们会在后面的 Actor-Critic 算法对应章节中展开。
+$\qquad$ 其实 $\text{Dueling DQN}$ 的网络结构跟我们后面要讲的 Actor-Critic 算法是类似的，这里优势层相当于 Actor，价值层相当于 Critic，不同的是在 Actor-Critic 算法中 Actor 和 Critic 是独立的两个网络，而在这里是合在一起的，在计算量以及拓展性方面都完全不同，具体我们会在后面的 Actor-Critic 算法对应章节中展开。
 
-总的来讲，Dueling DQN 算法在某些情况下相对于 DQN 是有好处的，因为它分开评估每个状态的价值以及某个状态下采取某个动作的 $Q$ 值。当某个状态下采取一些动作对最终的回报都没有多大影响时，这个时候 Dueling DQN 这种结构的优越性就体现出来了。或者说，它使得目标值更容易计算，因为通过使用两个单独的网络，我们可以隔离每个网络输出上的影响，并且只更新适当的子网络，这有助于降低方差并提高学习**鲁棒性（Robustness）**。
+总的来讲，$\text{Dueling DQN}$ 算法在某些情况下相对于 DQN 是有好处的，因为它分开评估每个状态的价值以及某个状态下采取某个动作的 $Q$ 值。当某个状态下采取一些动作对最终的回报都没有多大影响时，这个时候 $\text{Dueling DQN}$ 这种结构的优越性就体现出来了。或者说，它使得目标值更容易计算，因为通过使用两个单独的网络，我们可以隔离每个网络输出上的影响，并且只更新适当的子网络，这有助于降低方差并提高学习**鲁棒性（Robustness）**。
 
 根据上面的分析，我们就可以写出 Dueling DQN 网络的代码，如下：
 
@@ -481,3 +468,29 @@ $$
 其中状态分布 $x_t \sim P\left(\cdot \mid x_{t-1}, a_{t-1}\right), a_t \sim \pi\left(\cdot \mid x_t\right), x_0=x, a_0=a \text {. }$
 
 ## Rainbow DQN 算法
+ 
+## 实战：Double DQN 算法
+
+$\qquad$ 由于本章都是基于 $\text{DQN}$ 改进的算法，整体训练方式跟 $\text{DQN}$ 是一样的，也就是说伪代码基本都是一致的，因此不再赘述，只讲算法的改进部分。而 $\text{Double DQN}$ 算法跟 $\text{DQN}$ 算法的区别在于目标值的计算方式，如代码清单 $\text{8-1}$ 所示。
+
+<div style="text-align: center;">
+    <figcaption> 代码清单 $\text{8-1}$ $\text{Double DQN}$目标值的计算 </figcaption>
+</div>
+
+```python
+# 计算当前网络的Q值，即Q(s_t+1|a)
+next_q_value_batch = self.policy_net(next_state_batch)
+# 计算目标网络的Q值，即Q'(s_t+1|a)
+next_target_value_batch = self.target_net(next_state_batch)
+# 计算 Q'(s_t+1|a=argmax Q(s_t+1|a))
+next_target_q_value_batch = next_target_value_batch.gather(1, torch.max(next_q_value_batch, 1)[1].unsqueeze(1)) 
+```
+
+$\qquad$ 最后与 $\text{DQN}$ 算法相同，可以得到 $\text{Double DQN}$ 算法在 $\text{CartPole}$ 环境下的训练结果，如图 $\text{8-5}$ 所示，完整的代码可以参考本书的代码仓库。
+
+<div align=center>
+<img width="500" src="../figs/ch8/DoubleDQN_CartPole-v1_training_curve.png"/>
+</div>
+<div align=center>图 $\text{8-5}$ $\text{CartPole}$ 环境 $\text{Double DQN}$ 算法训练曲线</div>
+
+$\qquad$ 与 $\text{DQN}$ 算法的训练曲线对比可以看出，在实践上 $\text{Double DQN}$ 算法的效果并不一定比 $\text{DQN}$ 算法好，比如在这个环境下其收敛速度反而更慢了，因此读者需要多多实践才能摸索并体会到这些算法适合的场景。
