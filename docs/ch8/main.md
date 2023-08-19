@@ -1,9 +1,14 @@
 # DQN 算法进阶
 
-$\qquad$ 本章将介绍一些基于 $\text{DQN}$ 改进的一些算法。这些算法改进的角度各有不同，例如 $\text{Double DQN}$ 以及 $\text{Dueling DQN}$ 等算法主要从网络模型层面改进，而 $\text{PER DQN}$ 则从经验回放的角度来改进
+$\qquad$ 本章将介绍一些基于 $\text{DQN}$ 改进的一些算法。这些算法改进的角度各有不同，例如， $\text{Double DQN}$ 以及 $\text{Dueling DQN}$ 等算法主要从网络模型层面改进，而 $\text{PER DQN}$ 则从经验回放的角度来改进。尽管这些算法看起来各有不同，但是本质上都是通过提高预测的精度和控制过程中的探索度来改善 $\text{DQN}$ 算法的性能。并且这些算法用到的技巧也都是比较通用的，读者可以根据自己的需求进行灵活的组合。
 
-本章开始介绍一些基于 $\text{DQN}$ 改进的一些算法，由于本章的算法都是网络模型、经验回放等层面的改进，整体的训练模式跟 $\text{DQN}$ 算法是一模一样的，因此出于简洁考虑，本章算法不再贴出对应的伪代码。另一方面来讲，建议读者在阅读本章之前，牢牢掌握 $\text{DQN}$ 算法的原理。
 ## Double DQN 算法
+
+$\qquad$ $\text{Double DQN}$ 算法<sup>①</sup>是谷歌 $\text{DeepMind}$ 于 $\text{2015}$ 年 $\text{12}$ 月提出的一篇论文，
+
+主要目的是用于解决 $Q$ 值过估计（ $\text{overestimate}$ ）的问题。
+
+解决 $Q$ 值过估计（overestimate）的论文。
 
 $\text{Double DQN}$ 算法<sup>①</sup>是谷歌 DeepMind 于 2015 年 12 月提出的一篇解决 $Q$ 值过估计（overestimate）的论文。
 
