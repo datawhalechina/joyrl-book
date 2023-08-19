@@ -61,8 +61,6 @@ $\qquad$ 如图 $\text{7-2}$ 所示，$\text{Q-learning}$ 算法训练的方式�
 $\qquad$ 当然，与深度学习不同的是，经验回放的容量是需要有一定的容量限制的。本质上是因为在深度学习中我们拿到的样本都是事先准备好的，即都是很好的样本，但是在强化学习中样本是由智能体生成的，在训练初期智能体生成的样本虽然能够帮助它朝着更好的方向收敛，但是在训练后期这些前期产生的样本相对来说质量就不是很好了，此时把这些样本喂入智能体的深度网络中更新反而影响其稳定。这就好比我们在小学时积累到的经验，会随着我们逐渐长大之后很有可能就变得不是很适用了，所以经验回放的容量不能太小，太小了会导致收集到的样本具有一定的局限性，也不能太大，太大了会失去经验本身的意义。
 ## 目标网络
 
-
-
 $\qquad$ 在 $\text{DQN}$ 算法中还有一个重要的技巧，即使用了一个每隔若干步才更新的目标网络。这个技巧其实借鉴了 $\text{Double DQN}$ 算法中的思路，具体会在下一章展开。如图 $\text{7-3}$ 所示，目标网络和当前网络结构都是相同的，都用于近似 $Q$ 值，在实践中每隔若干步才把每步更新的当前网络参数复制给目标网络，这样做的好处是保证训练的稳定，避免 $Q$ 值 的估计发散。
 
 <div align=center>
@@ -81,33 +79,35 @@ $\qquad$ 对于目标网络的作用，这里举一个典型的例子，这里�
 
 $\qquad$ 再打个比方，我们玩 $\text{RPG}$ 或者闯关类游戏，有些人为了破纪录经常存档（ $\text{Save}$ ）和回档（ $\text{Load}$ ），简称 “$\text{SL}$” 大法。只要我出了错，我不满意我就加载之前的存档，假设不允许加载呢，就像 $\text{DQN}$ 算法一样训练过程中会退不了，这时候是不是搞两个档，一个档每帧都存一下，另外一个档打了不错的结果再存，也就是若干个间隔再存一下，到最后用间隔若干步数再存的档一般都比每帧都存的档好些呢。当然我们也可以再搞更多个档，也就是 $\text{DQN}$ 增加多个目标网络，但是对于 $\text{DQN}$ 算法来说没有多大必要，因为多几个网络效果不见得会好很多。
 
-$\qquad$ 到这里我们基本讲完了 $\text{DQN}$ 算法的内容，可以直接贴出伪代码准备进入实战了，如图 $\text{7-2}$ 所示：
+$\qquad$ 到这里我们基本讲完了 $\text{DQN}$ 算法的内容，接下来就可以进入实战内容了。
+
+## 实战：DQN 算法
+
+$\qquad$ 请读者再次注意，本书中所有的实战仅提供核心内容的代码以及说明，完整的代码请读者参考本书对应的 $\text{GitHub}$ 仓库。并且正如所有代码实战那样，读者须养成先写出伪代码再编程的习惯，这样更有助于提高对算法的理解。
+
+### 伪代码
+
+$\qquad$ 伪代码如图 $\text{7-2}$ 所示，如大多数强化学习算法那样，$\text{DQN}$ 算法的训练过程分为交互采样和模型更新两个步骤，这两个步骤其实我们在深度学习基础那章讲强化学习与深度学习的关系的时候就已经给出示例了。其中交互采样的目的就是与环境交互并产生样本，模型更新则是利用得到的样本来更新相关的网络参数，更新方式涉及每个强化学习算法的核心。
 
 <div align=center>
 <img width="600" src="../figs/ch7/dqn_pseu.png"/>
 </div>
 <div align=center>图 $\text{7-2}$ $\text{DQN}$ 算法伪代码</div>
 
+与 $\text{Q-learning}$ 算法不同的是，这里由于用的是神经网络，因此会多一个计算损失函数并进行反向传播的步骤，即梯度下降。在 $\text{DQN}$ 算法中，我们需要定义当前网络、目标网络和经验回放等元素，这些都可以看做算法的一个模块，因此接下来我们分别用一个 $\text{Python}$ 类来定义。
+### 定义模型
 
-## 实战：DQN 算法
-
-
-### 定义算法
-
-$\qquad$ 由于 $\text{DQN}$ 智能体包含的元素比较多，包括神经网络，经验回放等，我们接下来将逐一实现。首先需要定义一个深度网络来表示 $Q$ 函数，目前 $\text{JoyRL}$ 算法都是基于  $\text{Torch}$ 框架实现的，所以需要读者们具有一定的相关基础。如代码清单 $\text{7-1}$ 所示，我们定义一个全连接网络即可，输入维度就是状态数，输出的维度就是动作数，中间的隐藏层采用最常用的 $\text{ReLU}$ 激活函数。
+$\qquad$ 首先是定义模型，就是定义两个神经网路，即当前网络和目标网络，由于这两个网络结构相同，这里我们只用一个 $\text{Python}$ 类来定义，如代码清单 $\text{7-1}$ 所示。
 
 <div style="text-align: center;">
     <figcaption> 代码清单 $\text{7-1}$ 定义一个全连接网络</figcaption>
 </div>
 
 ```python
-class MLP(nn.Module):
+class MLP(nn.Module): # 所有网络必须继承 nn.Module 类，这是 PyTorch 的特性
     def __init__(self, input_dim,output_dim,hidden_dim=128):
-        """ 初始化q网络，为全连接网络
-            input_dim: 输入的特征数即环境的状态维度
-            output_dim: 输出的动作维度
-        """
-        super(MLP, self).__init__()
+        super(MLP, self).__init__() 
+        # 定义网络的层，这里都是线性层
         self.fc1 = nn.Linear(input_dim, hidden_dim) # 输入层
         self.fc2 = nn.Linear(hidden_dim,hidden_dim) # 隐藏层
         self.fc3 = nn.Linear(hidden_dim, output_dim) # 输出层
@@ -116,11 +116,14 @@ class MLP(nn.Module):
         # 各层对应的激活函数
         x = F.relu(self.fc1(x)) 
         x = F.relu(self.fc2(x))
-        return self.fc3(x)
+        return self.fc3(x) # 输出层不需要激活函数
 ```
 
+$\qquad$ 这里我们定义了一个三层的全连接网络，输入维度就是状态数，输出维度就是动作数，中间的隐藏层采用最常用的 $\text{ReLU}$ 激活函数。这里我们用 $\text{PyTorch}$ 的 $\text{Module}$ 类来定义网络，这是 $\text{PyTorch}$ 的特性，所有网络都必须继承这个类。在 $\text{PyTorch}$ 中，我们只需要定义网络的前向传播，即 $\text{forward}$ 函数，反向传播的过程 $\text{PyTorch}$ 会自动完成，这也是 $\text{PyTorch}$ 的特性。注意，由于我们在本次实战中要解决的问题并不复杂，因此定义的网络模型也比较简单，读者可以根据自己的需求定义更复杂的网络结构，例如增加网络的层数和隐藏层的维度等。
 
-$\qquad$ 然后我们定义经验回放，如代码清单 $\text{7-2}$ 所示。
+### 经验回放
+
+$\qquad$ 经验回放的功能比较简单，主要实现缓存样本和取出样本等两个功能，，如代码清单 $\text{7-2}$ 所示。
 
 <div style="text-align: center;">
     <figcaption> 代码清单 $\text{7-2}$ 定义经验回放</figcaption>
@@ -130,33 +133,37 @@ $\qquad$ 然后我们定义经验回放，如代码清单 $\text{7-2}$ 所示。
 class ReplayBuffer:
     def __init__(self, capacity):
         self.capacity = capacity # 经验回放的容量
-        self.buffer = [] # 缓冲区
-        self.position = 0 
+        self.buffer = [] # 用列表存放样本
+        self.position = 0 # 样本下标，便于覆盖旧样本
     
     def push(self, state, action, reward, next_state, done):
-        ''' 缓冲区是一个队列，容量超出时去掉开始存入的转移(transition)
+        ''' 缓存样本
         '''
-        if len(self.buffer) < self.capacity:
+        if len(self.buffer) < self.capacity: # 如果样本数小于容量
             self.buffer.append(None)
         self.buffer[self.position] = (state, action, reward, next_state, done)
         self.position = (self.position + 1) % self.capacity 
     
     def sample(self, batch_size):
-        ''' 采样
+        ''' 取出样本，即采样
         '''
         batch = random.sample(self.buffer, batch_size) # 随机采出小批量转移
         state, action, reward, next_state, done =  zip(*batch) # 解压成状态，动作等
         return state, action, reward, next_state, done
     
     def __len__(self):
-        ''' 返回当前存储的量
+        ''' 返回当前样本数
         '''
         return len(self.buffer)
 ```
 
-$\qquad$ 前面讲到经验回放的主要功能是，存入样本然后随机采样出一个批量的样本，分别对应这里的 `push` 和 `sample` 方法，并且需要保证一定的容量（即 `capacity` ）。实现的手段有很多，也可以用 $\text{Python}$ 队列的方式实现，这里只是一个参考。
+$\qquad$ 当然，经验回放的实现方式其实有很多，这里只是一个参考。在 $\text{JoyRL}$ 中，我们也提供了一个使用 $\text{Python}$ 队列实现的经验回放，读者可以参考相关源码。
 
-$\qquad$ 然后我们定义智能体，跟 $\text{Q-learning}$ 算法中类似，我们定义一个名为 `Agent` 的 $\text{Python}$ 类，包含 `sample_action`，`predict_action` 和 `update` 等方法，如代码清单 $\text{7-3}$ 所示。
+### 定义智能体
+
+$\qquad$ 智能体即策略的载体，因此有的时候也会称为策略。智能体的主要功能就是根据当前状态输出动作和更新策略，分别跟伪代码中的交互采样和模型更新过程相对应。我们会把所有的模块比如网络模型等都封装到智能体中，这样更符合伪代码的逻辑。而在 $\text{JoyRL}$ 线上代码中，会有更泛用的代码架构，感兴趣的读者可以参考相关源码。
+
+如代码清单 $\text{7-3}$ 所示。两个网络就是前面所定义的全连接网络，输入为状态维度，输出则是动作维度。这里我们还定义了一个优化器，用来更新网络参数。在 $\text{DQN}$ 算法中采样动作和预测动作跟 $\text{Q-learning}$ 是一样的，其中采样动作使用的是 $\varepsilon-\text{greedy}$ 策略，便于在训练过程中探索，而测试只需要检验模型的性能，因此不需要探索，只需要单纯的进行 $\text{argmax}$ 预测即可，即选择最大值对应的动作。
 
 <div style="text-align: center;">
     <figcaption> 代码清单 $\text{7-3}$ 定义智能体</figcaption>
@@ -166,9 +173,9 @@ $\qquad$ 然后我们定义智能体，跟 $\text{Q-learning}$ 算法中类似�
 class Agent:
     def __init__(self):
         # 定义当前网络
-        self.policy_net = MLP(n_states,n_actions).to(device)
+        self.policy_net = MLP(state_dim,action_dim).to(device) 
         # 定义目标网络
-        self.target_net = MLP(n_states,n_actions).to(device)
+        self.target_net = MLP(state_dim,action_dim).to(device)
         # 将当前网络参数复制到目标网络中
         self.target_net.load_state_dict(self.policy_net.state_dict())
         # 定义优化器
@@ -177,6 +184,8 @@ class Agent:
         self.memory = ReplayBuffer(buffer_size)
         self.sample_count = 0  # 记录采样步数
     def sample_action(self,state):
+        ''' 采样动作，主要用于训练
+        '''
         self.sample_count += 1
         # epsilon 随着采样步数衰减
         self.epsilon = self.epsilon_end + (self.epsilon_start - self.epsilon_end) * math.exp(-1. * self.sample_count / self.epsilon_decay) 
@@ -186,8 +195,10 @@ class Agent:
                 q_values = self.policy_net(state)
                 action = q_values.max(1)[1].item() # choose action corresponding to the maximum q value
         else:
-            action = random.randrange(self.n_actions)
+            action = random.randrange(self.action_dim)
     def predict_action(self,state):
+        ''' 预测动作，主要用于测试
+        '''
         with torch.no_grad():
             state = torch.tensor(np.array(state), device=self.device, dtype=torch.float32).unsqueeze(dim=0)
             q_values = self.policy_net(state)
@@ -197,9 +208,7 @@ class Agent:
         pass
 ```
 
-$\qquad$ 注意，这里所有的代码都是为了方便讲解用的演示代码，完整的代码读者可在 $\text{JoyRL}$ 开源工具上参考。在这里我们定义了两个网络，当前网络和目标网络，在 $\text{Torch}$ 中可以使用 `.to(device)` 来决定网络是否使用 $\text{CPU}$ 还是 $\text{GPU}$ 计算。 此外在初始化的时候我们需要让目标网络和当前网络的参数保持一致，可以使用 `load_state_dict` 方法，然后就是优化器和经验回放了。 在 $\text{DQN}$ 算法中采样动作和预测动作跟 $\text{Q-learning}$ 是一样的，其中 `q_values = self.policy_net(state)` 拿到的 $Q$ 值是给定状态下所有动作的值，根据这些值选择最大值对应的动作即可。
-
-$\text{DQN}$ 算法更新本质上跟 $\text{Q-learning}$ 区别不大，但由于读者可能第一次接触深度学习的实现方式，这里单独拎出来分析 $\text{DQN}$ 算法的更新方式，如代码清单 $\text{7-4}$ 所示。
+$\qquad$ $\text{DQN}$ 算法更新本质上跟 $\text{Q-learning}$ 区别不大，但由于读者可能第一次接触深度学习的实现方式，这里单独拎出来分析 $\text{DQN}$ 算法的更新方式，如代码清单 $\text{7-4}$ 所示。
 
 <div style="text-align: center;">
     <figcaption> 代码清单 $\text{7-4}$ $\text{DQN}$ 算法更新</figcaption>
@@ -240,7 +249,7 @@ def update(self, share_agent=None):
         self.target_net.load_state_dict(self.policy_net.state_dict())   
 ```
 
-$\qquad$ 首先由于我们是小批量随机梯度下降，所以当经验回放不满足批大小时选择不更新，这实际上是工程性问题。然后在更新时我们取出样本，并转换成 $\text{Torch}$ 的张量，便于我们用 $\text{GPU}$ 计算。接着计算 $Q$ 值的估计值和实际值，并得到损失函数。在得到损失函数并更新参数时，我们在代码上会有一个固定的写法，即梯度清零，反向传播和更新优化器的过程，跟在深度学习中的写法是一样的，最后我们需要定期更新一下目标网络，这里会有一个超参数 `target_update`, 需要读者根据经验调试。
+$\qquad$ 首先由于我们是小批量随机梯度下降，所以当经验回放不满足批大小时选择不更新，这实际上是工程性问题。然后在更新时我们取出样本，并转换成 $\text{Torch}$ 的张量，便于我们用 $\text{GPU}$ 计算。接着计算 $Q$ 值的估计值和实际值，并得到损失函数。在得到损失函数并更新参数时，我们在代码上会有一个固定的写法，即梯度清零，反向传播和更新优化器的过程，跟在深度学习中的写法是一样的，最后我们需要定期更新一下目标网络，即每隔 $\text{C}$ 步复制参数到目标网络。。
 
 ### 定义环境
 
