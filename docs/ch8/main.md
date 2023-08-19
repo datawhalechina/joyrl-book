@@ -6,7 +6,7 @@ $\qquad$ 本章将介绍一些基于 $\text{DQN}$ 改进的一些算法。这些
 
 $\qquad$ $\text{Double DQN}$ 算法<sup>①</sup>是谷歌 $\text{DeepMind}$ 于 $\text{2015}$ 年 $\text{12}$ 月提出的一篇论文，主要贡献是通过引入两个网络用于解决 $Q$ 值过估计（ $\text{overestimate}$ ）的问题。顺便说一句，这里两个网络其实跟前面 $\text{DQN}$ 算法讲的目标网络是类似的，读者可能会产生混淆。实际上它们之间的关系是这样的，我们知道 $\text{DQN}$ 分别于 $\text{2013}$ 和 $\text{2015}$ 年提出了两个版本，后者就是目前较为成熟的 $\text{Nature DQN}$ 版本，前者就是单纯在 $\text{Q-learning}$ 算法基础上引入了深度网络而没有额外的技巧。而在中间的过程中 $\text{Double DQN}$ 算法被提出，因此 $\text{Nature DQN}$ 在发表的时候也借鉴了 $\text{Double DQN}$ 的思想，所以才会有目标网络的概念。尽管如此， $\text{Double DQN}$ 算法仍然有其独特的地方，因此我们还是将其单独拿出来讲。
 
-> ① [1] Hasselt H V , Guez A , Silver D .Deep Reinforcement Learning with Double Q-learning[J].Computer ence, 2015.DOI:10.48550/arXiv.1509.06461.
+> ① Hasselt H V , Guez A , Silver D .Deep Reinforcement Learning with Double Q-learning[J].Computer ence, 2015.DOI:10.48550/arXiv.1509.06461.
 
 
 $\qquad$ 先回顾一下 $\text{DQN}$ 算法的更新公式，如式 $\text{(8.1)}$ 所示。
@@ -79,40 +79,9 @@ $$
 Q_{\theta,\alpha,\beta}(\boldsymbol{s},\boldsymbol{a}) = (A_{\theta,\alpha}(\boldsymbol{s},\boldsymbol{a})-\frac{1}{\mathcal{A}} \sum_{a \in \mathcal{A}} A_{\theta,\alpha}\left(\boldsymbol{s}, a\right)) - + V_{\theta,\beta}(\boldsymbol{s})
 $$
 
-$\qquad$ 其实 $\text{Dueling DQN}$ 的网络结构跟我们后面要讲的 Actor-Critic 算法是类似的，这里优势层相当于 Actor，价值层相当于 Critic，不同的是在 Actor-Critic 算法中 Actor 和 Critic 是独立的两个网络，而在这里是合在一起的，在计算量以及拓展性方面都完全不同，具体我们会在后面的 Actor-Critic 算法对应章节中展开。
+$\qquad$ 其实 $\text{Dueling DQN}$ 的网络结构跟我们后面要讲的 $\text{Actor-Critic}$ 算法是类似的，这里优势层相当于 $\text{Actor}$ ，价值层相当于 $\text{Critic}$ ，不同的是在  $\text{Actor-Critic}$ 算法中 $\text{Actor}$ 和 $\text{Critic}$ 是独立的两个网络，而在这里是合在一起的，在计算量以及拓展性方面都完全不同，具体我们会在后面的  $\text{Actor-Critic}$ 算法对应章节中展开。
 
-总的来讲，$\text{Dueling DQN}$ 算法在某些情况下相对于 DQN 是有好处的，因为它分开评估每个状态的价值以及某个状态下采取某个动作的 $Q$ 值。当某个状态下采取一些动作对最终的回报都没有多大影响时，这个时候 $\text{Dueling DQN}$ 这种结构的优越性就体现出来了。或者说，它使得目标值更容易计算，因为通过使用两个单独的网络，我们可以隔离每个网络输出上的影响，并且只更新适当的子网络，这有助于降低方差并提高学习**鲁棒性（Robustness）**。
-
-根据上面的分析，我们就可以写出 Dueling DQN 网络的代码，如下：
-
-```python
-class DuelingQNetwork(nn.Module):
-    def __init__(self, n_states, n_actions,hidden_dim=128):
-        super(DuelingQNetwork, self).__init__()
-        # 隐藏层
-        self.hidden_layer = nn.Sequential(
-            nn.Linear(n_states, hidden_dim),
-            nn.ReLU()
-        )
-        #  优势层
-        self.advantage_layer = nn.Sequential(
-            nn.Linear(hidden_dim, hidden_dim),
-            nn.ReLU(),
-            nn.Linear(hidden_dim, n_actions)
-        )
-        # 价值层
-        self.value_layer = nn.Sequential(
-            nn.Linear(hidden_dim, hidden_dim),
-            nn.ReLU(),
-            nn.Linear(hidden_dim, 1)
-        )
-        
-    def forward(self, state):
-        x = self.hidden_layer(state)
-        advantage = self.advantage_layer(x)
-        value     = self.value_layer(x)
-        return value + advantage - advantage.mean() # Q(s,a) = V(s) + A(s,a) - mean(A(s,a))
-```
+$\qquad$ 总的来讲，$\text{Dueling DQN}$ 算法在某些情况下相对于 $\text{DQN}$ 是有好处的，因为它分开评估每个状态的价值以及某个状态下采取某个动作的 $Q$ 值。当某个状态下采取一些动作对最终的回报都没有多大影响时，这个时候 $\text{Dueling DQN}$ 这种结构的优越性就体现出来了。或者说，它使得目标值更容易计算，因为通过使用两个单独的网络，我们可以隔离每个网络输出上的影响，并且只更新适当的子网络，这有助于降低方差并提高学习鲁棒性。
 
 ## Noisy DQN 算法
 
@@ -181,11 +150,11 @@ class NoisyLinear(nn.Module):
 
 ```python
 class NoisyQNetwork(nn.Module):
-    def __init__(self, n_states, n_actions, hidden_dim=128):
+    def __init__(self, state_dim, action_dim, hidden_dim=128):
         super(NoisyQNetwork, self).__init__()
-        self.fc1 =  nn.Linear(n_states, hidden_dim)
+        self.fc1 =  nn.Linear(state_dim, hidden_dim)
         self.noisy_fc2 = NoisyLinear(hidden_dim, hidden_dim)
-        self.noisy_fc3 = NoisyLinear(hidden_dim, n_actions)
+        self.noisy_fc3 = NoisyLinear(hidden_dim, action_dim)
         
     def forward(self, x):
         x = F.relu(self.fc1(x))
@@ -203,11 +172,11 @@ class NoisyQNetwork(nn.Module):
 ```python
 import torchrl
 class NoisyQNetwork(nn.Module):
-    def __init__(self, n_states, n_actions, hidden_dim=128):
+    def __init__(self, state_dim, action_dim, hidden_dim=128):
         super(NoisyQNetwork, self).__init__()
-        self.fc1 =  nn.Linear(n_states, hidden_dim)
+        self.fc1 =  nn.Linear(state_dim, hidden_dim)
         self.noisy_fc2 = torchrl.NoisyLinear(hidden_dim, hidden_dim,std_init=0.1)
-        self.noisy_fc3 = torchrl.NoisyLinear(hidden_dim, n_actions,std_init=0.1)
+        self.noisy_fc3 = torchrl.NoisyLinear(hidden_dim, action_dim,std_init=0.1)
         
     def forward(self, x):
         x = F.relu(self.fc1(x))
@@ -494,3 +463,52 @@ $\qquad$ 最后与 $\text{DQN}$ 算法相同，可以得到 $\text{Double DQN}$ 
 <div align=center>图 $\text{8-5}$ $\text{CartPole}$ 环境 $\text{Double DQN}$ 算法训练曲线</div>
 
 $\qquad$ 与 $\text{DQN}$ 算法的训练曲线对比可以看出，在实践上 $\text{Double DQN}$ 算法的效果并不一定比 $\text{DQN}$ 算法好，比如在这个环境下其收敛速度反而更慢了，因此读者需要多多实践才能摸索并体会到这些算法适合的场景。
+
+## 实战：Dueling DQN 算法
+
+$\qquad$ $\text{Dueling DQN}$ 算法主要是改了网络结构，其他地方跟 $\text{DQN}$ 是一模一样的，如代码清单 $\text{8-2}$ 所示。
+
+<div style="text-align: center;">
+    <figcaption> 代码清单 $\text{8-2}$ $\text{Dueling DQN}$ 网络结构 </figcaption>
+</div>
+
+```python
+class DuelingQNetwork(nn.Module):
+    def __init__(self, state_dim, action_dim,hidden_dim=128):
+        super(DuelingQNetwork, self).__init__()
+        # 隐藏层
+        self.hidden_layer = nn.Sequential(
+            nn.Linear(state_dim, hidden_dim),
+            nn.ReLU()
+        )
+        #  优势层
+        self.advantage_layer = nn.Sequential(
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, action_dim)
+        )
+        # 价值层
+        self.value_layer = nn.Sequential(
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, 1)
+        )
+        
+    def forward(self, state):
+        x = self.hidden_layer(state)
+        advantage = self.advantage_layer(x)
+        value     = self.value_layer(x)
+        return value + advantage - advantage.mean() # Q(s,a) = V(s) + A(s,a) - mean(A(s,a))
+```
+
+$\qquad$ 最后我们展示一下它在 $\text{CartPole}$ 环境下的训练结果，如图 $\text{8-6}$ 所示，完整的代码同样可以参考本书的代码仓库。
+
+<div align=center>
+<img width="500" src="../figs/ch8/DuelingDQN_CartPole-v1_training_curve.png"/>
+</div>
+<div align=center>图 $\text{8-5}$ $\text{CartPole}$ 环境 $\text{Dueling DQN}$ 算法训练曲线</div>
+
+$\qquad$ 由于环境比较简单，暂时还看不出来 $\text{Dueling DQN}$ 算法的优势，但是在复杂的环境下，比如 $\text{Atari}$ 游戏中，$\text{Dueling DQN}$ 算法的效果就会比 $\text{DQN}$ 算法好很多，读者可以在 $\text{JoyRL}$ 仓库中找到更复杂环境下的训练结果便于更好地进行对比。
+
+
+
