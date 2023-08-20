@@ -260,7 +260,7 @@
 	\begin{algorithmic}[1]
 		% \REQUIRE $n \geq 0 \vee x \neq 0$ % 输入
 		% \ENSURE $y = x^n$ % 输出
-		\STATE 初始化策略网络参数$\theta$ % 初始化
+		\STATE 初始化当前网络参数$\theta$ % 初始化
 		\STATE 复制参数到目标网络$\hat{Q} \leftarrow Q$
 		\STATE 初始化经验回放$D$
 		\FOR {回合数 = $1,M$}
