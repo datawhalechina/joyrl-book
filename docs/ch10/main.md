@@ -1,8 +1,8 @@
-# Actor-Critic 算法
+# 第 10 章 Actor-Critic 算法
 
 $\qquad$ 在策略梯度的章节中，实际上我们已经开了一部分 $\text{Actor-Critic}$ 算法的头了，这一章我们将继续深入探讨 $\text{Actor-Critic}$ 算法。
 
-## 策略梯度算法的缺点
+## 10.1 策略梯度算法的缺点
 
 $\qquad$ 这里策略梯度算法特指蒙特卡洛策略梯度算法，相比于 $\text{DQN}$ 之类的基于价值的算法，策略梯度算法有以下优点：
 
@@ -20,7 +20,7 @@ $\qquad$ 结合了策略梯度和值函数的 $\text{Actor-Critic}$ 算法则能
 
 $\qquad$ 而结合之后呢，$\text{Actor}$ 部分还是负责估计策略梯度和采样，但 $\text{Critic}$ 即原来的值函数部分就不需要采样而只负责估计值函数了，并且由于它估计的值函数指的是策略函数的值，相当于带来了一个更稳定的估计，来指导 $\text{Actor}$ 的更新，反而能够缓解策略梯度估计带来的方差。当然尽管 $\text{Actor-Critic}$ 算法能够缓解方差问题，但并不能彻底解决问题，在接下来的章节中我们也会展开介绍一些改进的方法。
 
-## Q Actor-Critic 算法
+## 10.2 Q Actor-Critic 算法
 
 $\qquad$ 在策略梯度章节中，我们其实已经对 $\text{Actor-Critic}$ 算法的目标函数进行过推导了，这里就不详细展开，只是简单回顾一下目标函数，如式 $\text(10.1)$ 所示。
 
@@ -45,11 +45,11 @@ $\qquad$ 这样的算法通常称之为 $\text{Q Actor-Critic}$ 算法，这也�
 $\qquad$ 如图 $\text{10.1}$ 所示，我们通常将 $\text{Actor}$ 和 $\text{Critic}$ 分别用两个模块来表示，即图中的 策略函数（ $\text{Policy}$ ）和价值函数（ $\text{Value Function}$ ）。$\text{Actor}$ 与环境交互采样，然后将采样的轨迹输入 $\text{Critic}$ 网络，$\text{Critic}$ 网络估计出当前状态-动作对的价值，然后再将这个价值作为 $\text{Actor}$ 网络的梯度更新的依据，这也是所有 $\text{Actor-Critic}$ 算法的基本通用架构。
 
 <div align=center>
-<img width="300" src="../figs/ch10/actor_critic_architecture.png"/>
+<img width="400" src="../figs/ch10/actor_critic_architecture.png"/>
 </div>
 <div align=center>图 $\text{10.1}$ $\text{Actor-Critic}$ 算法架构</div>
 
-## A2C 与 A3C 算法
+## 10.3 A2C 与 A3C 算法
 
 $\qquad$ 我们知道 $\text{Actor-Critic}$ 架构是能够缓解策略梯度算法的高方差问题的，但是并不能彻底解决问题。为了进一步缓解高方差问题，我们引入一个优势函数（ $\text{advantage function}$ ）$A^\pi(s_t, a_t)$，用来表示当前状态-动作对相对于平均水平的优势，即式 $\text(10.3)$ 。
 
@@ -84,7 +84,7 @@ $\qquad$ 如图 $\text{10.2}$ 所示，原先的 $\text{A2C}$ 算法相当于只
 </div>
 <div align=center>图 $\text{10.2}$ $\text{A3C}$ 算法架构</div>
 
-## 广义优势估计
+## 10.4 广义优势估计
 
 $\qquad$ 上一小节中，我们通过引入优势函数来缓解梯度估计带来的高方差问题，但由于优势函数通本质上来说还是使用蒙特卡洛估计，因此尽管减去了基线，有时候还是会产生高方差，从而导致训练过程不稳定。这时候有读者可能会想到一句话，即“知识一般是通过螺旋式的规律来学习的，也是会螺旋式升级的”，这句话的意思是我们在学某些知识时可能不会马上用到，但是会暂时埋下一个种子，等到后面深入使用的时候会回忆起来并且加深相关知识的理解。当然这句话不是某个名人说的，而是笔者自己总结出来，也是想传达给读者的学习思路。
 
@@ -107,7 +107,7 @@ $$
 \end{aligned}
 $$
 
-当 $\lambda = 0$ 时，GAE 退化为单步 $\text{TD}$ 误差，如式 $\text(10.7)$ 所示。
+$\qquad$ 当 $\lambda = 0$ 时，GAE 退化为单步 $\text{TD}$ 误差，如式 $\text(10.7)$ 所示。
 
 $$
 \tag{10.7}
@@ -116,7 +116,7 @@ A^{\mathrm{GAE}(\gamma, 0)}(s_t, a_t) = \delta_t = r_t + \gamma V^\pi(s_{t+1}) -
 \end{aligned}
 $$
 
-当 $\lambda = 1$ 时，$\text{GAE}$ 退化为蒙特卡洛估计，如式 $\text(10.8)$ 所示。
+$\qquad$ 当 $\lambda = 1$ 时，$\text{GAE}$ 退化为蒙特卡洛估计，如式 $\text(10.8)$ 所示。
 
 $$
 \tag{10.8}
@@ -125,6 +125,151 @@ A^{\mathrm{GAE}(\gamma, 1)}(s_t, a_t) = \sum_{l=0}^{\infty}(\gamma \lambda)^l \d
 \end{aligned}
 $$
 
-如何选择合适的 $\lambda$ 还请读者回看前面时序差分的相关章节内容，这里就不再赘述。到这里，我们就将 $\text{Actor-Critic}$ 算法的基本原理讲完了，注意广义优势估计并不是 $\text{Actor-Critic}$ 算法的必要组成部分，只是一种改进的方法。相反地，它更像是一种通用的模块，在实践中可以用在任何需要估计优势函数的地方，比如后面章节要讲的 $\text{PPO}$ 算法中就用到了这种估计方法。
+$\qquad$ 如何选择合适的 $\lambda$ 还请读者回看前面时序差分的相关章节内容，这里就不再赘述。到这里，我们就将 $\text{Actor-Critic}$ 算法的基本原理讲完了，注意广义优势估计并不是 $\text{Actor-Critic}$ 算法的必要组成部分，只是一种改进的方法。相反地，它更像是一种通用的模块，在实践中可以用在任何需要估计优势函数的地方，比如后面章节要讲的 $\text{PPO}$ 算法中就用到了这种估计方法。
 
-## 实战：A2C 算法
+## 10.5 实战：A2C 算法
+
+### 10.5.1 定义模型
+
+$\qquad$ 通常来讲，$\text{Critic}$ 的输入是状态，输出则是一个维度的价值，而 $\text{Actor}$ 输入的也会状态，但输出的是概率分布，因此我们可以定义两个网络，如代码清单 $\text{10-1}$ 所示。
+
+<div style="text-align: center;">
+    <figcaption> 代码清单 $\text{10-1}$ 实现 $\text{Actor}$ 和 $\text{Critic}$ </figcaption>
+</div>
+
+```python
+class Critic(nn.Module):
+    def __init__(self,state_dim):
+        self.fc1 = nn.Linear(state_dim, 256)
+        self.fc2 = nn.Linear(256, 256)
+        self.fc3 = nn.Linear(256, 1)
+    def forward(self, x):
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        value = self.fc3(x)
+        return value
+
+class Actor(nn.Module):
+    def __init__(self, state_dim, action_dim):
+        self.fc1 = nn.Linear(state_dim, 256)
+        self.fc2 = nn.Linear(256, 256)
+        self.fc3 = nn.Linear(256, action_dim)
+    def forward(self, x):
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        logits_p = F.softmax(self.fc3(x), dim=1)
+        return logits_p
+```
+
+$\qquad$ 这里由于是离散的动作空间，根据在策略梯度章节中设计的策略函数，我们使用了 $\text{softmax}$ 函数来输出概率分布。另外，实践上来看，由于 $\text{Actor}$ 和 $\text{Critic}$ 的输入是一样的，因此我们可以将两个网络合并成一个网络，以便于加速训练。这有点类似于 $\text{Duelling DQN}$ 算法中的做法，如代码清单 $\text{10-2}$ 所示。
+
+<div style="text-align: center;">
+    <figcaption> 代码清单 $\text{10-2}$ 实现合并的 $\text{Actor}$ 和 $\text{Critic}$ </figcaption>
+</div>
+
+```python
+class ActorCritic(nn.Module):
+    def __init__(self, state_dim, action_dim):
+        self.fc1 = nn.Linear(state_dim, 256)
+        self.fc2 = nn.Linear(256, 256)
+        self.action_layer = nn.Linear(256, action_dim)
+        self.value_layer = nn.Linear(256, 1)
+    def forward(self, x):
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        logits_p = F.softmax(self.action_layer(x), dim=1)
+        value = self.value_layer(x)
+        return logits_p, value
+```
+
+$\qquad$ 注意当我们使用分开的网络时，我们需要在训练时分别更新两个网络的参数，即需要两个优化，而使用合并的网络时则只需要更新一个网络的参数即可。
+
+### 10.5.2 动作采样
+
+$\qquad$ 与 $\text{DQN}$ 算法不同等确定性策略不同，$\text{A2C}$ 的动作输出不再是 $Q$ 值最大对应的动作，而是从概率分布中采样动作，这意味着即使是很小的概率，也有可能被采样到，这样就能保证探索性，如代码清单 $\text{10-3}$ 所示。
+
+<div style="text-align: center;">
+    <figcaption> 代码清单 $\text{10-3}$ 采样动作 </figcaption>
+</div>
+
+```python
+from torch.distributions import Categorical
+class Agent:
+    def __init__(self):
+        self.model = ActorCritic(state_dim, action_dim)
+    def sample_action(self,state):
+        '''动作采样函数
+        '''
+        state = torch.tensor(state, device=self.device, dtype=torch.float32)
+        logits_p, value = self.model(state)
+        dist = Categorical(logits_p) 
+        action = dist.sample() 
+        return action
+```
+
+$\qquad$ 注意这里直接利用了 `PyTorch` 中的 `Categorical` 分布函数，这样就能直接从概率分布中采样动作了。
+
+### 10.5.3 策略更新
+
+我们首先需要计算出优势函数，一般先计算出回报，然后减去网络输出的值即可，如代码清单 $\text{10-4}$ 所示。
+
+<div style="text-align: center;">
+    <figcaption> 代码清单 $\text{10-4}$ 计算优势函数 </figcaption>
+</div>
+
+```python
+class Agent:
+    def _compute_returns(self, rewards, dones):
+        returns = []
+        discounted_sum = 0
+        for reward, done in zip(reversed(rewards), reversed(dones)):
+            if done:
+                discounted_sum = 0
+            discounted_sum = reward + (self.gamma * discounted_sum)
+            returns.insert(0, discounted_sum)
+        # 归一化
+        returns = torch.tensor(returns, device=self.device, dtype=torch.float32).unsqueeze(dim=1)
+        returns = (returns - returns.mean()) / (returns.std() + 1e-5) # 1e-5 to avoid division by zero
+        return returns
+    def compute_advantage(self):
+        '''计算优势函数
+        '''
+        logits_p, states, rewards, dones = self.memory.sample()
+        returns = self._compute_returns(rewards, dones)
+        states = torch.tensor(states, device=self.device, dtype=torch.float32)
+        logits_p, values = self.model(states)
+        advantages = returns - values
+        return advantages
+```
+
+$\qquad$ 这里我们使用了一个技巧，即将回报归一化，这样可以让优势函数的值域在 $[-1,1]$ 之间，这样可以让优势函数更稳定，从而减少方差。计算优势之后就可以分别计算 $\text{Actor}$ 和 $\text{Critic}$ 的损失函数了，如代码清单 $\text{10-5}$ 所示。
+
+<div style="text-align: center;">
+    <figcaption> 代码清单 $\text{10-5}$ 计算损失函数 </figcaption>
+</div>
+
+```python
+class Agent:
+    def compute_loss(self):
+        '''计算损失函数
+        '''
+        logits_p, states, rewards, dones = self.memory.sample()
+        returns = self._compute_returns(rewards, dones)
+        states = torch.tensor(states, device=self.device, dtype=torch.float32)
+        logits_p, values = self.model(states)
+        advantages = returns - values
+        dist = Categorical(logits_p)
+        log_probs = dist.log_prob(actions)
+        # 注意这里策略损失反向传播时不需要优化优势函数，因此需要将其 detach 掉
+        actor_loss = -(log_probs * advantages.detach()).mean() 
+        critic_loss = advantages.pow(2).mean()
+        return actor_loss, critic_loss
+```
+
+到这里，我们就实现了 $\text{A2C}$ 算法的所有核心代码，完整代码请读者参考本书的代码仓库。最后展示一下训练的效果，如图 $\text{10-3}$ 所示。
+
+
+<div align=center>
+<img width="400" src="../figs/ch10/a2c_CartPole_training.png"/>
+</div>
+<div align=center>图 $\text{10-3}$ $\text{CartPole}$ 环境 $\text{A2C}$ 算法训练曲线</div>
