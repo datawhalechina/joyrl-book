@@ -1,12 +1,14 @@
-# PPO 算法
+# 第 12 章 PPO 算法
 
-$\qquad$ 本章我们开始讲解强化学习中最最最泛用的 $\text{PPO}$ 算法（$\text{proximal policy optimization}$），这个算法在强化学习领域的研究和应用中有着非常重要的地位，可以说是强化学习领域的一个里程碑式的算法。$\text{PPO}$ 算法是一种基于策略梯度的强化学习算法，由 $\text{OpenAI}$ 的研究人员 $\text{Schulman}$ 等人在 $\text{2017}$ 年提出。$\text{PPO}$ 算法的主要思想是通过在策略梯度的优化过程中引入一个重要性比率来限制策略更新的幅度，从而提高算法的稳定性和收敛性。$\text{PPO}$ 算法的优点在于简单、易于实现、易于调参，而且在实际应用中的效果也非常好，因此在强化学习领域得到了广泛的应用。
+$\qquad$ 本章我们开始讲解强化学习中比较重要的 $\text{PPO}$ 算法，它在相关应用中有着非常重要的地位，是一个里程碑式的算法。不同于 $\text{DDPG}$ 算法，$\text{PPO}$ 算法是一类典型的 $\text{Actor-Critic}$ 算法，既适用于连续动作空间，也适用于离散动作空间。
+
+$\qquad$ $\text{PPO}$ 算法是一种基于策略梯度的强化学习算法，由 $\text{OpenAI}$ 的研究人员 $\text{Schulman}$ 等人在 $\text{2017}$ 年提出。$\text{PPO}$ 算法的主要思想是通过在策略梯度的优化过程中引入一个重要性权重来限制策略更新的幅度，从而提高算法的稳定性和收敛性。$\text{PPO}$ 算法的优点在于简单、易于实现、易于调参，应用十分广泛，正可谓 “遇事不决 $\text{PPO}$ ”。
 
 $\qquad$ $\text{PPO}$ 的前身是 $\text{TRPO}$ 算法，旨在克服 $\text{TRPO}$ 算法中的一些计算上的困难和训练上的不稳定性。$\text{TRPO}$ 是一种基于策略梯度的算法，它通过定义策略更新的信赖域来保证每次更新的策略不会太远离当前的策略，以避免过大的更新引起性能下降。然而，$\text{TRPO}$ 算法需要解决一个复杂的约束优化问题，计算上较为繁琐。本书主要出于实践考虑，这种太复杂且几乎已经被淘汰的 $\text{TRPO}$ 算法就不再赘述了，需要深入研究或者工作面试的读者可以自行查阅相关资料。 接下来将详细讲解 $\text{PPO}$ 算法的原理和实现，希望能够帮助读者更好地理解和掌握这个算法。
 
-## 重要性采样
+## 12.1 重要性采样
 
-$\qquad$ 在将 $\text{PPO}$ 算法之前，我们需要铺垫一个概念，那就是重要性采样（ $\text{importance sampling}$ ）。重要性采样是一种估计随机变量的期望或者概率分布的统计方法。它的原理也很简单，假设有一个函数 $f(x)$ ，需要从分布 $p(x)$ 中采样来计算其期望值，但是在某些情况下我们可能很难从 $p(x)$ 中采样，这个时候我们可以从另一个比较容易采样的分布 $q(x)$ 中采样，来间接地达到从 $p(x)$ 中采样的效果。这个过程的数学表达式如式 $\text{(12.1)}$ 所示。
+$\qquad$ 在展开 $\text{PPO}$ 算法之前，我们先铺垫一个概念，即重要性采样（ $\text{importance sampling}$ ）。重要性采样是一种估计随机变量的期望或者概率分布的统计方法。它的原理也很简单，假设有一个函数 $f(x)$ ，需要从分布 $p(x)$ 中采样来计算其期望值，但是在某些情况下我们可能很难从 $p(x)$ 中采样，这个时候我们可以从另一个比较容易采样的分布 $q(x)$ 中采样，来间接地达到从 $p(x)$ 中采样的效果。这个过程的数学表达式如式 $\text{(12.1)}$ 所示。
 
 $$
 \tag{12.1}
@@ -17,7 +19,9 @@ $\qquad$ 对于离散分布的情况，可以表达为式 $\text{(12.2)}$ 。
 
 $$
 \tag{12.2}
+\begin{aligned}
 E_{p(x)}[f(x)]=\frac{1}{N} \sum f\left(x_{i}\right) \frac{p\left(x_{i}\right)}{q\left(x_{i}\right)}
+\end{aligned}
 $$
 
 $\qquad$ 这样一来原问题就变成了只需要从 $q(x)$ 中采样，然后计算两个分布之间的比例 $\frac{p(x)}{q(x)}$ 即可，这个比例称之为**重要性权重**。换句话说，每次从 $q(x)$ 中采样的时候，都需要乘上对应的重要性权重来修正采样的偏差，即两个分布之间的差异。当然这里可能会有一个问题，就是当 $p(x)$ 不为 $\text{0}$ 的时候，$q(x)$ 也不能为 $\text{0}$，但是他们可以同时为 $\text{0}$ ，这样 $\frac{p(x)}{q(x)}$ 依然有定义，具体的原理由于并不是很重要，因此就不展开讲解了。
@@ -33,15 +37,17 @@ $\qquad$ 结合重要性采样公式，我们可以得到式 $\text{(12.4)}$ 。
 
 $$
 \tag{12.4}
+\begin{aligned}
 Var_{x \sim q}\left[f(x) \frac{p(x)}{q(x)}\right]=E_{x \sim q}\left[\left(f(x) \frac{p(x)}{q(x)}\right)^{2}\right]-\left(E_{x \sim q}\left[f(x) \frac{p(x)}{q(x)}\right]\right)^{2} \\
-=E_{x \sim p}\left[f(x)^{2} \frac{p(x)}{q(x)}\right]-\left(E_{x \sim p}[f(x)]\right)^{2}
+= E_{x \sim p}\left[f(x)^{2} \frac{p(x)}{q(x)}\right]-\left(E_{x \sim p}[f(x)]\right)^{2}
+\end{aligned}
 $$
 
 $\qquad$ 不难看出，当 $q(x)$ 越接近 $p(x)$ 的时候，方差就越小，也就是说重要性权重越接近于 $1$ 的时候，反之越大。
 
 $\qquad$ 其实重要性采样也是蒙特卡洛估计的一部分，只不过它是一种比较特殊的蒙特卡洛估计，允许我们在复杂问题中利用已知的简单分布进行采样，从而避免了直接采样困难分布的问题，同时通过适当的权重调整，可以使得蒙特卡洛估计更接近真实结果。
 
-## PPO 算法
+## 12.2 PPO 算法
 
 $\qquad$ 既然重要性采样本质上是一种在某些情况下更优的蒙特卡洛估计，再结合前面 $\text{Actor-Critic}$ 章节中我们讲到策略梯度算法的高方差主要来源于 $\text{Actor}$ 的策略梯度采样估计，读者应该不难猜出 $\text{PPO}$ 算法具体是优化在什么地方了。没错，$\text{PPO}$ 算法的核心思想就是通过重要性采样来优化原来的策略梯度估计，其目标函数表示如式 $\text{(12.5)}$ 所示。
 
@@ -80,10 +86,79 @@ $$
 J^{KL}(\theta)=\hat{\mathbb{E}}_t\left[\frac{\pi_\theta\left(a_t \mid s_t\right)}{\pi_{\theta_{\text {old }}}\left(a_t \mid s_t\right)} \hat{A}_t-\beta \mathrm{KL}\left[\pi_{\theta_{\text {old }}}\left(\cdot \mid s_t\right), \pi_\theta\left(\cdot \mid s_t\right)\right]\right]
 $$
 
-$\text{KL}$ 约束一般也叫 $\text{KL-penalty}$，它的意思是在 $\text{TRPO}$ 损失的基础上，加上一个 $\text{KL}$ 散度的惩罚项，这个惩罚项的系数 $\beta$ 一般取 $0.01$ 左右。这个惩罚项的作用也是保证每次更新的策略分布都不会偏离上一次的策略分布太远，从而保证重要性权重不会偏离 $1$ 太远。在实践中，我们一般用 $\text{clip}$ 约束，因为它更简单，计算成本较低，而且效果也更好。
+$\qquad$ $\text{KL}$ 约束一般也叫 $\text{KL-penalty}$，它的意思是在 $\text{TRPO}$ 损失的基础上，加上一个 $\text{KL}$ 散度的惩罚项，这个惩罚项的系数 $\beta$ 一般取 $0.01$ 左右。这个惩罚项的作用也是保证每次更新的策略分布都不会偏离上一次的策略分布太远，从而保证重要性权重不会偏离 $1$ 太远。在实践中，我们一般用 $\text{clip}$ 约束，因为它更简单，计算成本较低，而且效果也更好。
 
-## 一个常见的误区
+## 12.3 一个常见的误区
 
-在很早的章节之前，我们讲过 `on-policy` 和
+$\qquad$ 在之前的章节中，我们讲过 $\text{on-policy}$ 和 $\text{off-policy}$ 算法，前者使用当前策略生成样本，并基于这些样本来更新该策略，后者则可以使用过去的策略采集样本来更新当前的策略。$\text{on-policy}$ 算法的数据利用效率较低，因为每次策略更新后，旧的样本或经验可能就不再适用，通常需要重新采样。而 $\text{off-policy}$ 算法由于可以利用历史经验，一般使用经验回放来存储和重复利用之前的经验，数据利用效率则较高，因为同一批数据可以被用于多次更新。但由于经验的再利用，可能会引入一定的偏见，但这也有助于稳定学习。但在需要即时学习和适应的环境中，$\text{on-policy}$ 算法可能更为适合，因为它们直接在当前策略下操作。
 
-## 实战：PPO 算法
+$\qquad$ 那么 $\text{PPO}$ 算法究竟是 $\text{on-policy}$ 还是 $\text{off-policy}$ 的呢？有读者可能会因为 $\text{PPO}$ 算法在更新时重要性采样的部分中利用了旧的 $\text{Actor}$ 采样的样本，就觉得 $\text{PPO}$ 算法会是 $\text{off-policy}$ 的。实际上虽然这批样本是从旧的策略中采样得到的，但我们并没有直接使用这些样本去更新我们的策略，而是使用重要性采样先将数据分布不同导致的误差进行了修正，即是两者样本分布之间的差异尽可能地缩小。换句话说，就可以理解为重要性采样之后的样本虽然是由旧策略采样得到的，但可以近似为从更新后的策略中得到的，即我们要优化的 $\text{Actor}$ 和采样的 $\text{Actor}$ 是同一个，因此 **$\text{PPO}$ 算法是 $\text{on-policy}$ 的**。
+
+## 12.4 实战：PPO 算法
+### 12.4.1 PPO 伪代码
+
+$\qquad$ 如图 $\text{12-1}$ 所示，与 $\text{off-policy}$ 算法不同，$\text{PPO}$ 算法每次会采样若干个时步的样本，然后利用这些样本更新策略，而不是存入经验回放中进行采样更新。
+
+<div align=center>
+<img width="500" src="../figs/ch12/ppo_pseu.png"/>
+</div>
+<div align=center>图 $\text{12-1}$ $\text{PPO}$ 算法伪代码</div>
+
+### 12.4.2 PPO 算法更新
+
+$\qquad$ 无论是连续动作空间还是离散动作空间，$\text{PPO}$ 算法的动作采样方式跟前面章节讲的 $\text{Actor-Critic}$ 算法是一样的，在本次实战中就不做展开，读者可在 $\text{JoyRL}$ 代码仓库上查看完整代码。我们主要看看更新策略的方式，如代码清单 $\text{12-1}$ 所示。
+
+<div style="text-align: center;">
+    <figcaption> 代码清单 $\text{12-1}$ $\text{PPO}$ 算法更新 </figcaption>
+</div>
+
+```Python
+def update(self):
+    # 采样样本
+    old_states, old_actions, old_log_probs, old_rewards, old_dones = self.memory.sample()
+    # 转换成tensor
+    old_states = torch.tensor(np.array(old_states), device=self.device, dtype=torch.float32)
+    old_actions = torch.tensor(np.array(old_actions), device=self.device, dtype=torch.float32)
+    old_log_probs = torch.tensor(old_log_probs, device=self.device, dtype=torch.float32)
+    # 计算回报
+    returns = []
+    discounted_sum = 0
+    for reward, done in zip(reversed(old_rewards), reversed(old_dones)):
+        if done:
+            discounted_sum = 0
+        discounted_sum = reward + (self.gamma * discounted_sum)
+        returns.insert(0, discounted_sum)
+    # 归一化
+    returns = torch.tensor(returns, device=self.device, dtype=torch.float32)
+    returns = (returns - returns.mean()) / (returns.std() + 1e-5) # 1e-5 to avoid division by zero
+    for _ in range(self.k_epochs): # 小批量随机下降
+        #  计算优势
+        values = self.critic(old_states) 
+        advantage = returns - values.detach()
+        probs = self.actor(old_states)
+        dist = Categorical(probs)
+        new_probs = dist.log_prob(old_actions)
+        # 计算重要性权重
+        ratio = torch.exp(new_probs - old_log_probs) #
+        surr1 = ratio * advantage
+        surr2 = torch.clamp(ratio, 1 - self.eps_clip, 1 + self.eps_clip) * advantage
+        # 注意dist.entropy().mean()的目的是最大化策略熵
+        actor_loss = -torch.min(surr1, surr2).mean() + self.entropy_coef * dist.entropy().mean()
+        critic_loss = (returns - values).pow(2).mean()
+        # 反向传播
+        self.actor_optimizer.zero_grad()
+        self.critic_optimizer.zero_grad()
+        actor_loss.backward()
+        critic_loss.backward()
+        self.actor_optimizer.step()
+        self.critic_optimizer.step()
+```
+
+$\qquad$ 注意在更新时由于每次采样的轨迹往往包含的样本数较多，我们通过利用小批量随机下降将样本随机切分成若干个部分，然后一个批量一个批量地更新网络参数。最后我们展示算法在 $\text{CartPole}$ 上的训练效果，如图 $\text{12-2}$ 所示。此外，在更新 $\text{Actor}$ 参数时，我们增加了一个最大化策略熵的正则项，这部分原理我们会在接下来的一章讲到。
+
+<div align=center>
+<img width="500" src="../figs/ch12/ppo_pseu.png"/>
+</div>
+<div align=center>图 $\text{12-2}$ $\text{CartPole}$ 环境 $\text{PPO}$ 算法训练曲线</div>
+
+$\qquad$ 可以看到，与 $\text{A2C}$ 算法相比，$\text{PPO}$ 算法的收敛是要更加快速且稳定的。

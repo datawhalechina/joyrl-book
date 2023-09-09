@@ -323,7 +323,7 @@
 
 \section{PPO-Clip算法}
 \begin{algorithm}[H] % [H]固定位置
-    \floatname{algorithm}{{PPO-Clip算法}\footnotemark[1]\footnotemark[2]} 
+    \floatname{algorithm}{{PPO-Clip算法}} 
 	\renewcommand{\thealgorithm}{} % 去掉算法标号
 	\caption{} 
 	\begin{algorithmic}[1] % [1]显示步数
@@ -332,12 +332,12 @@
 		\STATE 初始化epoch数$K$
 		\STATE 初始化经验回放$D$
 		\FOR {回合数 = $1,2,\cdots,M$}
-			\STATE 根据策略$\pi_{\theta}$采样$C$个时步数据,收集轨迹$\tau = {s_0,a_0,r_1,...,s_t,a_t,r_{t+1},\cdots}$到经验回放$D$中
+			\STATE 使用策略$\pi_{\theta}$采样$C$个时步数据,收集轨迹$\tau = {s_0,a_0,r_1,...,s_t,a_t,r_{t+1},\cdots}$到经验回放$D$中
 			\FOR {epoch数 $ k = 1,2,\cdots,K$}
 				\STATE 计算折扣奖励$\hat{R_t}$
 				\STATE 计算优势函数，即$A^{\pi_{\theta_{k}}}=V_{\phi_k}-\hat{R_t}$
 				\STATE 结合重要性采样计算Actor损失，如下：
-				\STATE $L^{CLIP}(\theta)= \frac{1}{|D_k|T}\sum_{\tau \in D_k}\sum_{t=0}^{T} min(\frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{k}}(a_t|s_t)} A^{\pi_{\theta_{k}}}(s_t,a_t), g(\epsilon,A^{\pi_{\theta_{k}}}(s_t,a_t)))$\footnotemark[3]
+				\STATE $L^{CLIP}(\theta)= \frac{1}{|D_k|T}\sum_{\tau \in D_k}\sum_{t=0}^{T} min(\frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{k}}(a_t|s_t)} A^{\pi_{\theta_{k}}}(s_t,a_t), g(\epsilon,A^{\pi_{\theta_{k}}}(s_t,a_t)))$
 				\STATE 梯度下降更新Actor参数：$\theta_{k+1} \leftarrow \theta_{k} + \alpha_{\theta} L^{CLIP}(\theta)$
 				\STATE 更新Critic参数:
 				\STATE $\phi_{k+1} \leftarrow \phi_{k}+ \alpha_{\phi}\frac{1}{|D_k|T}\sum_{\tau \in D_k}\sum_{t=0}^{T} (V_{\phi_{k}}(s_t)-\hat{R_t})^2$
@@ -345,9 +345,7 @@
 		\ENDFOR
 	\end{algorithmic}
 \end{algorithm}
-\footnotetext[1]{Proximal Policy Optimization Algorithms}
-\footnotetext[2]{https://spinningup.openai.com/en/latest/algorithms/ppo.html}
-\footnotetext[3]{$L^{CLIP}(\theta)=\hat{E_t}[min(r_t(\theta)\hat{A_t}, clip(r_t(\theta), 1-\epsilon, 1+\epsilon)\hat{A_t})]$}
+
 \clearpage
 
 \section{PPO-KL散度算法}
@@ -449,7 +447,7 @@
 \clearpage
 \section{SAC-S算法}
 \begin{algorithm}[H] % [H]固定位置
-    \floatname{algorithm}{{SAC-S算法}\footnotemark[1]} 
+    \floatname{algorithm}{{SAC-S算法}} 
 	\renewcommand{\thealgorithm}{} % 去掉算法标号
 	\caption{} 
 	\begin{algorithmic}[1] % [1]显示步数
@@ -473,7 +471,7 @@
 \clearpage
 \section{SAC算法}
 \begin{algorithm}[H] % [H]固定位置
-    \floatname{algorithm}{{SAC算法}\footnotemark[1]}  
+    \floatname{algorithm}{{SAC算法}}  
     \renewcommand{\thealgorithm}{} % 去掉算法标号
 	\caption{} 
 	\begin{algorithmic}[1]
@@ -488,19 +486,14 @@
 				\STATE 存储transition到经验回放中，$\mathcal{D} \leftarrow \mathcal{D} \cup\left\{\left(\mathbf{s}_{t}, \mathbf{a}_{t}, r\left(\mathbf{s}_{t}, \mathbf{a}_{t}\right), \mathbf{s}_{t+1}\right)\right\}$
 				\STATE 更新环境状态$s_{t+1} \leftarrow s_t$
 				\STATE {\bfseries 更新策略：}
-				\STATE 更新$Q$函数，$\theta_{i} \leftarrow \theta_{i}-\lambda_{Q} \hat{\nabla}_{\theta_{i}} J_{Q}\left(\theta_{i}\right)$ for $i \in\{1,2\}$\footnotemark[2]\footnotemark[3]
-				\STATE 更新策略权重，$\phi \leftarrow \phi-\lambda_{\pi} \hat{\nabla}_{\phi} J_{\pi}(\phi)$ \footnotemark[4]
-				\STATE 调整temperature，$\alpha \leftarrow \alpha-\lambda \hat{\nabla}_{\alpha} J(\alpha)$ \footnotemark[5]
+				\STATE 更新$Q$函数，$\theta_{i} \leftarrow \theta_{i}-\lambda_{Q} \hat{\nabla}_{\theta_{i}} J_{Q}\left(\theta_{i}\right)$ for $i \in\{1,2\}$
+				\STATE 更新策略权重，$\phi \leftarrow \phi-\lambda_{\pi} \hat{\nabla}_{\phi} J_{\pi}(\phi)$ 
+				\STATE 调整温度因子，$\alpha \leftarrow \alpha-\lambda \hat{\nabla}_{\alpha} J(\alpha)$ 
 				\STATE 更新目标网络权重，$\bar{\theta}_{i} \leftarrow \tau \theta_{i}+(1-\tau) \bar{\theta}_{i}$ for $i \in\{1,2\}$
 			\ENDFOR
 		\ENDFOR
 	\end{algorithmic}	
 \end{algorithm}
-\footnotetext[2]{Soft Actor-Critic Algorithms and Applications}
-\footnotetext[2]{$J_{Q}(\theta)=\mathbb{E}_{\left(\mathbf{s}_{t}, \mathbf{a}_{t}\right) \sim \mathcal{D}}\left[\frac{1}{2}\left(Q_{\theta}\left(\mathbf{s}_{t}, \mathbf{a}_{t}\right)-\left(r\left(\mathbf{s}_{t}, \mathbf{a}_{t}\right)+\gamma \mathbb{E}_{\mathbf{s}_{t+1} \sim p}\left[V_{\bar{\theta}}\left(\mathbf{s}_{t+1}\right)\right]\right)\right)^{2}\right]$}
-% \footnotetext[3]{$\hat{\nabla}_{\theta} J_{Q}(\theta)=\nabla_{\theta} Q_{\theta}\left(\mathbf{a}_{t}, \mathbf{s}_{t}\right)\left(Q_{\theta}\left(\mathbf{s}_{t}, \mathbf{a}_{t}\right)-\left(r\left(\mathbf{s}_{t}), \mathbf{a}_{t}\right)+\gamma\left(Q_{\bar{\theta}}\left(\mathbf{s}_{t+1}, \mathbf{a}_{t+1}\right)-\alpha \log \left(\pi_{\phi}\left(\mathbf{a}_{t+1} \mid \mathbf{s}_{t+1}\right)\right)\right)\right)\right.$}
-% \footnotetext[4]{$\hat{\nabla}_{\phi} J_{\pi}(\phi)=\nabla_{\phi} \alpha \log \left(\pi_{\phi}\left(\mathbf{a}_{t} \mid \mathbf{s}_{t}\right)\right)+\left(\nabla_{\mathbf{a}_{t}} \alpha \log \left(\pi_{\phi}\left(\mathbf{a}_{t} \mid \mathbf{s}_{t}\right)\right)-\nabla_{\mathbf{a}_{t}} Q\left(\mathbf{s}_{t}, \mathbf{a}_{t}\right)\right) \nabla_{\phi} f_{\phi}\left(\epsilon_{t} ; \mathbf{s}_{t}\right)$,$\mathbf{a}_{t}=f_{\phi}\left(\epsilon_{t} ; \mathbf{s}_{t}\right)$}
-% \footnotetext[5]{$J(\alpha)=\mathbb{E}_{\mathbf{a}_{t} \sim \pi_{t}}\left[-\alpha \log \pi_{t}\left(\mathbf{a}_{t} \mid \mathbf{s}_{t}\right)-\alpha \overline{\mathcal{H}}\right]$}
 \clearpage
 
 
@@ -529,7 +522,7 @@
 
 \section{MAPPO算法}
 \begin{algorithm}[H] % [H]固定位置
-    \floatname{algorithm}{{MAPPO算法}\footnotemark[1]\footnotemark[2]} 
+    \floatname{algorithm}{{MAPPO算法}} 
 	\renewcommand{\thealgorithm}{} % 去掉算法标号
 	\caption{} 
 	\begin{algorithmic}[1] % [1]显示步数
@@ -539,7 +532,7 @@
 		\STATE 初始化经验回放$D$
 		\FOR {回合数 = $1,2,\cdots,M$}
 			\STATE 初始化状态$s_1$
-			\STATE 每个智能体$u$都根据各自策略采样$C$个时步数据,收集轨迹$\tau^u = {\{o_t^u, a_t^u, r_{t+1}}\}_{t=1}^T$\footnotemark[3]
+			\STATE 每个智能体$u$都根据各自策略采样$C$个时步数据,收集轨迹$\tau^u = {\{o_t^u, a_t^u, r_{t+1}}\}_{t=1}^T$
 			\STATE 对每个时步的每条轨迹
 			\STATE 计算折扣奖励$\{\hat{R}_t^u\}_{t=1}^T$
 			\STATE 计算优势函数$\{A_t^u=V_{\phi_t}^u-\hat{R}_t^u\}_{t=1}^T$
@@ -550,7 +543,7 @@
 				\FOR {$j=0,1,\cdots,\frac{T}{B}-1$}
 					\STATE 选择$B$条数据$\{o_i^u, a_i^u, y_i^u, A_i^u\}_{i=1+Bj}^{B(j+1)}$
 					\STATE 计算梯度：
-					\STATE $\bigtriangleup\theta^u=\frac{1}{B}\sum_{i=1}^B\{\bigtriangledown_{\theta^u}f(r_i(\theta^u),A_i^u)\}$\footnotetext[4]
+					\STATE $\bigtriangleup\theta^u=\frac{1}{B}\sum_{i=1}^B\{\bigtriangledown_{\theta^u}f(r_i(\theta^u),A_i^u)\}$
 					
 					\STATE $\bigtriangleup\phi^u=\frac{1}{B}\sum_{i=1}^B\{\bigtriangledown_{\phi^u}(y_i^u-V_{\phi^u}(o_i^u))^2\}$
 					\STATE Adam梯度上升方法计算$\theta^u$，Adam梯度下降方法计算$\phi^u$
@@ -560,10 +553,6 @@
 		\ENDFOR
 	\end{algorithmic}
 \end{algorithm}
-\footnotetext[1]{Joint Optimization of Handover Control and Power Allocation Based on Multi-Agent Deep Reinforcement Learning}
-\footnotetext[2]{The Surprising Effectiveness of PPO in Cooperative Multi-Agent Games}
-\footnotetext[3]{$o_t^u$是智能体$u$在时刻$t$的观测值，是局部观测值，而$s_t$是全局状态}
-\footnotetext[4]{函数f是目标函数，不同的方法如Clip或者KL散度等目标函数不同}
 \clearpage
 
 \end{document}

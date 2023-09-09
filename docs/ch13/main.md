@@ -1,8 +1,8 @@
-# SAC 算法
+# 第 13 章 SAC 算法
 
-$\qquad$ 本章开始介绍最后一种经典的策略梯度算法，即 $\text{Soft Actor-Critic}$ 算法，简写为 $\text{SAC}$ 。$\text{SAC}$ 算法是一种基于最大熵强化学习的策略梯度算法，它的目标是最大化策略的熵，从而使得策略更加鲁棒。$\text{SAC}$ 算法的核心思想是，通过最大化策略的熵，使得策略更加鲁棒，经过超参改良后的 $\text{SAC}$ 算法在稳定性方面是可以与 $\text{PPO}$ 算法华山论剑的。注意，由于 $\text{SAC}$ 算法理论相对之前的算法要复杂一些，因此推导过程要多很多，但是最后的结果还是相对简洁的，因此读者可以根据自己的需求选择性阅读，只需要关注伪代码中变量的涵义以及结果公式即可。
+$\qquad$ 本章开始介绍最后一种经典的策略梯度算法，即 $\text{Soft Actor-Critic}$ 算法，简写为 $\text{SAC}$ 。相比于前两个算法，$\text{SAC}$ 算法要更为复杂，因此本章涉及的公式推导也要多很多，但是最后的结果还是相对简洁的。因此读者可以根据自己的需求选择性阅读，只需要关注伪代码中变量的涵义以及结果公式即可。$\text{SAC}$ 算法是一种基于最大熵强化学习的策略梯度算法，它的目标是最大化策略的熵，从而使得策略更加鲁棒。$\text{SAC}$ 算法的核心思想是，通过最大化策略的熵，使得策略更加鲁棒，经过超参改良后的 $\text{SAC}$ 算法在稳定性方面是可以与 $\text{PPO}$ 算法华山论剑的。注意，由于 $\text{SAC}$ 算法理论相对之前的算法要复杂一些，因此推导过程
 
-## 最大熵强化学习
+## 13.1 最大熵强化学习
 
 $\qquad$ 由于 $\text{SAC}$ 算法相比于之前的策略梯度算法独具一路，它走的是最大熵强化学习的路子。为了让读者更好地搞懂什么是 $\text{SAC}$ ，我们先介绍一下最大熵强化学习，然后从基于价值的 $\text{Soft Q-Learning}$ 算法开始讲起。我们先回忆一下确定性策略和随机性策略，确定性策略是指在给定相同状态下，总是选择相同的动作，随机性策略则是在给定状态下可以选择多种可能的动作，不知道读者们有没有想过这两种策略在实践中有什么优劣呢？或者说哪种更好呢？这里我们先架空实际的应用场景，只总结这两种策略本身的优劣，首先看确定性策略：
 
@@ -43,7 +43,7 @@ $$
 
 $\qquad$ 它表示了随机策略 $\pi\left(\cdot \mid \mathbf{s}_t\right)$ 对应概率分布的随机程度，策略越随机，熵越大。后面我们可以发现，虽然理论推导起来比较复杂，但实际实践起来是比较简单的。
 
-## Soft Q-Learning
+## 13.2 Soft Q-Learning
 
 $\qquad$ 前面小节中我们引入了带有熵的累积奖励期望，接下来我们需要基于这个重新定义的奖励来重新推导一下相关的量。后面我们会发现虽然推导起来比较复杂，但用代码实现起来是比较简单的，因为几乎跟传统的 $\text{Q-Learning}$ 算法没有多大区别。因此着重于实际应用的同学可以直接跳过本小节的推导部分，直接看后面的算法实战部分。
 
@@ -152,7 +152,7 @@ $$
 \end{aligned}
 $$
 
-## SAC
+## 13.3 SAC
 
 $\qquad$ 实际上 $\text{SAC}$ 算法有两个版本，第一个版本是由 $\text{Tuomas Haarnoja}$ 于 $\text{2018}$ 年提出来的<sup>①</sup>，，第二个版本也是由 $\text{Tuomas Haarnoja}$ 于 $\text{2019}$ 年提出来的<sup>②</sup>，一般称作 $\text{SAC v2}$。第二个版本主要在前一版本的基础上做了简化，并且实现了温度因子的自动调节，从而使得算法更加简单稳定。
 
@@ -205,7 +205,7 @@ $$
 \end{aligned}
 $$
 
-## 自动调节温度因子
+## 13.4 自动调节温度因子
 
 $\qquad$ 本小节主要讲解如何推导出自动调节因子的版本，整体推导的思路其实很简单，就是转换成规划问题，然后用动态规划、拉格朗日乘子法等方法简化求解，只关注结果的读者可以直接跳到本小节最后一个关于温度调节因子 $\alpha$ 的梯度下降公式即可。
 
@@ -361,4 +361,122 @@ $$
 
 $\qquad$ 这样一来就能实现温度因子的自动调节了。这一版本由于引入了温度因子的自动调节，因此不需要额外的 $V$ 值网络，直接使用两个 $Q$ 网络（包含目标网络和当前网络）来作为 $\text{Critic}$ 估计价值即可。
 
-## 实战：SAC 算法
+## 13.5 实战：SAC 算法
+
+$\qquad$ 在实战中，我们主要讲解 $SAC$ 算法的第二个版本，即自动调节温度因子的版本。该版本的如图 $\text{13-1}$ 所示，整个训练过程相对来说还是比较简洁的，只是需要额外定义一些网络，比如用来调节温度因子等。
+
+<div align=center>
+<img width="500" src="../figs/ch13/sac_pseu.png"/>
+</div>
+<div align=center>图 $\text{13-1}$ $\text{SAC}$ 算法伪代码</div>
+
+### 15.5.1 定义模型
+
+$\qquad$ 首先我们定义 $\text{Actor}$ 和 $\text{Critic}$，即值网络和策略网络，跟 $\text{A2C}$ 算法其实是一样的，如代码清单 $\text{13-1}$ 所示。
+
+<div style="text-align: center;">
+    <figcaption> 代码清单 $\text{13-1}$ $\text{Actor}$ 和 $\text{Critic}$ 网络 </figcaption>
+</div>
+
+```Python
+class ValueNet(nn.Module):
+    def __init__(self, state_dim, hidden_dim, init_w=3e-3):
+        super(ValueNet, self).__init__()
+        '''定义值网络
+        '''
+        self.linear1 = nn.Linear(state_dim, hidden_dim) # 输入层
+        self.linear2 = nn.Linear(hidden_dim, hidden_dim) # 隐藏层
+        self.linear3 = nn.Linear(hidden_dim, 1)
+
+        self.linear3.weight.data.uniform_(-init_w, init_w) # 初始化权重
+        self.linear3.bias.data.uniform_(-init_w, init_w)
+        
+    def forward(self, state):
+        x = F.relu(self.linear1(state))
+        x = F.relu(self.linear2(x))
+        x = self.linear3(x)
+        return x
+class PolicyNet(nn.Module):
+    def __init__(self, state_dim, action_dim, hidden_dim, init_w=3e-3, log_std_min=-20, log_std_max=2):
+        super(PolicyNet, self).__init__()
+        self.log_std_min = log_std_min
+        self.log_std_max = log_std_max
+        
+        self.linear1 = nn.Linear(state_dim, hidden_dim)
+        self.linear2 = nn.Linear(hidden_dim, hidden_dim)
+        
+        # 初始化权重
+        self.mean_linear = nn.Linear(hidden_dim, action_dim)
+        self.mean_linear.weight.data.uniform_(-init_w, init_w)
+        self.mean_linear.bias.data.uniform_(-init_w, init_w)
+        
+        self.log_std_linear = nn.Linear(hidden_dim, action_dim)
+        self.log_std_linear.weight.data.uniform_(-init_w, init_w)
+        self.log_std_linear.bias.data.uniform_(-init_w, init_w)
+        
+    def forward(self, state):
+        x = F.relu(self.linear1(state))
+        x = F.relu(self.linear2(x))
+        
+        mean    = self.mean_linear(x)
+        log_std = self.log_std_linear(x)
+        log_std = torch.clamp(log_std, self.log_std_min, self.log_std_max)
+        
+        return mean, log_std
+    
+    def evaluate(self, state, epsilon=1e-6):
+        mean, log_std = self.forward(state)
+        std = log_std.exp()
+        # 计算动作
+        normal = Normal(mean, std)
+        z = normal.sample()
+        action = torch.tanh(z)
+        # 计算动作概率
+        log_prob = normal.log_prob(z) - torch.log(1 - action.pow(2) + epsilon)
+        log_prob = log_prob.sum(-1, keepdim=True)
+        
+        return action, log_prob, z, mean, log_std
+        
+    def get_action(self, state):
+        state = torch.FloatTensor(state).unsqueeze(0)
+        mean, log_std = self.forward(state)
+        std = log_std.exp()
+        
+        normal = Normal(mean, std)
+        z      = normal.sample()
+        action = torch.tanh(z)
+        
+        action  = action.detach().cpu().numpy()
+        return action[0]
+```
+
+$\qquad$ 然后再额外定义一个 $\text{Soft Q}$ 网络，如代码清单 $\text{13-2}$ 所示。
+
+<div style="text-align: center;">
+    <figcaption> 代码清单 $\text{13-2}$ $\text{Soft Q}$ 网络 </figcaption>
+</div>
+
+```Python
+class SoftQNet(nn.Module):
+    def __init__(self, state_dim, action_dim, hidden_dim, init_w=3e-3):
+        super(SoftQNet, self).__init__()
+        '''定义Q网络，state_dim, action_dim, hidden_dim, init_w分别为状态维度、动作维度隐藏层维度和初始化权重
+        '''
+        self.linear1 = nn.Linear(state_dim + action_dim, hidden_dim)
+        self.linear2 = nn.Linear(hidden_dim, hidden_dim)
+        self.linear3 = nn.Linear(hidden_dim, 1)
+        
+        self.linear3.weight.data.uniform_(-init_w, init_w)
+        self.linear3.bias.data.uniform_(-init_w, init_w)
+        
+    def forward(self, state, action):
+        x = torch.cat([state, action], 1)
+        x = F.relu(self.linear1(x))
+        x = F.relu(self.linear2(x))
+        x = self.linear3(x)
+        return x
+```
+
+### 15.5.2 算法更新
+
+$\qquad$ 我们再看看 
