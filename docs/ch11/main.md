@@ -338,3 +338,14 @@ $\qquad$ 同样我们展示一下训练效果，在合适的参数设置下它�
 <img width="500" src="../figs/ch11/TD3_Pendulum_training_curve.png"/>
 </div>
 <div align=center>图 $\text{11-5}$ $\text{Pendulum}$ 环境 $\text{TD3}$ 算法训练曲线</div>
+
+## 11.7 本章小结
+
+$\qquad$ 本章主要介绍了强化学习中较为常用的一类算法，即 $\text{DDPG}$ 和 $\text{TD3}$ 算法，它们虽然在结构上被归类于 $\text{Actor-Critic}$ 算法，但从原理上来说跟 $\text{DQN}$ 算法更为接近，可以说是连续动作空间版本的 $\text{DQN}$ 算法，且只适用于连续动作空间。可以说，在需要确定性策略且连续动作空间的前提下，这类算法将是比较稳定的基线算法，读者需要熟练掌握。
+
+## 11.8 练习题
+
+1. $\text{DDPG}$ 算法是 $\text{off-policy}$ 算法吗？为什么？
+2. 软更新相比于硬更新的好处是什么？为什么不是所有的算法都用软更新？
+3. 相比于$\text{DDPG}$ 算法，$\text{TD3}$ 算法做了哪些改进？请简要归纳。
+4. $\text{TD3}$ 算法中 $\text{Critic}$ 的更新频率一般要比 $\text{Actor}$ 是更快还是更慢？为什么？
