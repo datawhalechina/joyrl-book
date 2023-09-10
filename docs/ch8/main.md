@@ -4,7 +4,9 @@ $\qquad$ 本章将介绍一些基于 $\text{DQN}$ 改进的一些算法。这些
 
 ## 8.1 Double DQN 算法
 
-$\qquad$ $\text{Double DQN}$ 算法<sup>①</sup>是谷歌 $\text{DeepMind}$ 于 $\text{2015}$ 年 $\text{12}$ 月提出的一篇论文，主要贡献是通过引入两个网络用于解决 $Q$ 值过估计（ $\text{overestimate}$ ）的问题。顺便说一句，这里两个网络其实跟前面 $\text{DQN}$ 算法讲的目标网络是类似的，读者可能会产生混淆。实际上它们之间的关系是这样的，我们知道 $\text{DQN}$ 分别于 $\text{2013}$ 和 $\text{2015}$ 年提出了两个版本，后者就是目前较为成熟的 $\text{Nature DQN}$ 版本，前者就是单纯在 $\text{Q-learning}$ 算法基础上引入了深度网络而没有额外的技巧。而在中间的过程中 $\text{Double DQN}$ 算法被提出，因此 $\text{Nature DQN}$ 在发表的时候也借鉴了 $\text{Double DQN}$ 的思想，所以才会有目标网络的概念。尽管如此， $\text{Double DQN}$ 算法仍然有其独特的地方，因此我们还是将其单独拿出来讲。
+$\qquad$ $\text{Double DQN}$ 算法<sup>①</sup>是谷歌 $\text{DeepMind}$ 于 $\text{2015}$ 年 $\text{12}$ 月提出的一篇论文，主要贡献是通过引入两个网络用于解决 $Q$ 值过估计（ $\text{overestimate}$ ）的问题。顺便说一句，这里两个网络其实跟前面 $\text{DQN}$ 算法讲的目标网络是类似的，读者可能会产生混淆。
+
+$\qquad$ 实际上它们之间的关系是这样的，我们知道 $\text{DQN}$ 分别于 $\text{2013}$ 和 $\text{2015}$ 年提出了两个版本，后者就是目前较为成熟的 $\text{Nature DQN}$ 版本，前者就是单纯在 $\text{Q-learning}$ 算法基础上引入了深度网络而没有额外的技巧。而在中间的过程中 $\text{Double DQN}$ 算法被提出，因此 $\text{Nature DQN}$ 在发表的时候也借鉴了 $\text{Double DQN}$ 的思想，所以才会有目标网络的概念。尽管如此， $\text{Double DQN}$ 算法仍然有其独特的地方，因此我们还是将其单独拿出来讲。
 
 > ① Hasselt H V , Guez A , Silver D .Deep Reinforcement Learning with Double Q-learning[J].Computer ence, 2015.DOI:10.48550/arXiv.1509.06461.
 
@@ -91,7 +93,7 @@ $\qquad$ $\text{Noisy DQN}$ 算法<sup>③</sup> 也是通过优化网络结构�
 
 > ③ Fortunato M , Azar M G , Piot B ,et al.Noisy Networks for Exploration[J].  2017.DOI:10.48550/arXiv.1706.10295.
 
-$\qquad$ 从 $\text{Q-learning}$ 算法开始，我们就讲到了探索-利用平衡的问题，常见的 $\varepsilon-greedy$ 策略是从智能体与环境的交互过程改善探索能力，以避免陷入局部最优解。而在深度强化学习中，由于引入了深度学习，深度学习本身也会因为网络模型限制或者梯度下降方法陷入局部最优解问题。也就是说，深度强化学习既要考虑与环境交互过程中的探索能力，也要考虑深度模型本身的探索能力，从而尽量避免陷入局部最优解的困境之中，这也是为什么经常有人会说强化学习比深度学习更难“炼丹”的原因之一。
+$\qquad$ 从 $\text{Q-learning}$ 算法开始，我们就讲到了探索-利用平衡的问题，常见的 $\varepsilon-\text{greedy}$ 策略是从智能体与环境的交互过程改善探索能力，以避免陷入局部最优解。而在深度强化学习中，由于引入了深度学习，深度学习本身也会因为网络模型限制或者梯度下降方法陷入局部最优解问题。也就是说，深度强化学习既要考虑与环境交互过程中的探索能力，也要考虑深度模型本身的探索能力，从而尽量避免陷入局部最优解的困境之中，这也是为什么经常有人会说强化学习比深度学习更难“炼丹”的原因之一。
 
 $\qquad$ 回归正题，$\text{Noisy DQN}$ 算法其实是在 $\text{DQN}$ 算法基础上在神经网络中引入了噪声层来提高网络性能的，即将随机性应用到神经网络中的参数或者说权重，增加了 $Q$ 网络对于状态和动作空间的探索能力，从而提高收敛速度和稳定性。在实践上也比较简单，就是通过添加随机性参数到神经网络的线性层，对应的 $Q$ 值则可以表示为 $Q_{\theta+\epsilon}$，注意不要把这里的 $\text{epsilon}$ 跟 $\varepsilon-greedy$ 策略中的 $\varepsilon$ 混淆了。虽然都叫做 $\epsilon$ ，但这里 $\epsilon$ 是由高斯分布生成的总体分类噪声参数。
 
@@ -573,3 +575,12 @@ $\qquad$ 最后，我们可以将优先级经验回放和 $\text{DQN}$ 结合起
 <img width="400" src="../figs/ch8/PERDQN_CartPole-v1_training_curve.png"/>
 </div>
 <div align=center>图 $\text{8-8}$ $\text{CartPole}$ 环境 $\text{PER DQN}$ 算法训练曲线</div>
+
+## 本章小结
+
+$\qquad$ 本章主要讲解了 $\text{DQN}$ 的一些改进算法，主要解决 $Q$ 值过估计、探索策略差等问题，其中有些技巧是比较通用的，例如 $\text{Noisy DQN}$ 算法中再神经网络引入噪声来提高探索策略。读者在学习的过程中，一定要注意技巧本身的使用方式与泛用性，而不是作为单独的算法来看待。
+
+## 练习题
+
+1. $\text{DQN}$ 算法为什么会产生 $Q$ 值的过估计问题？
+2. 同样是提高探索，$\text{Noisy DQN}$ 和  $\varepsilon-\text{greedy}$ 策略 有什么区别？

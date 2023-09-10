@@ -31,7 +31,7 @@ tag{10.1}
 \end{aligned}
 $$
 
-$\qquad$ 在 $\text{Actor-Critic}$ 算法中，我们使用蒙特卡洛估计来表示当前状态-动作对 $(s_t,a_t)$ 的价值。而这里其实可以类比于 $Q$ 函数，用 $Q^\pi(s_t, a_t)$ 来估计当前的价值，注意这里的输入是状态和动作，而不单单是状态，输出的是单个值，也可以用 $Q_{\phi}(s_t, a_t)$ 表示，其中 $\phi$ 表示 $\text{Critic}$ 网络的参数。这样我们就可以将目标函数写成如式 $\text(10.2)$ 所示的形式。
+$\qquad$ 在 $\text{REINFORCE}$ 算法中，我们使用蒙特卡洛估计来表示当前状态-动作对 $(s_t,a_t)$ 的价值。而这里其实可以类比于 $Q$ 函数，用 $Q^\pi(s_t, a_t)$ 来估计当前的价值，注意这里的输入是状态和动作，而不单单是状态，输出的是单个值，也可以用 $Q_{\phi}(s_t, a_t)$ 表示，其中 $\phi$ 表示 $\text{Critic}$ 网络的参数。这样我们就可以将目标函数写成如式 $\text(10.2)$ 所示的形式。
 
 $$
 tag{10.2}
@@ -211,7 +211,7 @@ $\qquad$ 注意这里直接利用了 `PyTorch` 中的 `Categorical` 分布函数
 
 ### 10.5.3 策略更新
 
-我们首先需要计算出优势函数，一般先计算出回报，然后减去网络输出的值即可，如代码清单 $\text{10-4}$ 所示。
+$\qquad$ 我们首先需要计算出优势函数，一般先计算出回报，然后减去网络输出的值即可，如代码清单 $\text{10-4}$ 所示。
 
 <div style="text-align: center;">
     <figcaption> 代码清单 $\text{10-4}$ 计算优势函数 </figcaption>
@@ -266,10 +266,19 @@ class Agent:
         return actor_loss, critic_loss
 ```
 
-到这里，我们就实现了 $\text{A2C}$ 算法的所有核心代码，完整代码请读者参考本书的代码仓库。最后展示一下训练的效果，如图 $\text{10-3}$ 所示。
+$\qquad$ 到这里，我们就实现了 $\text{A2C}$ 算法的所有核心代码，完整代码请读者参考本书的代码仓库。最后展示一下训练的效果，如图 $\text{10-3}$ 所示。
 
 
 <div align=center>
 <img width="400" src="../figs/ch10/a2c_CartPole_training.png"/>
 </div>
 <div align=center>图 $\text{10-3}$ $\text{CartPole}$ 环境 $\text{A2C}$ 算法训练曲线</div>
+
+## 10.5 本章小结
+
+$\qquad$ 本章主要介绍了 $\text{A2C}$ 与 $\text{A3C}$ 算法，相比于前一章讲的 $\text{REINFORCE}$ 算法，主要优化了 $\text{Critic}$ 部分的估计，提高了算法的收敛速度。并且通过引入异步训练的方式来进一步提高这类算法的收敛速度，实践中我们会用 $\text{multiprocessing}$ 等多进程模块来实现。
+
+## 10.6 练习题
+
+1. 相比于 $\text{REINFORCE}$ 算法， $\text{A2C}$ 主要的改进点在哪里，为什么能提高速度？
+2. $\text{A2C}$ 算法是 $\text{on-policy}$ 的吗？为什么？
