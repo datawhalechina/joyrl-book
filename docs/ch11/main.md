@@ -27,7 +27,7 @@ $\qquad$ 所以，$\text{DDPG}$ 算法并没有做真正意义上的梯度更新
 </div>
 <div align=center>图 $\text{11-2}$ $\text{DDPG}$ 网络结构</div>
 
-$\qquad$ 这里相当于是把 $\text{DQN}$ 算法中 $\varepsilon-text{greedy}$ 策略函数部分换成了 $\text{Actor}$ 。注意 $\text{Actor}$ 网络 $\mu_\theta (s)$ 与输出概率分布的随机性策略（ $\text{stochastic policy}$ ）不同，输出的是一个值，因此也叫做确定性策略（ $\text{deterministic policy}$ ）。效仿策略梯度的推导，我们也可以推导出 $\text{DPG}$ 算法的目标函数，如式 $\text{(11.1)}$ 所示。
+$\qquad$ 这里相当于是把 $\text{DQN}$ 算法中 $\varepsilon-\text{greedy}$ 策略函数部分换成了 $\text{Actor}$ 。注意 $\text{Actor}$ 网络 $\mu_\theta (s)$ 与输出概率分布的随机性策略（ $\text{stochastic policy}$ ）不同，输出的是一个值，因此也叫做确定性策略（ $\text{deterministic policy}$ ）。效仿策略梯度的推导，我们也可以推导出 $\text{DPG}$ 算法的目标函数，如式 $\text{(11.1)}$ 所示。
 
 $$
 \tag{11.1}
