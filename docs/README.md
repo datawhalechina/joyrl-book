@@ -39,7 +39,7 @@
 | [第十三章 SAC算法](https://johnjim0816.com/joyrl-book/#/ch13/main) | 最大熵强化学习、Soft Q、SAC |
 | [练习题解答](https://johnjim0816.com/joyrl-book/#/appendix/main) |  |
 
-## 贡献者
+## 主要贡献者
 
 <table border="0">
   <tbody>
@@ -47,7 +47,7 @@
         <td>
          <a href="https://github.com/JohnJim0816"><img width="70" height="70" src="https://github.com/JohnJim0816.png?s=40" alt="pic"></a><br>
          <a href="https://github.com/JohnJim0816">John Jim</a>
-         <p>教程设计与算法实战<br> 北京大学硕士</p>
+         <p>教程设计与算法实战<br> 北京大学硕士<br> 网易伏羲算法工程师 </p>
         </td>
         <td>
             <a href="https://github.com/qiwang067"><img width="70" height="70" src="https://github.com/qiwang067.png?s=40" alt="pic"></a><br>
@@ -62,6 +62,10 @@
     </tr>
   </tbody>
 </table>
+
+## 特别感谢
+
+* 协助编辑与校对。[@AzulaFire](https://github.com/limafang)
 
 ## 关注我们
 
