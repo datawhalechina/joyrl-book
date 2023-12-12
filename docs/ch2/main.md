@@ -185,7 +185,13 @@ $\qquad$ 打开[Anaconda 官网](https://www.anaconda.com/)下载对应的安装
 <img width="600" src="../figs/ch2/anaconda_install.png"/>
 </div>
 
-$\qquad$ 由于 $\text{Windows}$ 系统终端较多，在使用时需要在对应的终端初始化 $\text{Anaconda}$ 环境（类似于配置环境变量），首先以管理员身份打开 $\text{Anaconda Prompt}$，然后执行以下命令分别初始化对应终端环境。
+$\qquad$ 由于 $\text{Windows}$ 系统终端较多，在使用时需要在对应的终端初始化 $\text{Anaconda}$ 环境（类似于配置环境变量），首先以管理员身份打开 $\text{Anaconda Prompt}$，如图 $\text{2-4}$ 所示。
+
+<div align=center>
+<img width="600" src="../figs/ch2/anaconda_prompt.png"/>
+</div>
+
+然后执行以下命令分别初始化对应终端环境。
 
 ```shell
 # 初始化 cmd 终端
@@ -196,7 +202,7 @@ conda init powershell
 
 #### 2.5.1.2 Mac 系统
 
-$\qquad$ $\text{Mac}$ 系统安装较为简单，下载好对应的安装包之后，按照提示安装即可，注意勾选仅为当前用户安装，如图 $\text{2-4}$ 所示。
+$\qquad$ $\text{Mac}$ 系统安装较为简单，下载好对应的安装包之后，按照提示安装即可，注意勾选仅为当前用户安装，如图 $\text{2-5}$ 所示。
 
 <div align=center>
 <img width="600" src="../figs/ch2/anaconda_install_mac.png"/>
@@ -208,49 +214,49 @@ $\qquad$ $\text{Mac}$ 系统安装较为简单，下载好对应的安装包之�
 
 $\qquad$ 不同系统下 $\text{VS Code}$ 的安装是类似的，因此这里仅介绍 $\text{Windows}$ 系统下的安装过程，其他系统读者可参考类推。
 
-$\qquad$ 首先打开[VS Code 官网](https://code.visualstudio.com/)下载对应的安装包，注意 $\text{Windows}$ 要选择 $\text{System installer}$，如图 $\text{2-5}$ 所示。
+$\qquad$ 首先打开[VS Code 官网](https://code.visualstudio.com/)下载对应的安装包，注意 $\text{Windows}$ 要选择 $\text{System installer}$，如图 $\text{2-6}$ 所示。
 
 <div align=center>
 <img width="600" src="../figs/ch2/vscode_install.png"/>
 </div>
 
-$\qquad$ 安装时勾选添加到 $\text{Windows}$ 资源管理器的右键菜单，如图 $\text{2-6}$ 所示。
+$\qquad$ 安装时勾选添加到 $\text{Windows}$ 资源管理器的右键菜单，如图 $\text{2-7}$ 所示。
 
 <div align=center>
 <img width="600" src="../figs/ch2/vscode_install_2.png"/>
 </div>
 
-$\qquad$ 安装完成后，打开 $\text{VS Code}$，点击左侧的扩展按钮，即插件市场，搜索 $\text{Python}$ 并安装，如图 $\text{2-7}$ 所示。
+$\qquad$ 安装完成后，打开 $\text{VS Code}$，点击左侧的扩展按钮，即插件市场，搜索 $\text{Python}$ 并安装，如图 $\text{2-8}$ 所示。
 
 <div align=center>
 <img width="500" src="../figs/ch2/vscode_python.jpg"/>
 </div>
-<div align=center>图 $\text{2-7}$ $\text{VS Code}$ $\text{Python}$ 插件安装</div>
+<div align=center>图 $\text{2-8}$ $\text{VS Code}$ $\text{Python}$ 插件安装</div>
 
 ### 2.5.3 基本使用方法
 
 $\qquad$ 上述过程安装配置完成后，就可以简单使用 $\text{VS Code}$ 编写 $\text{Python}$ 代码了，现在我们来简单介绍一下基本的使用方法。
 
-$\qquad$ 简单创建并打开一个 $\text{Python}$ 文件，在 $\text{VS Code}$ 下方就会显示当前 $\text{Python}$ 解释器的版本，如图 $\text{2-8}$ 所示。
+$\qquad$ 简单创建并打开一个 $\text{Python}$ 文件，在 $\text{VS Code}$ 下方就会显示当前 $\text{Python}$ 解释器的版本，如图 $\text{2-9}$ 所示。
 
 <div align=center>
 <img width="600" src="../figs/ch2/vscode_python_2.png"/>
 </div>
 <div align=center>图 $\text{2-8}$ $\text{VS Code}$ 显示 $\text{Python}$ 解释器版本</div>
 
-然后单击就能选择其他版本的解释器，如图 $\text{2-9}$ 所示。
+然后单击就能选择其他版本的解释器，如图 $\text{2-10}$ 所示。
 
 <div align=center>
 <img width="600" src="../figs/ch2/vscode_python_3.png"/>
 </div>
 <div align=center>图 $\text{2-9}$ $\text{VS Code}$ 选择 $\text{Python}$ 解释器版本</div>
 
-选择好解释器版本后，重新打开一个终端，就能看到当前的解释器版本了，如图 $\text{2-10}$ 所示。
+选择好解释器版本后，重新打开一个终端，就能看到当前的解释器版本了，如图 $\text{2-11}$ 所示。
 
 <div align=center>
 <img width="600" src="../figs/ch2/vscode_python_4.png"/>
 </div>
-<div align=center>图 $\text{2-10}$ $\text{VS Code}$ 终端显示 $\text{Python}$ 解释器版本</div>
+<div align=center>图 $\text{2-11}$ $\text{VS Code}$ 终端显示 $\text{Python}$ 解释器版本</div>
 
 ## 2.6 本章小结
 
