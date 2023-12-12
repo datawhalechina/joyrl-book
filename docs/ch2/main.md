@@ -168,12 +168,96 @@ $\qquad$ 此外，在马尔可夫链（马尔可夫过程）的基础上增加�
 
 $\qquad$ 到这里我们就可以把马尔可夫决策过程描述成一个今天常用的写法，即用一个五元组 $<S,A,R,P,\gamma>$ 来表示。其中 $S$ 表示状态空间，即所有状态的集合，$A$ 表示动作空间，$R$ 表示奖励函数，$P$ 表示状态转移矩阵，$\gamma$ 表示折扣因子。想必读者此时已经明白这简简单单的五个字母符号，背后蕴涵了丰富的内容。
 
-## 2.5 本章小结
+
+## 2.5 实战：搭建 Python 编程环境
+
+$\qquad$ 本书的代码实现主要基于 $\text{Python}$ 语言，因此读者需要先搭建好相关编程环境。编程环境主要包括语言包和代码编辑器，其中语言包是指 $\text{Python}$ 语言的安装包，代码编辑器是指用来编写代码的软件，比如 $\text{PyCharm}$、$\text{Jupyter Notebook}$、$\text{Sublime Text}$ 等等。
+
+$\qquad$ 这里我们推荐使用 $\text{Anaconda}$ 来安装 $\text{Python}$ 语言包，$\text{VS Code}$ 来编写代码。其中 $\text{Anaconda}$ 不仅可以用来管理 $\text{Python}$ 语言包，还可以用来管理 $\text{Python}$ 的虚拟环境，这样可以避免不同项目之间的依赖冲突，同类的环境管理器还有 $\text{pipenv}$ 等等，但都没有 $\text{Anaconda}$ 功能更加强大。$\text{VS Code}$ 是微软开发的一款轻量级代码编辑器，它不仅支持 $\text{Python}$ 语言，还支持 $\text{C++}$、$\text{Java}$、$\text{JavaScript}$ 等等，而且还可以安装各种插件，比如 $\text{Jupyter Notebook}$ 插件，这样就可以在 $\text{VS Code}$ 中直接运行 $\text{Jupyter Notebook}$ 代码了，非常方便。
+
+### 2.5.1 Anaconda 安装
+
+#### 2.5.1.1 Windows 系统
+
+$\qquad$ 打开[Anaconda 官网](https://www.anaconda.com/)下载对应的安装包，下载完成后双击安装包，按照提示一步步安装即可。注意安装时勾选为所有用户安装，如图 $\text{2-3}$ 所示。
+
+<div align=center>
+<img width="600" src="../figs/ch2/anaconda_install.png"/>
+</div>
+
+$\qquad$ 由于 $\text{Windows}$ 系统终端较多，在使用时需要在对应的终端初始化 $\text{Anaconda}$ 环境（类似于配置环境变量），首先以管理员身份打开 $\text{Anaconda Prompt}$，然后执行以下命令分别初始化对应终端环境。
+
+```shell
+# 初始化 cmd 终端
+conda init cmd.exe
+# 初始化 PowerShell 终端
+conda init powershell
+```
+
+#### 2.5.1.2 Mac 系统
+
+$\qquad$ $\text{Mac}$ 系统安装较为简单，下载好对应的安装包之后，按照提示安装即可，注意勾选仅为当前用户安装，如图 $\text{2-4}$ 所示。
+
+<div align=center>
+<img width="600" src="../figs/ch2/anaconda_install_mac.png"/>
+</div>
+
+#### 2.5.1.3 Linux 系统
+
+### 2.5.2 VS Code 安装
+
+$\qquad$ 不同系统下 $\text{VS Code}$ 的安装是类似的，因此这里仅介绍 $\text{Windows}$ 系统下的安装过程，其他系统读者可参考类推。
+
+$\qquad$ 首先打开[VS Code 官网](https://code.visualstudio.com/)下载对应的安装包，注意 $\text{Windows}$ 要选择 $\text{System installer}$，如图 $\text{2-5}$ 所示。
+
+<div align=center>
+<img width="600" src="../figs/ch2/vscode_install.png"/>
+</div>
+
+$\qquad$ 安装时勾选添加到 $\text{Windows}$ 资源管理器的右键菜单，如图 $\text{2-6}$ 所示。
+
+<div align=center>
+<img width="600" src="../figs/ch2/vscode_install_2.png"/>
+</div>
+
+$\qquad$ 安装完成后，打开 $\text{VS Code}$，点击左侧的扩展按钮，即插件市场，搜索 $\text{Python}$ 并安装，如图 $\text{2-7}$ 所示。
+
+<div align=center>
+<img width="500" src="../figs/ch2/vscode_python.jpg"/>
+</div>
+<div align=center>图 $\text{2-7}$ $\text{VS Code}$ $\text{Python}$ 插件安装</div>
+
+### 2.5.3 基本使用方法
+
+$\qquad$ 上述过程安装配置完成后，就可以简单使用 $\text{VS Code}$ 编写 $\text{Python}$ 代码了，现在我们来简单介绍一下基本的使用方法。
+
+$\qquad$ 简单创建并打开一个 $\text{Python}$ 文件，在 $\text{VS Code}$ 下方就会显示当前 $\text{Python}$ 解释器的版本，如图 $\text{2-8}$ 所示。
+
+<div align=center>
+<img width="600" src="../figs/ch2/vscode_python_2.png"/>
+</div>
+<div align=center>图 $\text{2-8}$ $\text{VS Code}$ 显示 $\text{Python}$ 解释器版本</div>
+
+然后单击就能选择其他版本的解释器，如图 $\text{2-9}$ 所示。
+
+<div align=center>
+<img width="600" src="../figs/ch2/vscode_python_3.png"/>
+</div>
+<div align=center>图 $\text{2-9}$ $\text{VS Code}$ 选择 $\text{Python}$ 解释器版本</div>
+
+选择好解释器版本后，重新打开一个终端，就能看到当前的解释器版本了，如图 $\text{2-10}$ 所示。
+
+<div align=center>
+<img width="600" src="../figs/ch2/vscode_python_4.png"/>
+</div>
+<div align=center>图 $\text{2-10}$ $\text{VS Code}$ 终端显示 $\text{Python}$ 解释器版本</div>
+
+## 2.6 本章小结
 
 $\qquad$ 本章主要介绍了马尔可夫决策过程的概念，它是强化学习的基本问题模型之一，因此读者需要牢牢掌握。此外拓展了一些重要的概念，包括马尔可夫性质、回报、状态转移矩阵、轨迹、回合等，这些概念在我们后面讲解强化学习算法的时候会频繁用到，务必牢记。
 
 
-## 2.6 练习题
+## 2.7 练习题
 
 1. 强化学习所解决的问题一定要严格满足马尔可夫性质吗？请举例说明。
 
