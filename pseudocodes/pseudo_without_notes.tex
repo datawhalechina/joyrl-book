@@ -175,8 +175,7 @@
     \renewcommand{\algorithmicrequire}{\textbf{输入:}}  
     \renewcommand{\algorithmicensure}{\textbf{输出:}} 
 	\begin{algorithmic}[1]
-		\STATE 初始化当前网络参数 $\theta$ 
-		\STATE 复制参数到目标网络$\hat{\theta} \leftarrow \theta$
+		\STATE 初始化当前网络参数 $\theta$ 和目标网络参数 $\hat{\theta} \leftarrow \theta$
 		\STATE 初始化经验回放$D$
 		\FOR {回合数 $m = 1,2,\cdots,M$}
 			\STATE 重置环境，获得初始状态$s_0$
@@ -186,7 +185,7 @@
 				\STATE 环境根据$a_t$反馈奖励$r_t$和下一个状态$s_{t+1}$
 				\STATE 存储样本$(s_t,a_t,r_t,s_{t+1})$到经验回放$D$中
 				\STATE 更新环境状态$s_{t+1} \leftarrow s_t$
-				\STATE {\bfseries 模型更新：}
+				\STATE {\bfseries 策略更新：}
 				\STATE 从$D$中随机采样一个批量的样本
 				\STATE 计算$Q$的期望值，即$y_{i}=r_t+\gamma\max _{a_{i+1}}Q(s_{i+1},a;\hat{\theta})$
 				\STATE 计算损失$L(\theta)=\left(y_{i}-Q\left(s_{i}, a_{i} ; \theta\right)\right)^{2}$，并关于参数$\theta$做随机梯度下降
