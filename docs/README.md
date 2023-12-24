@@ -34,6 +34,7 @@
 | [第十一章 DDPG算法](https://datawhalechina.github.io/joyrl-book/#/ch11/main) | DDPG、TD3 |
 | [第十二章 PPO算法](https://datawhalechina.github.io/joyrl-book/#/ch12/main) | 重要性采样、PPO |
 | [第十三章 SAC算法](https://datawhalechina.github.io/joyrl-book/#/ch13/main) | 最大熵强化学习、Soft Q、SAC |
+| [JoyRL 中文文档](https://datawhalechina.github.io/joyrl-book/#/joyrl_docs/main) |  |
 | [练习题解答](https://datawhalechina.github.io/joyrl-book/#/appendix/main) |  |
 
 ## 主要贡献者
