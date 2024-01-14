@@ -62,7 +62,7 @@
 如图 6 所示，在线测试器更像是一个独立的模块，它并不影响训练过程，因此在图中特别将其分离出来。
 
 <div align=center>
-<img width="600" src="../figs/joyrl_docs/recorder.png"/>
+<img width="600" src="../figs/joyrl_docs/overall_framework.png"/>
 <div align=center>图 6 整体框架</div>
 </div>
 

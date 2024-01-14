@@ -44,8 +44,6 @@ class GeneralConfig(object):
 * `max_step`：每回合最大步数，当为`-1`时，则不限制每回合最大步数，直到环境返回`done=True`或者`truncate=True`，**请根据实际环境情况设置**。
 * `collect_traj`：是否收集轨迹，当为`True`时，则收集轨迹，否则不收集轨迹，一般用于模仿学习、逆强化学习等。
 * `n_interactors`：交互器数量，默认为`1`，请根据实际情况设置。
-* `interactor_mode`：交互器模式，当`n_interactors>1`时有效，`dummy`或`ray`，默认为`dummy`，当为`dummy`时，每次串行执行交互器，当为`ray`时，每次并行执行交互器收集样本。
-* `learner_mode`：学习器模式，`serial`或`parallel`，默认为`serial`，当为`serial`时，表示每次先执行交互器采样，然后执行学习器更新策略，当为`parallel`时，表示交互器和学习器分别同时进行采样和更新策略。
 * `n_learners`：学习器数量，默认为`1`，请根据实际情况设置。
 * `online_eval`：是否在线测试，当为`True`时，则在线测试，否则不在线测试。开启在线测试时，会额外输出一个名为`best`的模型，用于保存训练过程中测试效果最好的模型，但不一定是最新的模型。
 * `online_eval_episode`：在线测试回合数，请根据实际情况设置。

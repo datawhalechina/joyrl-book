@@ -73,8 +73,6 @@ class GeneralConfig:
         self.max_step = 200 # number of episodes for testing, set -1 means unlimited steps
         # multiprocessing settings
         self.n_interactors = 1 # number of interactors
-        self.interactor_mode = "dummy" # dummy, only works when learner_mode is serial
-        self.learner_mode = "serial" # serial, parallel, whether workers and learners are in parallel
         # online evaluation settings
         self.online_eval = True # online evaluation or not
         self.online_eval_episode = 10 # online eval episodes
@@ -100,12 +98,3 @@ if __name__ == "__main__":
 ## 文档
 
 [点击](https://datawhalechina.github.io/joyrl/)查看更详细的教程和`API`文档。
-
-
-## 算法列表
-
-算法讲解请参考[“蘑菇书”](https://github.com/datawhalechina/easy-rl)和[JoyRL Book](https://github.com/datawhalechina/joyrl-book)
-
-|       名称       |                          参考文献                          |                    作者                     | 备注 |
-| :--------------: | :----------------------------------------------------------: | :-------------------------------------------: | :---: |
-| DQN | [DQN Paper](https://www.cs.toronto.edu/~vmnih/docs/dqn.pdf) | [johnjim0816](https://github.com/johnjim0816) |       |
