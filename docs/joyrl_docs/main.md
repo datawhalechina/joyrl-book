@@ -53,48 +53,6 @@ if __name__ == "__main__":
     joyrl.run(yaml_path = yaml_path)
 ```
 
-### 串行与并行
-
-`JoyRL` 支持串行和并行两种方式。串行方式指的是先让智能体与环境交互产生样本，模型再使用这些样本进行训练。并行方式指的是智能体与环境交互产生样本的同时，模型也能同时进行采样训练。并行方式可以在复杂环境中加速训练，但是由于多进程的基础通信开销，可能会导致训练速度变慢。因此，我们建议在简单环境中使用串行方式，在复杂环境中使用并行方式。具体使用方式如下所示。
-
-```python
-import joyrl
-class GeneralConfig:
-    ''' General parameters for running
-    '''
-    def __init__(self) -> None:
-        # basic settings
-        self.env_name = "gym" # name of environment
-        self.algo_name = "DQN" # name of algorithm
-        self.mode = "train" # train, test
-        self.device = "cpu" # device to use
-        self.seed = 0 # random seed, set -1 means using random seed
-        self.max_episode = -1 # number of episodes for training, set -1 to keep running
-        self.max_step = 200 # number of episodes for testing, set -1 means unlimited steps
-        # multiprocessing settings
-        self.n_interactors = 1 # number of interactors
-        # online evaluation settings
-        self.online_eval = True # online evaluation or not
-        self.online_eval_episode = 10 # online eval episodes
-        self.model_save_fre = 500 # model save frequency per update step
-        # load model settings
-        self.load_checkpoint = False # if load checkpoint
-        self.load_path = "Train_single_CartPole-v1_DQN_20230515-211721" # path to load model
-        self.load_model_step = 'best' # load model at which step
-
-class EnvConfig(object):
-    def __init__(self) -> None:
-        self.id = "CartPole-v1" # environment id
-if __name__ == "__main__":
-    general_cfg = GeneralConfig()
-    env_cfg = EnvConfig()
-    joyrl.run(general_cfg = general_cfg, env_cfg = env_cfg)
-```
-
-当`learner_mode`为`serial`时，即开始串行训练。`n_interactors`表示环境交互器的数量，当`n_interactors`大于1时，可通过`interactor_mode`调整采样模式，`dummy`表示所有交互器依次采样，`ray`表示使用`Ray`库实现并行采样。当`learner_mode`为`parallel`时，即开始并行训练，此时所有交互器默认使用`Ray`库实现并行采样。
-
-更多的使用方式请参考说明文档。
-
 ## 文档
 
 [点击](https://datawhalechina.github.io/joyrl/)查看更详细的教程和`API`文档。
