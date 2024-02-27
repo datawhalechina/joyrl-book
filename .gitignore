@@ -11,3 +11,4 @@ pseudo_without_notes.out
 pseudo.toc
 pseudo_without_notes.toc
 pseudo.dvi
+__pycache__

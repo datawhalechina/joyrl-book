@@ -2,8 +2,8 @@
 创建Conda环境（需先安装Anaconda）
 
 ```bash
-conda create -n joyrl-offline python=3.8
-conda activate joyrl-offline
+conda create -n joyrl python=3.10
+conda activate joyrl
 ```
 
 安装Gym：
