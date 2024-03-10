@@ -1,39 +1,8 @@
-#!/usr/bin/env python
-# coding=utf-8
-'''
-Author: JiangJi
-Email: johnjim0816@gmail.com
-Date: 2024-02-26 19:32:16
-LastEditor: JiangJi
-LastEditTime: 2024-02-27 00:49:32
-Discription: 
-'''
 #This code is from openai baseline
 #https://github.com/openai/baselines/tree/master/baselines/common/vec_env
 
 import numpy as np
 from multiprocessing import Process, Pipe
-import gymnasium as gym
-
-def create_subproc_vec_env(env_id, n_envs, seed, start_index=0):
-    def make_env(rank):
-        def _thunk():
-            env = gym.make(env_id)
-            return env
-        return _thunk
-    return SubprocVecEnv([make_env(i + start_index) for i in range(n_envs)])
-def get_eval_reward(test_env,agent):
-    state,_ = test_env.reset()
-    total_reward = 0
-    while True:
-        action = agent.sample_action(state)
-        next_state, reward, done, truncated , _ = test_env.step(action)
-        total_reward += reward
-        state = next_state
-        if truncated:
-            break
-    return total_reward
-
 
 def worker(remote, parent_remote, env_fn_wrapper):
     parent_remote.close()
@@ -43,13 +12,11 @@ def worker(remote, parent_remote, env_fn_wrapper):
         if cmd == 'step':
             ob, reward, terminated, truncated, info = env.step(data)
             if truncated:
-                ob, info = env.reset()
+                ob, _ = env.reset()
             remote.send((ob, reward, terminated, truncated, info))
         elif cmd == 'reset':
-            if data is None:
-                data = 0
-            ob, info = env.reset(seed = data)
-            remote.send((ob,info))
+            ob,_ = env.reset()
+            remote.send(ob)
         elif cmd == 'reset_task':
             ob = env.reset_task()
             remote.send(ob)
@@ -157,15 +124,13 @@ class SubprocVecEnv(VecEnv):
     def step_wait(self):
         results = [remote.recv() for remote in self.remotes]
         self.waiting = False
-        obs, rews, terminated, truncated, infos = zip(*results)
-        return np.stack(obs), np.stack(rews), np.stack(terminated), np.stack(truncated), infos
+        obs, rews, terminateds, truncateds, infos = zip(*results)
+        return np.stack(obs), np.stack(rews), np.stack(terminateds), np.stack(truncateds), infos
 
-    def reset(self, seed = None):
+    def reset(self):
         for remote in self.remotes:
-            remote.send(('reset', seed))
-        results = [remote.recv() for remote in self.remotes]
-        obs, infos = zip(*results)
-        return np.stack(obs), infos
+            remote.send(('reset', None))
+        return np.stack([remote.recv() for remote in self.remotes])
 
     def reset_task(self):
         for remote in self.remotes:

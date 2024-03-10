@@ -5,7 +5,7 @@ Author: JiangJi
 Email: johnjim0816@gmail.com
 Date: 2024-02-26 19:33:59
 LastEditor: JiangJi
-LastEditTime: 2024-02-26 21:50:34
+LastEditTime: 2024-03-03 19:29:09
 Discription: 
 '''
 import os
@@ -42,16 +42,16 @@ def smooth(data, weight=0.9):
         last = smoothed_val                                
     return smoothed
 
-def plot_rewards(rewards, cfg, tag='train'):
+def plot_rewards(rewards, device = 'cpu', algo_name = 'PPO',env_id= 'Pendulum-v1',  tag='train'):
     ''' 画图
     '''
     
     sns.set()
     clear_output(True)
     plt.figure()  # 创建一个图形实例，方便同时多画几个图
-    plt.title(f"{tag}ing curve on {cfg.device} of {cfg.algo_name} for {cfg.env_id}")
-    plt.xlabel('episodes')
-    plt.plot(rewards, label='rewards')
+    plt.title(f"{tag}ing curve on {device} of {algo_name} for {env_id}")
+    plt.xlabel('episode')
+    plt.plot(rewards, label='reward')
     plt.plot(smooth(rewards), label='smoothed')
     plt.legend()
     plt.show()
