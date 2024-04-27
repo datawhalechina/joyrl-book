@@ -5,7 +5,7 @@ Author: JiangJi
 Email: johnjim0816@gmail.com
 Date: 2024-02-26 19:33:59
 LastEditor: JiangJi
-LastEditTime: 2024-03-03 19:29:09
+LastEditTime: 2024-04-27 23:57:09
 Discription: 
 '''
 import os
@@ -16,8 +16,8 @@ import matplotlib.pyplot as plt
 import torch
 from IPython.display import clear_output
 
-def all_seed(seed = 1):
-    ''' 万能的seed函数
+def all_seed(seed: int = 0):
+    ''' 设置随机种子
     '''
     if seed == 0:
         return
@@ -31,7 +31,7 @@ def all_seed(seed = 1):
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.enabled = False
 
-def smooth(data, weight=0.9):  
+def smooth(data: list, weight: float = 0.9):
     '''用于平滑曲线，类似于Tensorboard中的smooth曲线
     '''
     last = data[0] 
@@ -42,16 +42,15 @@ def smooth(data, weight=0.9):
         last = smoothed_val                                
     return smoothed
 
-def plot_rewards(rewards, device = 'cpu', algo_name = 'PPO',env_id= 'Pendulum-v1',  tag='train'):
+def plot_rewards(frames, rewards, device = 'cpu', algo_name = 'PPO', env_id= 'Pendulum-v1',  tag='train'):
     ''' 画图
     '''
-    
-    sns.set()
+    sns.set_theme(style="darkgrid")
     clear_output(True)
     plt.figure()  # 创建一个图形实例，方便同时多画几个图
     plt.title(f"{tag}ing curve on {device} of {algo_name} for {env_id}")
-    plt.xlabel('episode')
-    plt.plot(rewards, label='reward')
-    plt.plot(smooth(rewards), label='smoothed')
+    plt.xlabel('frames')
+    plt.plot(frames, rewards, label='rewards')
+    plt.plot(frames, smooth(rewards), label='smoothed rewards')
     plt.legend()
     plt.show()

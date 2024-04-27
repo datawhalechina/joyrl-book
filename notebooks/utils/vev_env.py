@@ -2,9 +2,10 @@
 #https://github.com/openai/baselines/tree/master/baselines/common/vec_env
 
 import numpy as np
+import gymnasium as gym
 from multiprocessing import Process, Pipe
 
-def worker(remote, parent_remote, env_fn_wrapper):
+def _worker(remote, parent_remote, env_fn_wrapper):
     parent_remote.close()
     env = env_fn_wrapper.x()
     while True:
@@ -104,7 +105,7 @@ class SubprocVecEnv(VecEnv):
         nenvs = len(env_fns)
         self.nenvs = nenvs
         self.remotes, self.work_remotes = zip(*[Pipe() for _ in range(nenvs)])
-        self.ps = [Process(target=worker, args=(work_remote, remote, CloudpickleWrapper(env_fn)))
+        self.ps = [Process(target=_worker, args=(work_remote, remote, CloudpickleWrapper(env_fn)))
             for (work_remote, remote, env_fn) in zip(self.work_remotes, self.remotes, env_fns)]
         for p in self.ps:
             p.daemon = True # if the main process crashes, we should not cause things to hang
@@ -151,3 +152,9 @@ class SubprocVecEnv(VecEnv):
             
     def __len__(self):
         return self.nenvs
+
+
+def create_vecenv(env_name: str, n_envs: int = 8):
+    env_fns = [lambda: gym.make(env_name) for _ in range(n_envs)]
+    env = SubprocVecEnv(env_fns)
+    return env
