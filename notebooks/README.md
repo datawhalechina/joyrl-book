@@ -2,8 +2,8 @@
 创建Conda环境（需先安装Anaconda）
 
 ```bash
-conda create -n joyrl python=3.10
-conda activate joyrl
+conda create -n joyrl-book python=3.10
+conda activate joyrl-book
 ```
 
 安装Gym：
