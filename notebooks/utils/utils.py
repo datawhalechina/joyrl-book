@@ -5,7 +5,7 @@ Author: JiangJi
 Email: johnjim0816@gmail.com
 Date: 2024-02-26 19:33:59
 LastEditor: JiangJi
-LastEditTime: 2024-04-27 23:57:09
+LastEditTime: 2024-05-13 00:22:58
 Discription: 
 '''
 import os
@@ -52,5 +52,18 @@ def plot_rewards(frames, rewards, device = 'cpu', algo_name = 'PPO', env_id= 'Pe
     plt.xlabel('frames')
     plt.plot(frames, rewards, label='rewards')
     plt.plot(frames, smooth(rewards), label='smoothed rewards')
+    plt.legend()
+    plt.show()
+
+def plot_losses(frames, losses, device = 'cpu', algo_name = 'PPO', env_id= 'Pendulum-v1',  tag='train'):
+    ''' 画图
+    '''
+    sns.set_theme(style="darkgrid")
+    clear_output(True)
+    plt.figure()  # 创建一个图形实例，方便同时多画几个图
+    plt.title(f"{tag}ing curve on {device} of {algo_name} for {env_id}")
+    plt.xlabel('frames')
+    plt.plot(frames, losses, label='losses')
+    plt.plot(frames, smooth(losses), label='smoothed losses')
     plt.legend()
     plt.show()
