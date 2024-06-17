@@ -1,9 +1,13 @@
  [![GitHub issues](https://img.shields.io/github/issues/datawhalechina/joyrl-book)](https://github.com/datawhalechina/joyrl-book/issues) [![GitHub stars](https://img.shields.io/github/stars/datawhalechina/joyrl-book)](https://github.com/datawhalechina/joyrl-book/stargazers) [![GitHub forks](https://img.shields.io/github/forks/datawhalechina/joyrl-book)](https://github.com/datawhalechina/joyrl-book/network) [![GitHub license](https://img.shields.io/github/license/datawhalechina/joyrl-book)](https://github.com/datawhalechina/joyrl-book/blob/master/LICENSE)
 # JoyRL Book
 
-继[《蘑菇书》](https://github.com/datawhalechina/easy-rl)之后，我们对于想要更多地深入了解强化学习实践的读者准备了一套全新的教程，全书主要基于笔者“不那么丰富可是也有一点咯”的实践经验，帮助读者快速入门强化学习的代码实践，并辅以一套开源代码框架`JoyRL`，便于读者适应业界应用研究风格的代码。
+继[《蘑菇书EasyRL》](https://github.com/datawhalechina/easy-rl)之后，我们对于想要更多地深入了解强化学习实践的读者准备了一套全新的教程，帮助读者快速入门强化学习的代码实践，并辅以一套开源代码框架`JoyRL`，便于读者适应业界应用研究风格的代码。
 
-与《蘑菇书》不同，本教程侧重对强化学习核心理论的提点和串联，以及对于强化学习代码实践的指导，尽可能还原原论文的主要思想，而不是对于理论的详细讲解。因此，《蘑菇书》适合适合细嚼慢咽的读者，而本教程则适合具有一定编程基础且希望快速进入实践应用的读者。
+与《蘑菇书》的区别：
+
+1. 《蘑菇书》知识体系更加详细丰富，适合零基础的读者，而本教程侧重对强化学习核心理论的凝练和串联，注重简明内容，适合有一定基础的读者。
+2. 《蘑菇书》偏向理论讲解，适合做研究工作的读者，而本教程侧重服务于代码时间，会包含一些实际应用中的技巧和经验，适合做工程应用的读者。
+3. 《蘑菇书》代码主要是一些经典算法在一些简单环境下的实现，注重对理论的阐释，而本教程则会包含更多的算法和环境，例如`SoftQ`、`RainbowDQN`等，代码内容更偏向业界风格。除此之外，本教程还开发一套开源框架[joyrl](https://github.com/datawhalechina/joyrl)，便于读者应用到更复杂以及自定义的环境中，适合做交叉应用的读者。
 
 ## 关于`JoyRL`
 
