@@ -134,7 +134,7 @@ $\qquad$ 如图 $\text{6-7}$ 所示，将线性层横向堆叠起来，前一层
 </div>
 <div align=center>图 $\text{6-7}$ 全连接网络</div>
 
-$\qquad$ 我们把这样的网络叫做全连接网络（$\text{fully connected network}），也称作多层感知机（$\text{multi-layer perceptron，MLP}$），是最基础的深度神经网络模型。把神经网络模型中前一层的输入向量记为 $\boldsymbol{x^{l-1}}\in \mathbb{R}^{d^{l-1}}$ ，其中第一层的输入也就是整个模型的输入可记为$\boldsymbol{x^0}$，每一个全连接层将前一层的输入映射到$\boldsymbol{x^{l}}\in \mathbb{R}^{d^{l}}$，也就是后一层的输入，具体定义为式 $\text{(6.5)}$。
+$\qquad$ 我们把这样的网络叫做全连接网络（$\text{fully connected network}$），也称作多层感知机（$\text{multi-layer perceptron，MLP}$），是最基础的深度神经网络模型。把神经网络模型中前一层的输入向量记为 $\boldsymbol{x^{l-1}}\in \mathbb{R}^{d^{l-1}}$ ，其中第一层的输入也就是整个模型的输入可记为$\boldsymbol{x^0}$，每一个全连接层将前一层的输入映射到$\boldsymbol{x^{l}}\in \mathbb{R}^{d^{l}}$，也就是后一层的输入，具体定义为式 $\text{(6.5)}$。
 
 $$
 \tag{6.5}
