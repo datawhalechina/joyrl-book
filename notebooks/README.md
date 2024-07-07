@@ -16,7 +16,8 @@ pip install gymnasium==0.28.1
 
 ```bash
 # CPU
-conda install pytorch==1.10.0 torchvision==0.11.0 torchaudio==0.10.0 cpuonly -c pytorch
+pip install torch==1.10.0 torchvision==0.11.2 torchaudio==0.10.2
+conda install pytorch==1.10.0 torchvision==0.11.2 torchaudio==0.10.0 cpuonly -c pytorch
 # GPU
 conda install pytorch==1.10.0 torchvision==0.11.0 torchaudio==0.10.0 cudatoolkit=11.3 -c pytorch -c conda-forge
 # GPU镜像安装
