@@ -6,22 +6,15 @@ conda create -n joyrl-book python=3.10
 conda activate joyrl-book
 ```
 
-安装Gym：
-
-```bash
-pip install gymnasium==0.28.1
-```
-
 安装Torch：
 
 ```bash
 # CPU
-pip install torch==1.10.0 torchvision==0.11.2 torchaudio==0.10.2
-conda install pytorch==1.10.0 torchvision==0.11.2 torchaudio==0.10.0 cpuonly -c pytorch
-# GPU
-conda install pytorch==1.10.0 torchvision==0.11.0 torchaudio==0.10.0 cudatoolkit=11.3 -c pytorch -c conda-forge
-# GPU镜像安装
-pip install torch==1.10.0+cu113 torchvision==0.11.0+cu113 torchaudio==0.10.0 --extra-index-url https://download.pytorch.org/whl/cu113
+pip install torch==2.2.1 torchvision==0.17.1 torchaudio==2.2.1
+# CUDA 11.8
+pip install torch==2.2.1 torchvision==0.17.1 torchaudio==2.2.1 --index-url https://download.pytorch.org/whl/cu118
+# CUDA 12.1
+pip install torch==2.2.1 torchvision==0.17.1 torchaudio==2.2.1 --index-url https://download.pytorch.org/whl/cu121
 ```
 
 安装其他依赖：
