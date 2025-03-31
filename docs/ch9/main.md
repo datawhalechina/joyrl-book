@@ -277,7 +277,7 @@ $\qquad$ 读者可能想到一个最简单的方式就是用最大值减去最�
 
 $$
 \tag{9.14}
-    \pi_\theta(s, a)=\frac{e^{\phi(s, a)^T} \theta}{\sum_b e^{\phi(s, b)^T}}
+    \pi_\theta(s, a)=\frac{e^{\phi(s, a)^T \theta}}{\sum_b e^{\phi(s, b)^T \theta}}
 $$
 
 $\qquad$ 其中 $\phi(s, a)$ 就是模型前面一层的输出。对应的梯度也可方便求得，如式 $\text(9.15)$ 所示。
@@ -288,7 +288,7 @@ $$
     \nabla_\theta \log \pi_\theta(s \mid a)=\phi(s, a)-\mathbb{E}_{\pi_\theta}[\phi(s, .)]
 $$
 
-$\qquad$ 由于右边一项 $\mathbb{E}_{\pi_\theta}[\phi(s, .)]$ 表示的是动作层所有输出之和，也就是概率分布之和，即等于1，因此我们可以将其去掉，这样一来就可以得到更简单的梯度表达式，如式 $\text(9.16)$ 所示。
+$\qquad$ 由于右边一项 $\mathbb{E}_{\pi_\theta}[\phi(s, .)]$ 表示的是模型前一层所有输出的加权和，不受$\theta$影响，因此我们可以将其去掉，这样一来就可以得到更简单的梯度表达式，如式 $\text(9.16)$ 所示。
 
 $$
 \tag{9.16}
