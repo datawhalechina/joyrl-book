@@ -30,7 +30,7 @@
 |    [第五章 免模型控制](https://datawhalechina.github.io/joyrl-book/#/ch5/main)    | Q-learning 算法、Sarsa 算法 |
 | [第六章 深度学习基础](https://datawhalechina.github.io/joyrl-book/#/ch6/main) | 神经网络、梯度下降 |
 | [第七章 DQN算法](https://datawhalechina.github.io/joyrl-book/#/ch7/main) | DQN 算法、目标网络、经验回放 |
-| [第八章 DQN算法进阶](https://datawhalechina.github.io/joyrl-book/#/ch8/main) | Double DQN、Dueling DQN、PER DQN |
+| [第八章 DQN算法进阶](https://datawhalechina.github.io/joyrl-book/#/ch8/main) | Double DQN、Noisy DQN、Dueling DQN、PER DQN、C51、Rainbow DQN |
 | [第九章 策略梯度](https://datawhalechina.github.io/joyrl-book/#/ch9/main) | 随机性策略、REINFORCE |
 | [第十章 Actor-Critic算法](https://datawhalechina.github.io/joyrl-book/#/ch10/main) | A2C、A3C |
 | [第十一章 DDPG算法](https://datawhalechina.github.io/joyrl-book/#/ch11/main) | DDPG、TD3 |
