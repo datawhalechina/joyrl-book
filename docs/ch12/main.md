@@ -158,7 +158,7 @@ def update(self):
 $\qquad$ 注意在更新时由于每次采样的轨迹往往包含的样本数较多，我们通过利用小批量随机下降将样本随机切分成若干个部分，然后一个批量一个批量地更新网络参数。最后我们展示算法在 $\text{CartPole}$ 上的训练效果，如图 $\text{12-2}$ 所示。此外，在更新 $\text{Actor}$ 参数时，我们增加了一个最大化策略熵的正则项，这部分原理我们会在接下来的一章讲到。
 
 <div align=center>
-<img width="500" src="../figs/ch12/ppo_pseu.png"/>
+<img width="500" src="../figs/ch12/PPO_Cartpole_training_curve.png"/>
 </div>
 <div align=center>图 $\text{12-2}$ $\text{CartPole}$ 环境 $\text{PPO}$ 算法训练曲线</div>
 
