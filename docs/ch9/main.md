@@ -23,11 +23,11 @@ $\qquad$ 如图 $\text{9-1}$ 所示，我们知道智能体在与环境交互的
 </div>
 <div align=center>图 $\text{9-1}$ 轨迹的形成</div>
 
-$\qquad$ 我们将这个过程称为一个**回合**（ $\text{episode}$ ），然后把所有的状态和动作按顺序组合起来，记作 $\tau$ ，称为**轨迹**（ $\text{trajectory}$ ），如式 $\eqref{eq:1}$ 所示。
+$\qquad$ 我们将这个过程称为一个**回合**（ $\text{episode}$ ），然后把所有的状态和动作按顺序组合起来，记作 $\tau$ ，称为**轨迹**（ $\text{trajectory}$ ），如式 $\eqref{eq:pg1}$ 所示。
 
 $$
-\begin{equation}\label{eq:1}
-\tau=\left\{s_{0}, a_{0}, s_{1}, a_{1}, \cdots, s_{T}, a_{T}\right\}
+\begin{equation}\label{eq:pg1}
+\tau=\left\(s_{0}, a_{0}, s_{1}, a_{1}, \cdots, s_{T}, a_{T}\right\)
 \end{equation}
 $$
 
@@ -305,7 +305,7 @@ $$
     \nabla_\theta \log \pi_\theta(s \mid a)= \log p_\theta(s, a)
 $$
 
-$\qquad$ 在很多代码实践中，一般都把它写作 $\text{logits_p}$，对应的 $p_\theta(s, a)$ 叫做 $\text{probs}$， 这个在后面实战中我们会看到。在实践中，我们算出 $\text{probs}$ 之后，还会根据 $\text{probs}$ 形成一个 $\text{Categorical}$ 分布，然后再采样，这个在后面章节的实战中我们也会看到。
+$\qquad$ 在很多代码实践中，一般都把它写作 `logits_p`，对应的 $p_\theta(s, a)$ 叫做 `probs`， 这个在后面实战中我们会看到。在实践中，我们算出 $\text{probs}$ 之后，还会根据 $\text{probs}$ 形成一个 $\text{Categorical}$ 分布，然后再采样，这个在后面章节的实战中我们也会看到。
 
 ### 9.5.2 连续动作的策略函数
 
