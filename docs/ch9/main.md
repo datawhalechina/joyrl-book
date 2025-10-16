@@ -27,7 +27,7 @@ $\qquad$ 我们将这个过程称为一个**回合**（ $\text{episode}$ ），�
 
 $$
 \begin{equation}\label{eq:pg1}
-\tau=\left\(s_{0}, a_{0}, s_{1}, a_{1}, \cdots, s_{T}, a_{T}\right\)
+\tau=\left(s_{0}, a_{0}, s_{1}, a_{1}, \cdots, s_{T}, a_{T}\right)
 \end{equation}
 $$
 
@@ -98,15 +98,16 @@ $$
 $\qquad$ 现在我们就可以很方便地求出目标函数的梯度了，如式 $\text(9.7)$ 所示。
 
 $$
-\tag{9.7}
+\begin{equation}\tag{9.7}
 \begin{aligned}
 \nabla_\theta J\left(\pi_\theta\right) &=\nabla_\theta \underset{\tau \sim \pi_\theta}{\mathrm{E}}[R(\tau)] \\
-&=\nabla_\theta \int_\tau P_{\theta}(\tau) R(\tau) \\
-&=\int_\tau \nabla_\theta P_{\theta}(\tau) R(\tau) \\
-&=\int_\tau P_{\theta}(\tau) \nabla_\theta \log P_{\theta}(\tau) R(\tau) \\
-&=\underset{\tau \sim \pi_\theta}{\mathrm{E}}\left[\nabla_\theta \log P_{\theta}(\tau) R(\tau)\right]\\
-&= \underset{\tau \sim \pi_\theta}{\mathrm{E}}\left[\sum_{t=0}^T \nabla_\theta \log \pi_\theta\left(a_t \mid s_t\right) R(\tau)\right]
+ &=\nabla_\theta \int_\tau P_{\theta}(\tau) R(\tau) \\
+ &=\int_\tau \nabla_\theta P_{\theta}(\tau) R(\tau) \\
+ &=\int_\tau P_{\theta}(\tau) \nabla_\theta \log P_{\theta}(\tau) R(\tau) \\
+ &=\underset{\tau \sim \pi_\theta}{\mathrm{E}}\left[\nabla_\theta \log P_{\theta}(\tau) R(\tau)\right]\\
+ &= \underset{\tau \sim \pi_\theta}{\mathrm{E}}\left[\sum_{t=0}^T \nabla_\theta \log \pi_\theta\left(a_t \mid s_t\right) R(\tau)\right]
 \end{aligned}
+\end{equation}
 $$
 
 $\qquad$ 这里简单解释一下上述公式中的步骤，首先第一行就是目标函数的表达形式，到第二行就是全期望展开式，到第三行就是利用了积分的梯度性质，即梯度可以放到积分号的里面也就是被积函数中，第四行到最后就是对数微分技巧了。回过头来看下，我们为什么要用到对数微分技巧呢？这其实是一个常见的数学技巧：当我们看到公式中出现累乘的项时，我们通常都会取对数简化，因为根据对数公式的性质可以将累乘的项转换成累加的项，这样一来问题会更加便于处理。
