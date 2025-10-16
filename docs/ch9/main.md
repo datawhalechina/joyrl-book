@@ -23,10 +23,10 @@ $\qquad$ 如图 $\text{9-1}$ 所示，我们知道智能体在与环境交互的
 </div>
 <div align=center>图 $\text{9-1}$ 轨迹的形成</div>
 
-$\qquad$ 我们将这个过程称为一个**回合**（ $\text{episode}$ ），然后把所有的状态和动作按顺序组合起来，记作 $\tau$ ，称为**轨迹**（ $\text{trajectory}$ ），如式 $\eqref{eq:9.1}$ 所示。
+$\qquad$ 我们将这个过程称为一个**回合**（ $\text{episode}$ ），然后把所有的状态和动作按顺序组合起来，记作 $\tau$ ，称为**轨迹**（ $\text{trajectory}$ ），如式 $\eqref{eq:1}$ 所示。
 
 $$
-\begin{equation}\label{eq:9.1}
+\begin{equation}\label{eq:1}
 \tau=\left\{s_{0}, a_{0}, s_{1}, a_{1}, \cdots, s_{T}, a_{T}\right\}
 \end{equation}
 $$
