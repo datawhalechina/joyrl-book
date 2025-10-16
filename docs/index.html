@@ -57,10 +57,24 @@
       ]
     } 
   </script>
+  
   <!-- Docsify v4 -->
   <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+  <!-- MathJax v3 configuration: enable automatic numbering for display equations -->
+  <script>
+    window.MathJax = {
+      tex: {
+        // Number all display equations automatically. Use 'ams' if you only want AMS environments numbered.
+        tags: 'all',
+        tagSide: 'right',
+        tagIndent: '0em',
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$']]
+      }
+    };
+  </script>
   <!-- LaTeX display engine -->
-  <script src="//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <!--  docsify-latex plugin -->
   <script src="//cdn.jsdelivr.net/npm/docsify-latex@0"></script>
   <!-- code copy -->

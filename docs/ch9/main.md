@@ -23,11 +23,12 @@ $\qquad$ 如图 $\text{9-1}$ 所示，我们知道智能体在与环境交互的
 </div>
 <div align=center>图 $\text{9-1}$ 轨迹的形成</div>
 
-$\qquad$ 我们将这个过程称为一个**回合**（ $\text{episode}$ ），然后把所有的状态和动作按顺序组合起来，记作 $\tau$ ，称为**轨迹**（ $\text{trajectory}$ ），如式 $\text{(9.1)}$ 所示。
+$\qquad$ 我们将这个过程称为一个**回合**（ $\text{episode}$ ），然后把所有的状态和动作按顺序组合起来，记作 $\tau$ ，称为**轨迹**（ $\text{trajectory}$ ），如式 $\eqref{eq:9.1}$ 所示。
 
 $$
-\tag{9.1}
+\begin{equation}\label{eq:9.1}
 \tau=\left\{s_{0}, a_{0}, s_{1}, a_{1}, \cdots, s_{T}, a_{T}\right\}
+\end{equation}
 $$
 
 $\qquad$ 其中 $T$ 表示回合的最大步数(也叫作 $\text{Horizon}$ <sup>①</sup>)。由于环境初始化是随机的，我们假设产生初始状态 $s_0$ 的概率为 $p(s_0)$ ，那么给定策略函数 $\pi_{\theta}(a|s)$ 的情况下，其实是很容易计算出轨迹 $\tau$ 产生的概率的，用 $P_{\theta}(\tau)$ 表示。为了方便读者理解，我们假设有一个很短的轨迹 $\tau_0 = \{s_0,a_0,s_1\}$ ，即智能体执行一个动作之后就终止本回合了。
