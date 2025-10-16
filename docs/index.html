@@ -89,11 +89,16 @@
             // 页面切换后重新渲染公式
             if (window.MathJax) window.MathJax.typesetPromise();
 
-            // 自动插入 Giscus 评论区到正文内容区
+            // 自动插入 Giscus 评论区到正文内容区，确保每次页面切换都刷新
             var giscusId = 'giscus-comments';
-            var giscusScriptId = 'giscus-script';
             var section = document.querySelector('.markdown-section');
-            if (section && !document.getElementById(giscusId)) {
+            // 移除旧的评论区
+            var oldGiscus = document.getElementById(giscusId);
+            if (oldGiscus) oldGiscus.remove();
+            // 获取当前 hash 路径作为唯一标识
+            var hashPath = location.hash ? location.hash.replace(/^#\/?/, '') : 'home';
+            // 插入新的评论区
+            if (section) {
               var giscusDiv = document.createElement('div');
               giscusDiv.id = giscusId;
               section.appendChild(giscusDiv);
@@ -103,7 +108,8 @@
               script.setAttribute('data-repo-id', 'R_kgDOJQd2zw');
               script.setAttribute('data-category', 'Q&A');
               script.setAttribute('data-category-id', 'DIC_kwDOJQd2z84Cwt-N');
-              script.setAttribute('data-mapping', 'pathname');
+              script.setAttribute('data-mapping', 'specific');
+              script.setAttribute('data-term', hashPath);
               script.setAttribute('data-strict', '0');
               script.setAttribute('data-reactions-enabled', '1');
               script.setAttribute('data-emit-metadata', '0');
@@ -112,7 +118,6 @@
               script.setAttribute('data-lang', 'zh-CN');
               script.setAttribute('crossorigin', 'anonymous');
               script.async = true;
-              script.id = giscusScriptId;
               giscusDiv.appendChild(script);
             }
           });
