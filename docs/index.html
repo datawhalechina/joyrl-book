@@ -171,5 +171,29 @@
       async>
     </script>
   </div> -->
+  <!-- 返回顶部按钮 -->
+  <button id="back-to-top" style="display:none;position:fixed;right:32px;bottom:32px;z-index:99;padding:10px 18px;border-radius:24px;background:#4f6ef7;color:#fff;border:none;box-shadow:0 2px 8px rgba(0,0,0,0.15);font-size:16px;cursor:pointer;transition:opacity 0.2s;">↑ 顶部</button>
+  <script>
+    // 返回顶部按钮逻辑
+    var topBtn = document.getElementById('back-to-top');
+    window.addEventListener('scroll', function() {
+      topBtn.style.display = (window.scrollY > 200) ? 'block' : 'none';
+    });
+    topBtn.onclick = function() {
+      window.scrollTo({top:0,behavior:'smooth'});
+    };
+    // Docsify SPA 页面切换后也要重置按钮
+    if (window.$docsify) {
+      if (!window.__topbtn_hooked) {
+        window.__topbtn_hooked = true;
+        window.$docsify.plugins = (window.$docsify.plugins || []);
+        window.$docsify.plugins.push(function(hook) {
+          hook.doneEach(function() {
+            topBtn.style.display = (window.scrollY > 200) ? 'block' : 'none';
+          });
+        });
+      }
+    }
+  </script>
 </body>
 </html>
