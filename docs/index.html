@@ -2,73 +2,137 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Document</title>
+  <title>JoyRL 文档</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  <meta name="description" content="Description">
+  <meta name="description" content="JoyRL 文档">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-  <!-- <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css"> -->
-  <!-- Themes (light + dark) -->
+
+  <!-- Docsify 主题（亮/暗） -->
   <link rel="stylesheet" media="(prefers-color-scheme: dark)" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple-dark.css">
   <link rel="stylesheet" media="(prefers-color-scheme: light)" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css">
 
-  <!-- Custom Styles -->
   <style>
+    /* =============== 基础主题调整 =============== */
     :root {
+      /* 可根据喜好调整主题色 */
       /* --theme-hue: 325; */
+    }
+
+    /* =============== Giscus 布局修复 =============== */
+    /* 评论容器与正文对齐居中 */
+    #giscus-comments {
+      max-width: 800px;
+      width: 100%;
+      margin: 2em auto;
+      padding: 0;
+      box-sizing: border-box;
+      display: block;
+      position: relative;
+      z-index: 0;
+    }
+
+    /* 确保左侧目录浮在上层 */
+    .sidebar,
+    .sidebar-toggle,
+    .docsify-toc {
+      position: relative;
+      z-index: 20 !important;
+    }
+
+    /* 降低 Giscus 层级，防止遮挡目录 */
+    .giscus,
+    .giscus-frame {
+      position: relative !important;
+      z-index: 0 !important;
+    }
+
+    /* 小屏幕自适应 */
+    @media (max-width: 900px) {
+      #giscus-comments {
+        width: 100%;
+        margin: 1.5em 0.5em;
+      }
+    }
+
+    /* 优化公式显示 */
+    mjx-container[jax="SVG"][display="true"] {
+      text-align: center;
+      margin: 1em 0;
     }
   </style>
 </head>
+
 <body>
   <div id="app"></div>
+
   <script>
     window.$docsify = {
       name: 'JoyRL',
       repo: 'https://github.com/datawhalechina/joyrl-book',
-      
+
       loadSidebar: true,
       subMaxLevel: 4,
-      latex: {
-        inlineMath   : [['$', '$'], ['\\(', '\\)']], // default
-        displayMath  : [['$$', '$$']],               // default
-      },
-      pagination:{
-        previousText:'上一篇',
-        nextText:'下一篇',
-      },
-      search:{
-        placeholder:'搜索',
-        noData:'找不到结果',
-        paths:'auto',
-        depth:6
-      },
-      plugins: [
-        function(hook, vm) {
-          hook.beforeEach(function(content) {
-            // 每次开始解析 Markdown 内容时调用
-            // 将所有../figs替换成figs，解决github pages下图片无法显示的问题
-            // https://github.com/docsifyjs/docsify/issues/936
-            return content.replace(/..\/figs/g, "figs");
-          })
 
-          // hook.doneEach(function () {
-          //   window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')]);
-          // }) 
+      latex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$']],
+      },
+
+      plugins: [
+        function (hook) {
+          hook.beforeEach(function (content) {
+            // 修复图片路径
+            return content.replace(/..\/figs/g, "figs");
+          });
+
+          hook.doneEach(function () {
+            // 页面切换后重新渲染公式
+            if (window.MathJax) window.MathJax.typesetPromise();
+
+            // 自动插入 Giscus 评论区到正文内容区
+            var giscusId = 'giscus-comments';
+            var giscusScriptId = 'giscus-script';
+            var section = document.querySelector('.markdown-section');
+            if (section && !document.getElementById(giscusId)) {
+              var giscusDiv = document.createElement('div');
+              giscusDiv.id = giscusId;
+              section.appendChild(giscusDiv);
+              var script = document.createElement('script');
+              script.src = 'https://giscus.app/client.js';
+              script.setAttribute('data-repo', 'datawhalechina/joyrl-book');
+              script.setAttribute('data-repo-id', 'R_kgDOJQd2zw');
+              script.setAttribute('data-category', 'Q&A');
+              script.setAttribute('data-category-id', 'DIC_kwDOJQd2z84Cwt-N');
+              script.setAttribute('data-mapping', 'pathname');
+              script.setAttribute('data-strict', '0');
+              script.setAttribute('data-reactions-enabled', '1');
+              script.setAttribute('data-emit-metadata', '0');
+              script.setAttribute('data-input-position', 'bottom');
+              script.setAttribute('data-theme', 'light');
+              script.setAttribute('data-lang', 'zh-CN');
+              script.setAttribute('crossorigin', 'anonymous');
+              script.async = true;
+              script.id = giscusScriptId;
+              giscusDiv.appendChild(script);
+            }
+          });
         }
       ]
-    } 
+    };
   </script>
-  
-  <!-- Docsify v4 -->
+
+  <!-- Docsify 核心 -->
   <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
-  <!-- Docsify plugins: search and pagination -->
+
+  <!-- 搜索与分页插件 -->
   <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
-  <!-- MathJax v3 configuration: enable automatic numbering for display equations -->
+
+  <!-- 自动编号的 MathJax 配置 -->
   <script>
     window.MathJax = {
       tex: {
-        // Number all display equations automatically. Use 'ams' if you only want AMS environments numbered.
-        tags: 'all',
+        tags: 'all',         // ✅ 自动编号所有公式
         tagSide: 'right',
         tagIndent: '0em',
         inlineMath: [['$', '$'], ['\\(', '\\)']],
@@ -76,29 +140,29 @@
       }
     };
   </script>
-  <!-- LaTeX display engine -->
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
-  <!--  docsify-latex plugin -->
   <script src="//cdn.jsdelivr.net/npm/docsify-latex@0"></script>
-  <!-- code copy -->
-<script src="//cdn.jsdelivr.net/npm/docsify-copy-code"></script>
-</body>
-<!-- Giscus comments widget -->
-<div id="giscus-comments"></div>
-<script src="https://giscus.app/client.js"
-        data-repo="datawhalechina/joyrl-book"
-        data-repo-id="R_kgDOJQd2zw"
-        data-category="Q&A"
-        data-category-id="DIC_kwDOJQd2z84Cwt-N"
-        data-mapping="pathname"
-        data-strict="0"
-        data-reactions-enabled="1"
-        data-emit-metadata="0"
-        data-input-position="bottom"
-        data-theme="light"
-        data-lang="zh-CN"
-        crossorigin="anonymous"
-        async>
-</script>
+
+  <!-- 代码复制按钮 -->
+  <script src="//cdn.jsdelivr.net/npm/docsify-copy-code"></script>
+
+  <!-- =============== Giscus 评论系统 =============== -->
+  <!-- <div id="giscus-comments">
+    <script src="https://giscus.app/client.js"
+      data-repo="datawhalechina/joyrl-book"
+      data-repo-id="R_kgDOJQd2zw"
+      data-category="Q&A"
+      data-category-id="DIC_kwDOJQd2z84Cwt-N"
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="bottom"
+      data-theme="light"
+      data-lang="zh-CN"
+      crossorigin="anonymous"
+      async>
+    </script>
+  </div> -->
 </body>
 </html>
