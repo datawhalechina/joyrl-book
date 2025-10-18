@@ -366,7 +366,7 @@ $\qquad$ 这样一来就能实现温度因子的自动调节了。这一版本�
 $\qquad$ 在实战中，我们主要讲解 $SAC$ 算法的第二个版本，即自动调节温度因子的版本。该版本的如图 $\text{13-1}$ 所示，整个训练过程相对来说还是比较简洁的，只是需要额外定义一些网络，比如用来调节温度因子等。
 
 <div align=center>
-<img width="500" src="../figs/ch13/sac_pseu.png"/>
+<img width="500" src=".figs/sac_pseu.png"/>
 </div>
 <div align=center>图 $\text{13-1}$ $\text{SAC}$ 算法伪代码</div>
 

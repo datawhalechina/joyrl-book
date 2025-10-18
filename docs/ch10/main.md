@@ -45,7 +45,7 @@ $\qquad$ 这样的算法通常称之为 $\text{Q Actor-Critic}$ 算法，这也�
 $\qquad$ 如图 $\text{10.1}$ 所示，我们通常将 $\text{Actor}$ 和 $\text{Critic}$ 分别用两个模块来表示，即图中的 策略函数（ $\text{Policy}$ ）和价值函数（ $\text{Value Function}$ ）。$\text{Actor}$ 与环境交互采样，然后将采样的轨迹输入 $\text{Critic}$ 网络，$\text{Critic}$ 网络估计出当前状态-动作对的价值，然后再将这个价值作为 $\text{Actor}$ 网络的梯度更新的依据，这也是所有 $\text{Actor-Critic}$ 算法的基本通用架构。
 
 <div align=center>
-<img width="400" src="../figs/ch10/actor_critic_architecture.png"/>
+<img width="400" src="figs/actor_critic_architecture.png"/>
 </div>
 <div align=center>图 $\text{10.1}$ $\text{Actor-Critic}$ 算法架构</div>
 
@@ -80,7 +80,7 @@ $\qquad$ 这就是 $\text{Advantage Actor-Critic}$ 算法，通常简称为 $\te
 $\qquad$ 如图 $\text{10.2}$ 所示，原先的 $\text{A2C}$ 算法相当于只有一个全局网络并持续与环境交互更新。而 $\text{A3C}$ 算法中增加了多个进程，每一个进程都拥有一个独立的网络和环境以供交互，并且每个进程每隔一段时间都会将自己的参数同步到全局网络中，这样就能提高训练效率。这种训练模式也是比较常见的多进程训练模式，也能用于其他算法中，也包括前面讲到的基于价值的算法。
 
 <div align=center>
-<img width="600" src="../figs/ch10/a3c_architecture.png"/>
+<img width="600" src="figs/a3c_architecture.png"/>
 </div>
 <div align=center>图 $\text{10.2}$ $\text{A3C}$ 算法架构</div>
 
@@ -270,7 +270,7 @@ $\qquad$ 到这里，我们就实现了 $\text{A2C}$ 算法的所有核心代码
 
 
 <div align=center>
-<img width="400" src="../figs/ch10/a2c_CartPole_training.png"/>
+<img width="400" src="figs/a2c_CartPole_training.png"/>
 </div>
 <div align=center>图 $\text{10-3}$ $\text{CartPole}$ 环境 $\text{A2C}$ 算法训练曲线</div>
 

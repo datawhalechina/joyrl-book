@@ -36,14 +36,14 @@ $\qquad$ 回到 $\text{Q-learning}$ 算法本身，其实到这里我们已经�
 $\qquad$ 关于 $\text{Q}$ 表格，其实我们在前面讲蒙特卡洛方法的过程中已经形成了雏形，就是我们所举的价值函数网格分布的例子。我们接着这个例子继续讲，不记得的同学建议再往前回顾一下。如图 $\text{5.1}$ 所示，这个例子是以左上角为起点，右下角为终点，机器人只能向右或者向下走，每次移动后机器人会收到一个 $-1$ 的奖励，即奖励函数 $R(s,a)=1$，然后求出机器人从起点走到终点的最短路径。
 
 <div align=center>
-<img width="200" src="../figs/ch4/simple_maze.png"/>
+<img width="200" src="figs/simple_maze.png"/>
 </div>
 <div align=center>图 $\text{5.1}$ 迷你网格示例</div>
 
 $\qquad$ 其实这个答案比较简单，机器人要达到终点只能先向右然后向下，或者先向下然后向右走，有且只有两条路径，并且同时也是最短路径。当时出于简化计算的考虑（状态价值的计算实在是太繁琐了！），只考虑了 $2 \times 2$ 的网格。这次我们可以将问题变得更有挑战性一些，如图 $\text{5.2}$ 所示， 我们将网格变成大一点的 $3 \times 3$ 的网格，并且不再限制机器人只能向右或者向下走，它可以向上、向下、向左和向右随意走动，当然每次还是只能走动一格，并且不能出边界，另外奖励函数也不变。
 
 <div align=center>
-<img width="300" src="../figs/ch5/maze_33.png"/>
+<img width="300" src="figs/maze_33.png"/>
 </div>
 <div align=center>图 $\text{5.2}$ 迷你网格进阶</div>
 
@@ -136,7 +136,7 @@ $\qquad$ 更确切地说，以 $1-\varepsilon$ 的概率按照 $Q$ 函数来执�
 $\qquad$ 讲到这里，我们就可以贴出 $\text{Q-learning}$ 算法的伪代码了，如图 $\text{5.3}$ 所示。
 
 <div align=center>
-<img width="500" src="../figs/ch5/q_learning_pseu.png"/>
+<img width="500" src="figs/q_learning_pseu.png"/>
 </div>
 <div align=center>图 $\text{5.3}$ $\text{Q-learning}$ 算法伪代码</div>
 
@@ -154,7 +154,7 @@ $$
 $\qquad$ 也就是说，$\text{Sarsa}$ 算法是直接用下一个状态和动作对应的 $Q$ 值来作为估计值的，而 $\text{Q-learning}$ 算法则是用下一个状态对应的最大 $Q$ 值。然后我们就可以贴出伪代码了，如图 $\text{5.4}$ 所示。
 
 <div align=center>
-<img width="500" src="../figs/ch5/sarsa_pseu.png"/>
+<img width="500" src="figs/sarsa_pseu.png"/>
 </div>
 <div align=center>图 $\text{5.4}$ $\text{Sarsa}$ 算法伪代码 </div>
 
@@ -263,7 +263,7 @@ $\qquad$ 在本节中我们选择了一个叫做 $\text{CliffWalking-v0}$ 的环
 如图 $\text{5.5}$ 所示，整个环境中共有 $\text{48}$ 个网格，其中黄色网格（标号为 $\text{36}$ ）为起点，绿色网格（标号为 $\text{47}$ ）为终点，红色的网格表示悬崖，智能体的目标是以最短的路径从起点到终点，并且避开悬崖。由于这个环境比较简单，我们一眼就能看出来最优的策略应当是从起点向上沿着 $\text{24}$ 号网格直线走到 $\text{35}$ 号网格最后到达终点，后面我们看看强化学习智能体能不能学出来。
 
 <div align=center>
-<img width="400" src="../figs/ch5/CliffWalking-v0.png"/>
+<img width="400" src="figs/CliffWalking-v0.png"/>
 </div>
 <div align=center>图 $\text{5.5}$ $\text{CliffWalking-v0}$ 环境示意图</div>
 
@@ -311,7 +311,7 @@ self.epsilon_decay = 200 #  e-greedy策略中epsilon的衰减率
 准备工作做好之后，就可以开始训练了，得到的训练曲线如图 $\text{5.6}$ 所示，曲线横坐标表示回合数（$\text{episode}$），纵坐标表示每回合获得的总奖励，可以看出曲线其实从大约 $\text{50}$ 个回合的时候就开始收敛了，也就是我们的智能体学到了一个最优策略。
 
 <div align=center>
-<img width="400" src="../figs/ch5/CliffWalking-v0_training_curve.png"/>
+<img width="400" src="figs/CliffWalking-v0_training_curve.png"/>
 </div>
 <div align=center>图 $\text{5.6}$ $\text{CliffWalking-v0}$ 环境 $\text{Q-learning}$ 算法训练曲线</div>
 
@@ -333,7 +333,7 @@ $\qquad$ 为了确保我们训练出来的策略是有效的，可以拿训好�
 $\qquad$ 如图 $\text{5.7}$ 所示，我们测试了 $10$ 个回合，发现每回合获得的奖励都是 $-13$ 左右，说明我们学到的策略是比较稳定的。
 
 <div align=center>
-<img width="400" src="../figs/ch5/CliffWalking-v0_testing_curve.png"/>
+<img width="400" src="figs/CliffWalking-v0_testing_curve.png"/>
 </div>
 <div align=center>图 $\text{5.7}$ $\text{CliffWalking-v0}$ 环境 $\text{Q-learning}$ 算法测试曲线</div>
 
@@ -363,14 +363,14 @@ self.epsilon_decay = 200 #  e-greedy策略中epsilon的衰减率
 $\qquad$ 然后重新训练和测试，得到的训练曲线如图 $\text{5.8}$ 所示：
 
 <div align=center>
-<img width="400" src="../figs/ch5/CliffWalking-v0_training_curve_1.png"/>
+<img width="400" src="figs/CliffWalking-v0_training_curve_1.png"/>
 </div>
 <div align=center>图 $\text{5.8}$ $\text{Q-learning}$ 算法消融实验训练曲线 </div>
 
 $\qquad$ 测试曲线如图 $\text{5.9}$ 所示：
 
 <div align=center>
-<img width="400" src="../figs/ch5/CliffWalking-v0_testing_curve_1.png"/>
+<img width="400" src="figs/CliffWalking-v0_testing_curve_1.png"/>
 </div>
 <div align=center>图 $\text{5.9}$ $\text{Q-learning}$ 算法消融实验训练曲线 </div>
 
@@ -382,14 +382,14 @@ $\qquad$ 由于 $\text{Sarsa}$ 算法与 $\text{Q-learning}$ 算法在实现上�
 $\qquad$ 在相同环境和参数设置下，得到的实验结果如图 $\text{5.10}$ 所示：
 
 <div align=center>
-<img width="500" src="../figs/ch5/Sarsa_CliffWalking-v0_training_curve.png"/>
+<img width="500" src="figs/Sarsa_CliffWalking-v0_training_curve.png"/>
 </div>
 <div align=center>图 $\text{5.10}$ $\text{Sarsa}$ 算法训练曲线 </div>
 
 $\qquad$ 测试曲线如图 $\text{5.11}$ 所示：
 
 <div align=center>
-<img width="500" src="../figs/ch5/Sarsa_CliffWalking-v0_testing_curve.png"/>
+<img width="500" src="figs/Sarsa_CliffWalking-v0_testing_curve.png"/>
 </div>
 <div align=center>图 $\text{5.11}$ $\text{Sarsa}$ 算法测试曲线 </div>
 

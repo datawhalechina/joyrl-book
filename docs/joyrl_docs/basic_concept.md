@@ -7,14 +7,14 @@
 在强化学习中，智能体（agent）在环境（environment）中与环境进行交互产生样本，并且不断更新自身的策略（policy），以获得最大化的奖励（reward），如下图：
 
 <div align=center>
-<img width="400" src="../figs/joyrl_docs/interaction_mdp.png"/>
+<img width="400" src=".figs/interaction_mdp.png"/>
 <div align=center>图 1 智能体与环境交互的过程</div>
 </div>
 
 以`DQN`算法为例，如图2所示，智能体在与环境交互的过程中，会不断地产生样本，即`transition`，主要包括`state`、`action`、`reward`、`next_state`等等，然后将这些样本存入经验池（experience replay buffer）中，再从经验池中随机采样出一批样本，进行算法更新，更新完之后再产生一批样本，如此循环往复，直到达到终止条件。几乎所有强化学习算法都遵循这个思路，这就是强化学习的基本训练逻辑。
 
 <div align=center>
-<img width="500" src="../figs/joyrl_docs/DQN_pseu.png"/>
+<img width="500" src=".figs/DQN_pseu.png"/>
 <div align=center>图 2 DQN算法训练伪代码</div>
 </div>
 
@@ -27,7 +27,7 @@
 前面提到，强化学习的训练过程主要包括交互采样和策略更新两个过程，因此`JoyRL`中这两个过程分别抽象成两个模块，即交互器（interactor）和学习器（learner）。如图3所示，交互器每次从学习器中获取更新的策略，然后与环境交互产生样本(experiences)。学习器则不断从交互器中获取样本，然后进行算法更新。其中，交互器在有些资料中也被称为`worker`，这里为了与`JoyRL`中的命名保持一致，统一称为交互器和学习器。
 
 <div align=center>
-<img width="600" src="../figs/joyrl_docs/interactor_learner.png"/>
+<img width="600" src=".figs/interactor_learner.png"/>
 <div align=center>图 3 交互器与学习器</div>
 </div>
 
@@ -40,7 +40,7 @@
 如图4所示，模型管理在不断给交互器提供更新的策略的同时，也会不断地从学习器中获取更新的模型，然后保存到本地。收集器则不断地从交互器中获取交互样本和策略样本，然后将交互样本存入经验回放中，将策略样本传回学习器，用来更新经验回放中的`priority`。这样，交互器和学习器就可以专注于自己的主要任务，而免于频繁地进行数据的收集和处理，从而提高训练效率。
 
 <div align=center>
-<img width="600" src="../figs/joyrl_docs/collector.png"/>
+<img width="600" src=".figs/collector.png"/>
 <div align=center>图 4 收集器与模型管理器</div>
 </div>
 
@@ -51,7 +51,7 @@
 如图5所示，其中追踪器是所有模块共享的，因此没有在图中画出。记录器则主要从交互器和学习器中获取奖励和损失等信息，然后记录到本地文件中。
 
 <div align=center>
-<img width="600" src="../figs/joyrl_docs/recorder.png"/>
+<img width="600" src=".figs/recorder.png"/>
 <div align=center>图 5 数据追踪器与记录器</div>
 </div>
 
@@ -62,7 +62,7 @@
 如图 6 所示，在线测试器更像是一个独立的模块，它并不影响训练过程，因此在图中特别将其分离出来。
 
 <div align=center>
-<img width="600" src="../figs/joyrl_docs/overall_framework.png"/>
+<img width="600" src=".figs/overall_framework.png"/>
 <div align=center>图 6 整体框架</div>
 </div>
 

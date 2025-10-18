@@ -38,7 +38,7 @@ $$
 $\qquad$ 由于这里的奖励函数 $R$ 是环境给到智能体的，$\gamma$ 则是设置的参数，因此其实 $V(s)$ 是可以手动计算出来的。假设机器人需要在一个 $m \times n$ 的网格中解决最短路径的问题，即从起点到终点走哪条路最短。在这种情况下，我们如果想要知道某个网格即某个状态代表的价值，那么我们可以从这个网格或状态出发，搜集到其他所有网格之间可能的轨迹。出于简化计算的考虑，我们考虑一个 $2 \times 2$的网格，如图 $\text{4-1}$ 所示，我们用机器人的位置表示不同的状态，即$s_1,s_2,s_3,s_4$，规定机器人智能体向右或者向下走，分别用 $a_1$ 和 $a_2$ 。起点为坐标$(0,0)$，即初始状态为$S_0=s_1$，终点为右下角的网格 $s_4$，我们设置机器人每走一步接收到的奖励为 $-1$， 折扣因子 $\gamma=0.9$ 。
 
 <div align=center>
-<img width="200" src="../figs/ch4/simple_maze.png"/>
+<img width="200" src="figs/simple_maze.png"/>
 </div>
 <div align=center>图 $\text{4-1}$ 迷你网格示例</div>
 
@@ -54,7 +54,7 @@ $$
 $\qquad$ 同样的可以计算出其他状态对应的价值函数，$V(s_2)=V(s_3)= -1$，$s_4$ 由于是终止状态，因此 $V(s_4)=0$ ，这样就得到了所有状态的价值函数分布，如图 $\text{4-2}$ 所示。
 
 <div align=center>
-<img width="100" src="../figs/ch4/simple_maze_2.png"/>
+<img width="100" src="figs/simple_maze_2.png"/>
 </div>
 <div align=center>图 $\text{4-2}$ 价值函数网格分布</div>
 
@@ -65,7 +65,7 @@ $\qquad$ 蒙特卡洛方法主要分成两种算法，一种是首次访问蒙�
 $\qquad$ 而在 $\text{EVMC}$ 方法中不会忽略同一状态的多个回报，在前面的示例中，我们计算价值函数的方式就是 $\text{every-visit}$ ，比如对于状态 $s_4$ ，我们考虑了所有轨迹即 $G_{\tau_3}$ 和 $G_{\tau_4}$ 的回报，而在 $\text{FVMC}$ 我们只会记录首次遍历的回报，即 $G_{\tau_3}$ 和 $G_{\tau_4}$ 其中的一个，具体取决于遍历到 $s_4$ 时对应的轨迹是哪一条。 
 
 <div align=center>
-<img width="400" src="../figs/ch4/fvmc_pseu.png"/>
+<img width="400" src="figs/fvmc_pseu.png"/>
 </div>
 <div align=center>图 $\text{4-3}$ 首次访问蒙特卡洛算法伪代码</div>
 
@@ -119,7 +119,7 @@ $\qquad$ 结合图 $4.4$ 总结一下时序差分方法和蒙特卡洛方法之�
 
 
 <div align=center>
-<img width="600" src="../figs/ch4/TD_3.png"/>
+<img width="600" src="figs/TD_3.png"/>
 </div>
 <div align=center>图 $4.4$ 时序差分方法和蒙特卡洛方法的差异</div>
 

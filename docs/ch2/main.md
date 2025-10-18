@@ -11,7 +11,7 @@ $\qquad$ 例如，我们要学习弹钢琴，在这个过程中充当决策者�
 $\qquad$ 如图 $\text{2-1}$ 所示，它描述了马尔可夫决策过程中智能体与环境的交互过程。智能体每一时刻都会接收环境的状态，并执行动作，进而接收到环境反馈的奖励信号和下一时刻的状态。
 
 <div align=center>
-<img width="600" src="../figs/ch2/interaction_mdp.png"/>
+<img width="600" src="figs/interaction_mdp.png"/>
 </div>
 <div align=center>图 $\text{2-1}$ 马尔可夫决策过程中智能体与环境的交互过程</div>
 
@@ -87,7 +87,7 @@ $\qquad$ 注意，到目前为止我们讲的都是有限状态马尔可夫决�
 $\qquad$ 既然状态数有限，我们就可以用一种状态流向图的形式表示智能体与环境交互过程中的走向。举个例子，学生在上课时一般会有三种状态，认真听讲、玩手机和睡觉，分别用$s_1$，$s_2$ 和 $s_3$ 表示。我们知道在马尔可夫决策过程中一般所有状态之间都是可以相互切换的，当学生在认真听讲时能切换到玩手机或者睡觉的状态，在睡觉时也可能继续睡觉，也可能醒过来认真听讲或者玩手机。如图 $2.2$ 所示，图中每个曲线箭头表示指向自己，比如当学生在认真听讲即处于状态 $s_1$ 时，会有 $0.2$ 的概率继续认真听讲。当然也会分别有 $0.4$ 和 $0.4$ 的概率玩手机（$s_2$）或者睡觉（$s_3$）。此外，当学生处于状态 $s_2$ 时，也会有 $0.2$ 的概率会到认真听讲的状态（$s_1$），像这种两个状态之间能互相切换的情况我们用一条没有箭头的线连接起来，参考无向图的表示。
 
 <div align=center>
-<img width="400" src="../figs/ch2/fsm.png"/>
+<img width="400" src="figs/fsm.png"/>
 </div>
 <div align=center>图 $2.2$ 马尔可夫链</div>
 
@@ -181,13 +181,13 @@ $\qquad$ 这里我们推荐使用 $\text{Anaconda}$ 来安装 $\text{Python}$ �
 $\qquad$ 打开[Anaconda 官网](https://www.anaconda.com/)下载对应的安装包，下载完成后双击安装包，按照提示一步步安装即可。注意安装时勾选为所有用户安装，如图 $\text{2-3}$ 所示。
 
 <div align=center>
-<img width="600" src="../figs/ch2/anaconda_install.png"/>
+<img width="600" src="figs/anaconda_install.png"/>
 </div>
 
 $\qquad$ 由于 $\text{Windows}$ 系统终端较多，在使用时需要在对应的终端初始化 $\text{Anaconda}$ 环境（类似于配置环境变量），首先以管理员身份打开 $\text{Anaconda Prompt}$，如图 $\text{2-4}$ 所示。
 
 <div align=center>
-<img width="600" src="../figs/ch2/anaconda_prompt.png"/>
+<img width="600" src="figs/anaconda_prompt.png"/>
 </div>
 
 然后执行以下命令分别初始化对应终端环境。
@@ -204,7 +204,7 @@ conda init powershell
 $\qquad$ $\text{Mac}$ 系统安装较为简单，下载好对应的安装包之后，按照提示安装即可，注意勾选仅为当前用户安装，如图 $\text{2-5}$ 所示。
 
 <div align=center>
-<img width="600" src="../figs/ch2/anaconda_install_mac.png"/>
+<img width="600" src="figs/anaconda_install_mac.png"/>
 </div>
 
 #### 2.5.1.3 Linux 系统
@@ -216,19 +216,19 @@ $\qquad$ 不同系统下 $\text{VS Code}$ 的安装是类似的，因此这里�
 $\qquad$ 首先打开[VS Code 官网](https://code.visualstudio.com/)下载对应的安装包，注意 $\text{Windows}$ 要选择 $\text{System installer}$，如图 $\text{2-6}$ 所示。
 
 <div align=center>
-<img width="600" src="../figs/ch2/vscode_install.png"/>
+<img width="600" src="figs/vscode_install.png"/>
 </div>
 
 $\qquad$ 安装时勾选添加到 $\text{Windows}$ 资源管理器的右键菜单，如图 $\text{2-7}$ 所示。
 
 <div align=center>
-<img width="600" src="../figs/ch2/vscode_install_2.png"/>
+<img width="600" src="figs/vscode_install_2.png"/>
 </div>
 
 $\qquad$ 安装完成后，打开 $\text{VS Code}$，点击左侧的扩展按钮，即插件市场，搜索 $\text{Python}$ 并安装，如图 $\text{2-8}$ 所示。
 
 <div align=center>
-<img width="500" src="../figs/ch2/vscode_python.jpg"/>
+<img width="500" src="figs/vscode_python.jpg"/>
 </div>
 <div align=center>图 $\text{2-8}$ $\text{VS Code}$ $\text{Python}$ 插件安装</div>
 
@@ -239,21 +239,21 @@ $\qquad$ 上述过程安装配置完成后，就可以简单使用 $\text{VS Cod
 $\qquad$ 简单创建并打开一个 $\text{Python}$ 文件，在 $\text{VS Code}$ 下方就会显示当前 $\text{Python}$ 解释器的版本，如图 $\text{2-9}$ 所示。
 
 <div align=center>
-<img width="600" src="../figs/ch2/vscode_python_2.png"/>
+<img width="600" src="figs/vscode_python_2.png"/>
 </div>
 <div align=center>图 $\text{2-8}$ $\text{VS Code}$ 显示 $\text{Python}$ 解释器版本</div>
 
 然后单击就能选择其他版本的解释器，如图 $\text{2-10}$ 所示。
 
 <div align=center>
-<img width="600" src="../figs/ch2/vscode_python_3.png"/>
+<img width="600" src="figs/vscode_python_3.png"/>
 </div>
 <div align=center>图 $\text{2-9}$ $\text{VS Code}$ 选择 $\text{Python}$ 解释器版本</div>
 
 选择好解释器版本后，重新打开一个终端，就能看到当前的解释器版本了，如图 $\text{2-11}$ 所示。
 
 <div align=center>
-<img width="600" src="../figs/ch2/vscode_python_4.png"/>
+<img width="600" src="figs/vscode_python_4.png"/>
 </div>
 <div align=center>图 $\text{2-11}$ $\text{VS Code}$ 终端显示 $\text{Python}$ 解释器版本</div>
 

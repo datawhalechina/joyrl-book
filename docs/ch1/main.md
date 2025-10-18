@@ -5,7 +5,7 @@ $\qquad$ 在正式介绍具体的强化学习（ $\text{reinforcement learning�
 $\qquad$ 强化学习发展至今，虽然算法已经有成百上千种样式，但实际上从大类来看要掌握的核心算法并不多，大多数算法都只是在核心算法的基础上做了一些较小的改进。举个例子，如图 $\text{1-1}$ 所示，我们知道水加上咖啡豆通过一定的方法就能调制成咖啡，水加上糖块就能变成糖水，它们虽然看起来形式不同，但本质上都是水，只是有不同的口味而已。
 
 <div align=center>
-<img width="400" src="../figs/ch1/water_examp.png"/>
+<img width="400" src="figs/water_examp.png"/>
 </div>
 <div align=center>图 $\text{1-1}$ 咖啡与糖水的示例</div>
 
@@ -16,7 +16,7 @@ $\qquad$ 我们先讨论一下为什么要学习强化学习，以及强化学�
 $\qquad$ 笔者想起了初中生物课本中关于蚯蚓的一个实验，其内容大致是这样的：如图 $\text{1-2}$ 所示，将蚯蚓放在一个盒子中，盒子中间有一个分叉路口，路的尽头分别放有食物和电极，让蚯蚓自己爬行到其中一条路的尽头，在放有食物的路的尽头蚯蚓会品尝到食物的美味，而在放有电极的路的尽头则会受到轻微的电击。
 
 <div align=center>
-<img width="200" src="../figs/ch1/qiuyin.png"/>
+<img width="200" src="figs/qiuyin.png"/>
 </div>
 <div align=center>图 $\text{1-2}$ 蚯蚓实验</div>
 
@@ -44,7 +44,7 @@ $\qquad$ 从 $1.1$ 中我们了解了强化学习大概是用来做什么的，�
 $\qquad$ 除了游戏领域之外，强化学习在机器人领域中也有所应用。举个例子，图 $\text{1-3}$ 演示了 $\text{NICO}$ 机器人学习抓取任务的过程。该任务的目标是将桌面上的物体抓取到指定的位置，机器人通过每次输出相应关节的参数来活动手臂，然后通过摄像头观测当前的状态，最后通过人为设置的奖励（例如接近目标就给一个奖励）来学习到正确的抓取策略。
 
 <div align=center>
-<img width="200" src="../figs/ch1/NICO_grasping.png"/>
+<img width="200" src="figs/NICO_grasping.png"/>
 </div>
 <div align=center>图 $\text{1-3}$ $\text{NICO}$ 机器人学习抓取任务</div>
 
@@ -54,7 +54,7 @@ $\qquad$ 不同于游戏领域，在机器人中实现强化学习的成本往�
 $\qquad$ 如图 $\text{1-4}$ 所示，该仿真环境模拟了机器人抓取任务的真实环境，通过仿真环境免去大量视觉传感器的搭建过程从而可以大大降低实验成本，同时由于仿真环境中机器人关节响应速度更快，进而算法的迭代速度更快，可以更快地得到较好的策略。
 
 <div align=center>
-<img width="200" src="../figs/ch1/gym_robot.png"/>
+<img width="200" src="figs/gym_robot.png"/>
 </div>
 <div align=center>图 $\text{1-4}$ 机器人抓取任务的仿真环境</div>
 

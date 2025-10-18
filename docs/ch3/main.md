@@ -7,7 +7,7 @@ $\qquad$ 前面我们讲到马尔可夫决策过程是强化学习中的基本�
 $\qquad$ 动态规划其实是一个看起来好懂但实践起来很复杂的概念，为了帮助读者理解，这里会举一道经典的面试编程题<sup>①</sup>作为示例。
 
 <div align=center>
-<img width="400" src="../figs/ch3/robot_maze.png"/>
+<img width="400" src="figs/robot_maze.png"/>
 </div>
 <div align=center>图 3.1 路径之和</div>
 
@@ -29,7 +29,7 @@ $\qquad$ 即走到当前位置 $(i,j)$ 的路径数量等于走到前一个位�
 $\qquad$ 此外我们需要考虑一些边界条件，因为在状态转移方程中 $i$ 和 $j$ 是不能等于 $0$ 的，比如都等于$0$的时候会出现 $f(0,0)+f(-1,0)+f(0,-1)$ ，$f(-1,0)$ 或者 $f(0,-1)$ 在本题中是没有意义的，因此我们需要额外判断 $i$ 和 $j$ 等于 $0$ 的情况。如图 $3.2$ 所示，首先我们考虑 $i=0,j=0$ 的情况，即 $f(0,0)$ ，显然此时机器人在起始点，从起始点到起始点 $(0,0)$ 对应的路径数量必然是 $1$ ，对于 $i\neq0,j=0$ ，此时机器人会一直沿着网格左边沿往下走，这条路径上的所有 $f(i,j)$ 也都会是 $1$ ，$i=0,j\neq0$ 的情况同理。
 
 <div align=center>
-<img width="400" src="../figs/ch3/robot_maze_2.png"/>
+<img width="400" src="figs/robot_maze_2.png"/>
 </div>
 <div align=center>图 $3.2$ 路径之和解析</div>
 
@@ -151,14 +151,14 @@ $\qquad$ 然后在策略改进时选择最大的$Q(s,a)$值来更新。在一轮
 $\qquad$ 如图 3.3 所示，图（a）描述了上面所说的策略估计和改进持续迭代的过程，图（b）则描述了在迭代过程中策略$\pi$和状态价值函数$V$最后会同时收敛到最优。
 
 <div align=center>
-<img width="400" src="../figs/ch3/pi.png"/>
+<img width="400" src="figs/pi.png"/>
 </div>
 <div align=center>图 3.3 策略迭代的收敛过程</div>
 
 $\qquad$ 策略迭代算法伪代码如下：
 
 <div align=center>
-<img width="600" src="../figs/ch3/pi_pseu.png"/>
+<img width="600" src="figs/pi_pseu.png"/>
 </div>
 <div align=center>图 3.4 策略迭代算法伪代码</div>
 
@@ -173,14 +173,14 @@ $$
 $\qquad$ 价值迭代的伪代码如下：
 
 <div align=center>
-<img width="600" src="../figs/ch3/vi_pseu.png"/>
+<img width="600" src="figs/vi_pseu.png"/>
 </div>
 <div align=center>图 3.5 价值迭代算法伪代码</div>
 
 $\qquad$ 它首先将所有的状态价值初始化，然后不停地对每个状态迭代，直到收敛到最优价值$V^{*}$，并且根据最优价值推算出最优策略$\pi^{*}$。这样其实更像是一个动态规划本身的思路，而不是强化学习的问题。这种情况下，其实比策略迭代算法要慢得多，尽管两种方法都需要多次遍历。但是在策略迭代算法中考虑了中间每个时步可能遇到的最优策略并及时加以改进，这意味着就算策略在早期并不完美（也许需要改进），策略迭代仍能够更快地接近最优解。
 
 <div align=center>
-<img width="400" src="../figs/ch3/pi_vs_vi.png"/>
+<img width="400" src="figs/pi_vs_vi.png"/>
 </div>
 <div align=center>图 3.4 策略迭代与价值迭代收敛过程的区别</div>
 

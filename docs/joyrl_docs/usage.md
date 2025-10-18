@@ -100,7 +100,7 @@ env_cfg:
 配置好之后，用前面提到的任一种方式运行即可开始训练，训练过程中会在当前目录下生成一个`tasks`文件夹，里面包含了训练过程中的模型文件、日志文件等等，如下：
 
 <div align=center>
-<img width="500" src="../figs/joyrl_docs/tasks_dir.png"/>
+<img width="500" src=".figs/tasks_dir.png"/>
 <div align=center>图 1 tasks文件夹构成</div>
 </div>
 
@@ -174,7 +174,7 @@ class MLP(nn.Module):
 在上一小节配置网络中，会发现网络配置输入是`merge_layers`，这是因为`JoyRL`支持多头网络，即可以同时输入多个网络，然后将多个网络的输出进行合并。例如当状态输入同时包含图像和线性输入时，此时可以分别配置两个网络，然后将两个网络的输出进行合并，这就是多头网络的用法，如下图：
 
 <div align=center>
-<img width="500" src="../figs/joyrl_docs/branch_merge.png"/>
+<img width="500" src=".figs/branch_merge.png"/>
 <div align=center>图 2 branch和merge网络</div>
 </div>
 

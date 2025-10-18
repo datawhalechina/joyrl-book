@@ -16,14 +16,14 @@ $\qquad$ 而要想适配连续动作空间，我们干脆就将选择动作的�
 $\qquad$ 我们知道 $Q(s,a)$ 函数实际上是有两个变量的，相当于一个曲线平面，如图 $\text{11-1}$ 所示。当我们输入某个状态到 $\text{Actor}$ 时，即固定 $s=s_t$ 时，则相当于把曲线平面截断成一条曲线。而 $\text{Actor}$ 的任务就是寻找这条曲线的最高点，并返回对应的横坐标，即最大 $Q$ 值对应的动作。
 
 <div align=center>
-<img width="500" src="../figs/ch11/ddpg_actor.png"/>
+<img width="500" src="figs/ddpg_actor.png"/>
 </div>
 <div align=center>图 $\text{11-1}$ $\text{DDPG}$ 算法中 $\text{Actor}$ 的作用</div>
 
 $\qquad$ 所以，$\text{DDPG}$ 算法并没有做真正意义上的梯度更新，只是在寻找最大值，本质上还是 $\text{DQN}$ 算法的思路。因此 $\text{DDPG}$ 算法中 $\text{Critic}$ 结构会同时包含状态和动作输入，而不是 $\text{Actor-Critic}$ 算法中那样只包含状态，因为它本质上就是 $Q(s,a)$ 函数，如图 $\text{11-2}$ 所示。
 
 <div align=center>
-<img width="500" src="../figs/ch11/ddpg.png"/>
+<img width="500" src="figs/ddpg.png"/>
 </div>
 <div align=center>图 $\text{11-2}$ $\text{DDPG}$ 网络结构</div>
 
@@ -151,7 +151,7 @@ $\qquad$ 同之前章节一样，本书在实战中将演示一些核心的代�
 $\qquad$ 如图 $\text{11-3}$ 所示，$\text{DDPG}$ 算法的训练方式其实更像 $\text{DQN}$ 算法。注意在第 $15$ 步中 $\text{DDPG}$ 算法将当前网络参数复制到目标网络的方式是软更新，即每次一点点地将参数复制到目标网络中，与之对应的是 $\text{DQN}$ 算法中的硬更新。软更新的好处是更加平滑缓慢，可以避免因权重更新过于迅速而导致的震荡，同时降低训练发散的风险。
 
 <div align=center>
-<img width="500" src="../figs/ch11/ddpg_pseu.png"/>
+<img width="500" src="figs/ddpg_pseu.png"/>
 </div>
 <div align=center>图 $\text{11-3}$ $\text{DDPG}$ 算法伪代码</div>
 
@@ -269,14 +269,14 @@ class Agent:
 $\qquad$ 核心代码到这里全部实现了，我们展示一下训练效果，如图 $\text{11-4}$ 所示。
 
 <div align=center>
-<img width="500" src="../figs/ch11/DDPG_Pendulum_training_curve.png"/>
+<img width="500" src="figs/DDPG_Pendulum_training_curve.png"/>
 </div>
 <div align=center>图 $\text{11-4}$ $\text{Pendulum}$ 环境 $\text{DDPG}$ 算法训练曲线</div>
 
 $\qquad$ 这里我们使用了一个具有连续动作空间的环境 $\text{Pendulum}$ ，如图 $\text{11-5}$ 所示。在该环境中，钟摆以随机位置开始，我们的目标是将其向上摆动，使其保持直立。
 
 <div align=center>
-<img width="400" src="../figs/ch11/Pendulum.png"/>
+<img width="400" src="figs/Pendulum.png"/>
 </div>
 <div align=center>图 $\text{11-5}$ $\text{Pendulum}$ 环境演示</div>
 
@@ -335,7 +335,7 @@ def update(self):
 $\qquad$ 同样我们展示一下训练效果，在合适的参数设置下它会比 $\text{DDPG}$ 算法收敛的更快，如图 $\text{11-6}$ 所示。
 
 <div align=center>
-<img width="500" src="../figs/ch11/TD3_Pendulum_training_curve.png"/>
+<img width="500" src="figs/TD3_Pendulum_training_curve.png"/>
 </div>
 <div align=center>图 $\text{11-5}$ $\text{Pendulum}$ 环境 $\text{TD3}$ 算法训练曲线</div>
 

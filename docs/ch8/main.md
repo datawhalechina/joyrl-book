@@ -58,14 +58,14 @@ $\qquad$ 在 $\text{Double DQN}$ 算法中我们是通过改进目标 $Q$ 值的
 $\qquad$ 回顾我们在 $\text{DQN}$ 算法所使用的最基础的网络结构，如图 $\text{8-1}$ 所示，它是一个全连接网络，包含一个输入层、一个隐藏层和输出层。输入层的维度为状态的维度，输出层的维度为动作的维度。
 
 <div align=center>
-<img width="200" src="../figs/ch8/dqn_network.png"/>
+<img width="200" src="figs/dqn_network.png"/>
 </div>
 <div align=center>图 $\text{8-1}$ $\text{DQN}$ 网络结构</div>
 
 $\qquad$ 而 $\text{Dueling DQN}$ 算法中则是在输出层之前分流（ $\text{dueling}$ ）出了两个层，如图 $\text{8-2}$ 所示，一个是优势层（$\text{advantage layer}$），用于估计每个动作带来的优势，输出维度为动作数一个是价值层（$\text{value layer}$），用于估计每个状态的价值，输出维度为 $1$ 。
 
 <div align=center>
-<img width="400" src="../figs/ch8/dueling_network.png"/>
+<img width="400" src="figs/dueling_network.png"/>
 </div>
 <div align=center>图 $\text{8-2}$ $\text{Dueling DQN}$ 网络结构</div>
 
@@ -114,7 +114,7 @@ $\qquad$ 如图 $\text{8-3}$ 所示，每个父节点的值等于左右两个子
 $\qquad$ 注意到，第一个样本对应的区间也是最长的，这意味着第一个样本的优先级最高，也就是 $\text{TD}$ 误差最大，反之第四个样本的区间最短，优先级也最低。这样一来，我们就可以通过采样来实现优先经验回放的功能。
 
 <div align=center>
-<img width="300" src="../figs/ch8/sumtree.png"/>
+<img width="300" src="figs/sumtree.png"/>
 </div>
 <div align=center>图 $\text{8-3}$ $\text{SumTree}$ 结构</div>
 
@@ -230,7 +230,7 @@ next_target_q_value_batch = next_target_value_batch.gather(1, torch.max(next_q_v
 $\qquad$ 最后与 $\text{DQN}$ 算法相同，可以得到 $\text{Double DQN}$ 算法在 $\text{CartPole}$ 环境下的训练结果，如图 $\text{8-5}$ 所示，完整的代码可以参考本书的代码仓库。
 
 <div align=center>
-<img width="400" src="../figs/ch8/DoubleDQN_CartPole-v1_training_curve.png"/>
+<img width="400" src="figs/DoubleDQN_CartPole-v1_training_curve.png"/>
 </div>
 <div align=center>图 $\text{8-5}$ $\text{CartPole}$ 环境 $\text{Double DQN}$ 算法训练曲线</div>
 
@@ -276,7 +276,7 @@ class DuelingQNetwork(nn.Module):
 $\qquad$ 最后我们展示一下它在 $\text{CartPole}$ 环境下的训练结果，如图 $\text{8-6}$ 所示，完整的代码同样可以参考本书的代码仓库。
 
 <div align=center>
-<img width="400" src="../figs/ch8/DuelingDQN_CartPole-v1_training_curve.png"/>
+<img width="400" src="figs/DuelingDQN_CartPole-v1_training_curve.png"/>
 </div>
 <div align=center>图 $\text{8-5}$ $\text{CartPole}$ 环境 $\text{Dueling DQN}$ 算法训练曲线</div>
 
@@ -393,7 +393,7 @@ class NoisyQNetwork(nn.Module):
 $\qquad$ 同样我们展示一下它在 $\text{CartPole}$ 环境下的训练结果，如图 $\text{8-6}$ 所示。
 
 <div align=center>
-<img width="400" src="../figs/ch8/NoisyDQN_CartPole-v1_training_curve.png"/>
+<img width="400" src="figs/NoisyDQN_CartPole-v1_training_curve.png"/>
 </div>
 <div align=center>图 $\text{8-6}$ $\text{CartPole}$ 环境 $\text{Noisy DQN}$ 算法训练曲线</div>
 
@@ -405,7 +405,7 @@ $\qquad$ $\text{PER DQN}$ 算法的核心看起来简单，就是把普通的经
 
 
 <div align=center>
-<img width="500" src="../figs/ch8/per_dqn_pseu.png"/>
+<img width="500" src="figs/per_dqn_pseu.png"/>
 </div>
 <div align=center>图 $\text{8-7}$ $\text{PER DQN}$ 伪代码</div>
 
@@ -576,7 +576,7 @@ class PrioritizedReplayBufferQue:
 $\qquad$ 最后，我们可以将优先级经验回放和 $\text{DQN}$ 结合起来，实现一个带有优先级的 $\text{DQN}$ 算法，并展示它在 $\text{CartPole}$ 环境下的训练结果，如图 $\text{8-8}$ 所示。
 
 <div align=center>
-<img width="400" src="../figs/ch8/PERDQN_CartPole-v1_training_curve.png"/>
+<img width="400" src="figs/PERDQN_CartPole-v1_training_curve.png"/>
 </div>
 <div align=center>图 $\text{8-8}$ $\text{CartPole}$ 环境 $\text{PER DQN}$ 算法训练曲线</div>
 
