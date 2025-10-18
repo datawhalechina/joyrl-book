@@ -71,6 +71,7 @@
       repo: 'https://github.com/datawhalechina/joyrl-book',
 
       loadSidebar: true,
+      elativePath: true,
       subMaxLevel: 4,
 
       latex: {
@@ -80,10 +81,11 @@
 
       plugins: [
         function (hook) {
-          hook.beforeEach(function (content) {
-            // 修复图片路径
-            return content.replace(/..\/figs/g, "figs");
-          });
+          // figs 在根目录下
+          // hook.beforeEach(function (content) {
+          //   // 修复图片路径
+          //   return content.replace(/..\/figs/g, "figs");
+          // });
 
           hook.doneEach(function () {
             // 页面切换后重新渲染公式
@@ -125,6 +127,25 @@
       ]
     };
   </script>
+  <script>
+    // figs 在对应的md下
+    // ✅ 自动修复 Markdown 和 HTML 图片路径
+    window.$docsify.plugins = [].concat(window.$docsify.plugins || [], function (hook, vm) {
+      hook.beforeEach(function (content) {
+        const path = vm.route.path; // 当前文档路径，如 "ch9/main"
+        const dir = path.substring(0, path.lastIndexOf('/')); // 只取目录 "ch9"
+
+        // ✅ 修复 HTML 写法：<img src="figs/...">
+        content = content.replace(/src\s*=\s*["']figs\//g, `src="${dir}/figs/`);
+
+        // ✅ 修复 Markdown 写法：![](figs/...)
+        content = content.replace(/!\[(.*?)\]\(figs\//g, `![$1](${dir}/figs/`);
+
+        return content;
+      });
+    });
+</script>
+
 
   <!-- Docsify 核心 -->
   <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>

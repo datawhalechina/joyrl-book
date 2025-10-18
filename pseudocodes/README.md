@@ -1,4 +1,8 @@
-# 伪代码
+## 安装依赖
+
+安装 [Tex Live](https://tug.org/texlive/)
+
+## 伪代码
 
 有三个版本：
 
