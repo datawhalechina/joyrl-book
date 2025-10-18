@@ -26,7 +26,7 @@ $\qquad$ 尽管神经网络和 $Q$ 表都可以用来近似动作价值函数 $Q
 
 
 <div align=center>
-<img width="500" src=".figs/q_table_dqn.png"/>
+<img width="500" src="figs/q_table_dqn.png"/>
 </div>
 <div align=center>图 $\text{7-1}$ $\text{DQN}$ 网络结构</div>
 
@@ -92,7 +92,7 @@ $\qquad$ 当然，与深度学习不同的是，经验回放的容量是需要�
 $\qquad$ 在 $\text{DQN}$ 算法中还有一个重要的技巧，即使用了一个每隔若干步才更新的目标网络。这个技巧其实借鉴了 $\text{Double DQN}$ 算法中的思路，具体会在下一章展开。如图 $\text{7-3}$ 所示，目标网络和当前网络结构都是相同的，都用于近似 $Q$ 值，在实践中每隔若干步才把每步更新的当前网络参数复制给目标网络，这样做的好处是保证训练的稳定，避免 $Q$ 值的估计发散。
 
 <div align=center>
-<img width="500" src=".figs/target_q.png"/>
+<img width="500" src="figs/target_q.png"/>
 </div>
 <div align=center>图 $\text{7-3}$ 目标网络示例</div>
 
@@ -120,7 +120,7 @@ $\qquad$ 请读者再次注意，本书中所有的实战仅提供核心内容�
 $\qquad$ 伪代码如图 $\text{7-4}$ 所示，如大多数强化学习算法那样，$\text{DQN}$ 算法的训练过程分为交互采样和模型更新两个步骤，这两个步骤其实我们在深度学习基础那章讲强化学习与深度学习的关系的时候就已经给出示例了。其中交互采样的目的就是与环境交互并产生样本，模型更新则是利用得到的样本来更新相关的网络参数，更新方式涉及每个强化学习算法的核心。
 
 <div align=center>
-<img width="600" src=".figs/dqn_pseu.png"/>
+<img width="600" src="figs/dqn_pseu.png"/>
 </div>
 <div align=center>图 $\text{7-4}$ $\text{DQN}$ 算法伪代码</div>
 
@@ -286,7 +286,7 @@ $\qquad$ 首先由于我们是小批量随机梯度下降，所以当经验回�
 $\qquad$ 由于我们在 $\text{Q-learning}$ 算法中已经讲过怎么定义训练和测试过程了，所有强化学习算法的训练过程基本上都是通用的，因此我们在这里及之后的章节中不再赘述。但由于我们在 $\text{DQN}$ 算法中使用了跟 $\text{Q-learning}$ 算法 中不一样的环境，但都是 $\text{OpenAI Gym}$ 平台的，所以我们简单介绍一下该环境。环境名称叫做 $\text{Cart Pole}$ <sup>①</sup> ，中文译为推车杆游戏。如图 $\text{7-5}$ 所示，我们的目标是持续左右推动保持倒立的杆一直不倒。
 
 <div align=center>
-<img width="600" src=".figs/cart_pole.png"/>
+<img width="600" src="figs/cart_pole.png"/>
 </div>
 <div align=center>图 $\text{7-5}$ $\text{Cart-Pole}$ 游戏</div>
 
@@ -320,12 +320,12 @@ $\qquad$ 与 $\text{Q-learning}$ 算法相比，除了 $varepsilon$, 折扣因�
 $\qquad$ 最后展示一下我们的训练曲线和测试曲线，分别如图 $\text{7-6}$ 和 $\text{7-7}$ 所示。
 
 <div align=center>
-<img width="600" src=".figs/DQN_CartPole-v1_training_curve.png"/>
+<img width="600" src="figs/DQN_CartPole-v1_training_curve.png"/>
 </div>
 <div align=center>图 $\text{7-6}$ $\text{CartPole-v1}$ 环境 $\text{DQN}$ 算法训练曲线</div>
 
 <div align=center>
-<img width="600" src=".figs/DQN_CartPole-v1_testing_curve.png"/>
+<img width="600" src="figs/DQN_CartPole-v1_testing_curve.png"/>
 </div>
 <div align=center>图 $\text{7-7}$ $\text{CartPole-v1}$ 环境 $\text{DQN}$ 算法测试曲线</div>
 
