@@ -1,25 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>JoyRL 文档</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  <meta name="description" content="JoyRL 文档">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta name="description" content="JoyRL 文档" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
 
-  <!-- Docsify 主题（亮/暗） -->
-  <link rel="stylesheet" media="(prefers-color-scheme: dark)" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple-dark.css">
-  <link rel="stylesheet" media="(prefers-color-scheme: light)" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css">
+  <!-- ========== Docsify Theme (Light/Dark) ========== -->
+  <link
+    rel="stylesheet"
+    media="(prefers-color-scheme: dark)"
+    href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple-dark.css"
+  />
+  <link
+    rel="stylesheet"
+    media="(prefers-color-scheme: light)"
+    href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css"
+  />
 
   <style>
     /* =============== 基础主题调整 =============== */
     :root {
-      /* 可根据喜好调整主题色 */
+      /* 需要可以开启主题主色： */
       /* --theme-hue: 325; */
     }
 
-    /* =============== Giscus 布局修复 =============== */
-    /* 评论容器与正文对齐居中 */
+    /* =============== Giscus 布局修复（与你原逻辑保持一致） =============== */
     #giscus-comments {
       max-width: 800px;
       width: 100%;
@@ -31,7 +38,6 @@
       z-index: 0;
     }
 
-    /* 确保左侧目录浮在上层 */
     .sidebar,
     .sidebar-toggle,
     .docsify-toc {
@@ -39,14 +45,12 @@
       z-index: 20 !important;
     }
 
-    /* 降低 Giscus 层级，防止遮挡目录 */
     .giscus,
     .giscus-frame {
       position: relative !important;
       z-index: 0 !important;
     }
 
-    /* 小屏幕自适应 */
     @media (max-width: 900px) {
       #giscus-comments {
         width: 100%;
@@ -54,7 +58,7 @@
       }
     }
 
-    /* 优化公式显示 */
+    /* 优化 MathJax 显示 */
     mjx-container[jax="SVG"][display="true"] {
       text-align: center;
       margin: 1em 0;
@@ -65,100 +69,186 @@
 <body>
   <div id="app"></div>
 
+  <!-- ===================== Docsify 核心配置 ===================== -->
   <script>
     window.$docsify = {
+      /* 左上角标题与仓库入口（保持你的配置） */
       name: 'JoyRL',
       repo: 'https://github.com/datawhalechina/joyrl-book',
 
+      /* 关键：启用侧边栏 + 相对路径模式 */
       loadSidebar: true,
-      relativePath: true,
+      relativePath: true,   // ✅ 允许基于当前文档目录解析链接与资源
+
+      /* 可选：限制侧边栏展示层级 */
       subMaxLevel: 4,
 
+      /* 你在用 docsify-latex，但我们也保留 docsify 原生 markdown 渲染配置入口 */
       latex: {
         inlineMath: [['$', '$'], ['\\(', '\\)']],
         displayMath: [['$$', '$$']],
       },
 
-      plugins: [
-        function (hook) {
-          // figs 在根目录下
-          // hook.beforeEach(function (content) {
-          //   // 修复图片路径
-          //   return content.replace(/..\/figs/g, "figs");
-          // });
-
-          hook.doneEach(function () {
-            // 页面切换后重新渲染公式
-            if (window.MathJax) window.MathJax.typesetPromise();
-
-            // 自动插入 Giscus 评论区到正文内容区，确保每次页面切换都刷新
-            var giscusId = 'giscus-comments';
-            var section = document.querySelector('.markdown-section');
-            // 移除旧的评论区
-            var oldGiscus = document.getElementById(giscusId);
-            if (oldGiscus) oldGiscus.remove();
-            // 获取当前 hash 路径作为唯一标识
-            var hashPath = location.hash ? location.hash.replace(/^#\/?/, '') : 'home';
-            // 插入新的评论区
-            if (section) {
-              var giscusDiv = document.createElement('div');
-              giscusDiv.id = giscusId;
-              section.appendChild(giscusDiv);
-              var script = document.createElement('script');
-              script.src = 'https://giscus.app/client.js';
-              script.setAttribute('data-repo', 'datawhalechina/joyrl-book');
-              script.setAttribute('data-repo-id', 'R_kgDOJQd2zw');
-              script.setAttribute('data-category', 'Q&A');
-              script.setAttribute('data-category-id', 'DIC_kwDOJQd2z84Cwt-N');
-              script.setAttribute('data-mapping', 'specific');
-              script.setAttribute('data-term', hashPath);
-              script.setAttribute('data-strict', '0');
-              script.setAttribute('data-reactions-enabled', '1');
-              script.setAttribute('data-emit-metadata', '0');
-              script.setAttribute('data-input-position', 'bottom');
-              script.setAttribute('data-theme', 'light');
-              script.setAttribute('data-lang', 'zh-CN');
-              script.setAttribute('crossorigin', 'anonymous');
-              script.async = true;
-              giscusDiv.appendChild(script);
-            }
-          });
-        }
-      ]
+      /* 你后续的插件都统一放到 window.$docsify.plugins 数组里（见下方统一合并的插件） */
+      plugins: []
     };
   </script>
+
+  <!-- ===================== 自定义插件：图片路径修复 + MathJax 切换页面重置 + Giscus 注入 ===================== -->
   <script>
-    // ✅ 自动修复 Markdown/HTML 图片路径，支持相对路径 figs/xxx.png
+    /**
+     * 这个统一插件做三件事（顺序非常重要）：
+     * 1) beforeEach：在内容注入前
+     *    - 清理/重置 MathJax 的计数与标签缓存（防止 label multiply-defined）
+     *    - 将「相对图片路径 figs/...」修正为「基于当前 md 所在目录的路径」
+     *      👉 支持 Markdown 语法 ![](figs/xxx.png) 与 HTML <img src="figs/...">
+     * 2) doneEach：当页面渲染完
+     *    - 重新 typeset 数学公式
+     *    - 根据当前 hash 重新注入 Giscus（与你原先逻辑一致，但封装到 here）
+     * 3) 其余功能（如返回顶部按钮）保持你原逻辑，并兼容 SPA 切换
+     */
     window.$docsify.plugins = [].concat(window.$docsify.plugins || [], function (hook, vm) {
-      hook.beforeEach(function (content) {
-        const file = vm.route.file; // 如 ch9/main.md
-        const dir = file ? file.substring(0, file.lastIndexOf('/')) : '';
 
-        // ✅ 修复 HTML 写法 <img src="figs/...">
-        content = content.replace(/src="figs\//g, `src="${dir}/figs/`);
+      /* -------------------- 工具函数：安全清理并重置 MathJax -------------------- */
+      function resetMathJax() {
+        if (!window.MathJax) return;
 
-        // ✅ 修复 Markdown 写法 ![](figs/...)
-        content = content.replace(/!\[(.*?)\]\(figs\//g, `![$1](${dir}/figs/`);
+        // v3/v4 均支持的安全调用（存在则执行）
+        try { MathJax.typesetClear && MathJax.typesetClear(); } catch (e) {}
+        try { MathJax.texReset && MathJax.texReset(); } catch (e) {}
+
+        // 进一步兜底（部分版本内部包名变动，这里做“尽力而为”的清空）
+        try {
+          if (MathJax._ && MathJax._.tex && MathJax._.tex.Tags) {
+            // 部分版本为 reset / Reset，统一尝试
+            (MathJax._.tex.Tags.reset && MathJax._.tex.Tags.reset()) ||
+            (MathJax._.tex.Tags.Reset && MathJax._.tex.Tags.Reset());
+          }
+        } catch (e) {}
+      }
+
+      /* -------------------- 工具函数：修复内容中的图片相对路径 -------------------- */
+      function rewriteImagePaths(content) {
+        /**
+         * 目标：允许在任意章节 md 里用最短写法
+         *   - Markdown: ![](figs/a.png)  ->  自动变为  ch7/figs/a.png（如果当前在 ch7/xxx.md）
+         *   - HTML:     <img src="figs/a.png"> -> 同上
+         *
+         * 注意：
+         * - 不处理以 http(s):// 开头、以 data:、以 ./ 或 ../ 开头、以 / 开头的路径
+         * - 只处理以 "figs/" 开头的「纯相对」短路径
+         */
+        var file = vm.route.file || ''; // 例如 "ch9/main.md"
+        var dir  = file ? file.substring(0, file.lastIndexOf('/')) : ''; // "ch9"
+        var prefix = dir ? (dir + '/') : '';
+
+        // 1) 修复 HTML <img src="figs/..."> —— 保持其它属性不变，尽量严谨匹配
+        content = content.replace(
+          /(<img\b[^>]*?\bsrc\s*=\s*["'])(figs\/[^"']*)(["'][^>]*>)/gi,
+          function (_, pre, src, post) {
+            // 跳过特殊前缀
+            if (/^(?:https?:|data:|\/|\.\/|\.\.\/)/i.test(src)) return pre + src + post;
+            return pre + prefix + src + post; // 加上当前目录前缀
+          }
+        );
+
+        // 2) 修复 Markdown ![alt](figs/xxx.png) —— 注意 alt 内可能有字符，非贪婪匹配
+        content = content.replace(
+          /(!\[[^\]]*?\]\()(\s*figs\/[^)]+)(\))/gi,
+          function (_, pre, src, post) {
+            // 跳过特殊前缀
+            if (/^(?:\s*(?:https?:|data:|\/|\.\/|\.\.\/))/i.test(src)) return pre + src + post;
+            // 去除开头的空格（如果有），再拼接前缀
+            var cleaned = src.replace(/^\s+/, '');
+            return pre + prefix + cleaned + post;
+          }
+        );
 
         return content;
+      }
+
+      /* -------------------- 生命周期：内容注入前 -------------------- */
+      hook.beforeEach(function (content) {
+        // ① 切换页面前：清理 MathJax，避免 label 多次定义
+        resetMathJax();
+
+        // ② 在 md 注入前，重写图片路径
+        content = rewriteImagePaths(content);
+
+        return content;
+      });
+
+      /* -------------------- 生命周期：页面渲染完成后 -------------------- */
+      hook.doneEach(function () {
+        // ③ 渲染完成后：重新 typeset 数学公式
+        if (window.MathJax && MathJax.typesetPromise) {
+          MathJax.typesetPromise();
+        }
+
+        // ④ 每次页面切换：重新渲染/注入 Giscus（与你原逻辑保持一致）
+        try {
+          var giscusId = 'giscus-comments';
+          var section = document.querySelector('.markdown-section');
+
+          // 移除旧的评论区
+          var old = document.getElementById(giscusId);
+          if (old) old.remove();
+
+          // 基于当前 hash 作为讨论主题 key
+          var hashPath = location.hash ? location.hash.replace(/^#\/?/, '') : 'home';
+
+          if (section) {
+            var giscusDiv = document.createElement('div');
+            giscusDiv.id = giscusId;
+            section.appendChild(giscusDiv);
+
+            var script = document.createElement('script');
+            script.src = 'https://giscus.app/client.js';
+            script.setAttribute('data-repo', 'datawhalechina/joyrl-book');
+            script.setAttribute('data-repo-id', 'R_kgDOJQd2zw');
+            script.setAttribute('data-category', 'Q&A');
+            script.setAttribute('data-category-id', 'DIC_kwDOJQd2z84Cwt-N');
+            script.setAttribute('data-mapping', 'specific'); // 使用自定义 term
+            script.setAttribute('data-term', hashPath);
+            script.setAttribute('data-strict', '0');
+            script.setAttribute('data-reactions-enabled', '1');
+            script.setAttribute('data-emit-metadata', '0');
+            script.setAttribute('data-input-position', 'bottom');
+            script.setAttribute('data-theme', 'light');
+            script.setAttribute('data-lang', 'zh-CN');
+            script.setAttribute('crossorigin', 'anonymous');
+            script.async = true;
+            giscusDiv.appendChild(script);
+          }
+        } catch (e) {
+          // 忽略 Giscus 注入失败
+          console.warn('Giscus inject failed:', e);
+        }
+
+        // ⑤ 同步处理“返回顶部”按钮在 SPA 切换后的可见性
+        var topBtn = document.getElementById('back-to-top');
+        if (topBtn) {
+          topBtn.style.display = (window.scrollY > 200) ? 'block' : 'none';
+        }
       });
     });
   </script>
 
-
-
-  <!-- Docsify 核心 -->
-  <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
-
-  <!-- 搜索与分页插件 -->
-  <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
+  <!-- ===================== Docsify 核心 & 常用插件 ===================== -->
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
 
   <!-- 自动编号的 MathJax 配置 -->
   <script>
+    /**
+     * MathJax v4 配置：
+     * - 启用 ams/amsmath/bm 包
+     * - tags: 'ams' 开启自动编号（配合我们在 beforeEach 的 reset 避免重复定义）
+     * - 跳过 code/pre 等区块
+     */
     window.MathJax = {
       tex: {
-        
         inlineMath: [['$', '$'], ['\\(', '\\)']],
         displayMath: [['$$', '$$']],
         processEscapes: true,
@@ -167,16 +257,16 @@
         // tagSide: 'right',
         // tagIndent: '0em',
         options: {
-          skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+          skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
         }
       }
     };
   </script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/docsify-latex@0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify-latex@0"></script>
 
   <!-- 代码复制按钮 -->
-  <script src="//cdn.jsdelivr.net/npm/docsify-copy-code"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify-copy-code"></script>
 
   <!-- =============== Giscus 评论系统 =============== -->
   <!-- <div id="giscus-comments">
