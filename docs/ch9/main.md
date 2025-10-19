@@ -1,4 +1,4 @@
-## 基础概念
+## 读前须知
 
 一些帮助理解文章的关键符号或名词说明，见表 1 。
 
@@ -13,12 +13,16 @@
 | $G_t$ | 回报（ $\text{Return}$ ），指从时间步 $t$ 开始的未来（折扣）奖励和 |
 | $\text{rollout}$ | 从某个初始状态出发，根据当前策略与环境交互，采样出一整条轨迹的过程。 |
 
+涉及公式推导部分，文章会标红一些重要或者结论性的公式，一些拓展性质的推导会单独放在一个小节内，刚入门的读者可先选择性跳过这些繁杂的推导内容，只需记住关键公式即可。
+
+文章末尾的小结和思考部分（如有）会对文章内容进行总结，包括关键点和核心思想，帮助读者更好地理解和记忆文章内容，建议读者先快速浏览正文后，再带着小结和思考部分回头仔细阅读正文内容，会有更好的理解效果。
 
 ## 策略参数化
 
 基于策略梯度的方法首先需要将策略参数化，即直接将策略 $\pi$ 参数化为 $\pi_\theta(a|s)$，其中 $\theta$ 是策略的参数，表示在状态 $s$ 下选择动作 $a$ 的概率，并且处处可微。简而言之，**参数化策略是一个处处可微的概率分布**。
 
 然后，目标函数就可表示为 $J(\pi_\theta)$ ，即是一个关于参数 $\theta$ 的函数。为了最大化目标函数 $J(\pi_\theta)$ ，可以使用梯度上升法，即通过计算目标函数关于参数 $\theta$ 的梯度 $\nabla_\theta J(\pi_\theta)$ 来更新参数 $\theta$ ，如式 $\eqref{eq:grad_ascent}$ 所示。
+
 $$
 \begin{equation}
 \label{eq:grad_ascent}
@@ -157,8 +161,8 @@ $$
 $$
 \begin{equation}\label{eq:18}
 \color{red}
-\nabla_\theta J(\pi_\theta) = \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\left(\sum_{t=0}^{T-1
-} \nabla_\theta \log \pi_\theta(a_t|s_t)\right) R(\tau)\right]
+\nabla_\theta J(\pi_\theta) = \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\sum_{t=0}^{T-1
+} \nabla_\theta \log \pi_\theta(a_t|s_t) R(\tau)\right]
 \end{equation}
 $$
 
@@ -432,8 +436,6 @@ $$
 
 其中近似符号 $\approx$ 表示忽略了平稳分布 $d^{\pi}(s)$ 关于参数 $\theta$ 的导数项，即 $\nabla_\theta d^{\pi}(s)$ 。这种近似在实际应用中是合理的，因为平稳分布通常变化较慢，对梯度的影响较小，因此可以忽略不计。
 
-此外，对比基于轨迹概率密度推导出的目标函数（式 $\eqref{eq:18}$）, 会发现两者形式上是类似的，区别在于一个是从时间步 $t$ 的角度来表示，另一个是从状态 $s$ 的角度来表示。
-
 ### 目标函数梯度的推导
 
 先看价值函数部分，如式 $\eqref{eq:35}$ 所示。
@@ -545,6 +547,95 @@ V^{\pi}(s) \\
 $$
 
 至此，目标函数梯度 $\nabla_\theta J(\pi_\theta)$ 的推导完毕。
+
+## 两种推导方式的等价性
+
+对比基于轨迹概率密度推导出的目标函数和基于状态值函数推导出的目标函数， 会发现两者形式上是类似的，区别在于一个是从时间步 $t$ 的角度来表示，另一个是从状态 $s$ 的角度来表示。**实际上，这两个表达式确实是等价的，可以相互转换**。下面将展示如何从状态值函数的表达式出发，推导出轨迹概率密度的表达式。
+
+首先，回顾状态值函数的策略梯度表达式，如式 $\eqref{eq:34_recap}$ 所示。
+
+$$
+\begin{equation}\label{eq:34_recap}
+\color{red}
+\nabla_\theta J(\pi_\theta) = \mathbb{E}_{s \sim d^{\pi}(s), a \sim \pi_\theta(a|s)}[\nabla_\theta \log \pi_\theta(a|s) Q^{\pi}(s, a)]
+\end{equation}
+$$
+
+接下来，展开期望的定义，如式 $\eqref{eq:42}$ 所示。
+
+$$
+\begin{equation}\label{eq:42}
+\begin{aligned}
+\nabla_\theta J(\pi_\theta)
+&= \sum_{s} d^{\pi}(s) \sum_{a} \pi_\theta(a|s) \nabla_\theta \log \pi_\theta(a|s) Q^{\pi}(s, a) \\
+&= \sum_{s} d^{\pi}(s) \sum_{a} \pi_\theta(a|s) \frac{\nabla_\theta \pi_\theta(a|s)}{\pi_\theta(a|s)} Q^{\pi}(s, a)
+\end{aligned}
+\end{equation}
+$$
+
+再将状态值函数 $Q^{\pi}(s, a)$ 展开成轨迹的形式，如式 $\eqref{eq:43}$ 所示。
+
+$$
+\begin{equation}\label{eq:43}
+Q^{\pi}(s, a) = \mathbb{E}_{\tau \sim p_\theta(\tau|s_0=s, a_0=a)} \left[ \sum_{t=0}^{T} r(s_t, a_t) \right]
+\end{equation}
+$$
+将式 $\eqref{eq:43}$ 代入到式 $\eqref{eq:42}$ 中，如式 $\eqref{eq:44}$ 所示。
+
+$$
+\begin{equation}\label{eq:44}
+\begin{aligned}
+\nabla_\theta J(\pi_\theta)
+&= \sum_{s} d^{\pi}(s) \sum_{a} \pi_\theta(a|s) \frac{\nabla_\theta \pi_\theta(a|s)}{\pi_\theta(a|s)} \mathbb{E}_{\tau \sim p_\theta(\tau|s_0=s, a_0=a)} \left[ \sum_{t=0}^{T} r(s_t, a_t) \right] \\
+&= \sum_{s} d^{\pi}(s) \sum_{a} \nabla_\theta \pi_\theta(a|s) \mathbb{E}_{\tau \sim p_\theta(\tau|s_0=s, a_0=a)} \left[ \sum_{t=0}^{T} r(s_t, a_t) \right]
+\end{aligned}
+\end{equation}
+$$
+
+接下来，将状态分布 $d^{\pi}(s)$ 和动作分布 $\pi_\theta(a|s)$ 展开成轨迹的形式，如式 $\eqref{eq:45}$ 所示。
+
+$$
+\begin{equation}\label{eq:45}
+\begin{aligned}
+d^{\pi}(s) &= \sum_{t=0}^{T} \gamma^t P(s_t = s | \pi_\theta) \\
+\pi_\theta(a|s) &= P(a_t = a | s_t = s, \pi_\theta)
+\end{aligned}
+\end{equation}
+$$
+
+将式 $\eqref{eq:45}$ 代入到式 $\eqref{eq:44}$ 中，并结合轨迹概率密度的定义，最终得到轨迹概率密度的策略梯度表达式，如式 $\eqref{eq:18_recap}$ 所示。
+
+$$
+\begin{equation}\label{eq:18_recap}
+\color{red}
+\nabla_\theta J(\pi_\theta) = \mathbb{E}_{\tau \sim p_\theta(\tau)} \left[ \sum_{t=0}^{T} \nabla_\theta \log \pi_\theta(a_t|s_t) R(\tau ) \right]
+\end{equation}
+$$
+
+## 策略梯度通用表达式
+
+在 GAE 论文 <sup> ③ </sup> 中，提出了一种更为通用的策略梯度表达式，如式 $\eqref{eq:46}$ 所示。
+
+$$
+\begin{equation}\label{eq:46}
+g = \mathbb{E}\left[ \sum_{t=0}^{\infty} \Psi_t \nabla_{\theta} \log \pi_{\theta}(a_t \mid s_t) \right]
+\end{equation}
+$$
+
+> ③ https://arxiv.org/pdf/1506.02438
+
+其中 $\Psi_t$ 是一个通用的回报估计，可以根据具体的算法选择不同的形式。下面列举几种常见的 $\Psi_t$ 形式：
+
+*  $ R_t = \sum_{t=0}^{\infty} r_t$ ：最基本的形式，表示从时间步 $t$ 开始的累计奖励
+*  $ G_t = \sum_{t=0}^{\infty} \gamma^t r_t$ ：折扣回报，考虑了未来奖励的折扣因子 $\gamma$， 后面要讲的 $\text{REINFORCE}$ 算法就是基于这种形式
+*  $ \sum_{t'=t}^{\infty} r_{t'}$ ：表示动作 $a_t$ 之后的累计奖励
+*  $ \sum_{t'=t}^{\infty} r_{t'} - b(s_{t'})$ ：引入基线函数 $b(s_{t'})$ 来减少方差
+*  $ Q^{\pi}(s_t, a_t)$ ：动作价值函数
+*  $ A^{\pi}(s_t, a_t) = Q^{\pi}(s_t, a_t) - V^{\pi}(s_t)$ ：优势函数，表示动作相对于平均水平的好坏
+*  $r_t + \gamma V^{\pi}(s_{t+1}) - V^{\pi}(s_t)$ ：时序差分误差（$\text{TD error}$）
+
+公式 $\eqref{eq:46}$ 中的 $ \nabla_{\theta} \log \pi_{\theta}(a_t \mid s_t)$ 用于衡量策略参数 $\theta$ 变化对动作选择概率的影响，相当于一个演员（$\text{Actor}$）的角色，而 $\Psi_t$ 则提供了一个衡量动作好坏的信号，相当于一个评论家（$\text{Critic}$）的角色。 通过选择不同的 $\Psi_t$ 形式，即对动作不同的评价方式，可以得到不同的算法，例如 $\text{REINFORCE}$、$\text{PPO}$ 等，这就是比较流行的演员-评论家（$\text{Actor-Critic}$）方法的基本思想。
+
 
 ## 策略函数建模
 
@@ -696,7 +787,9 @@ print(f"动作索引: {action.item()}")
 print(f"动作概率: {action_probs[action].item():.3f}")
 print(f"log π(a|s): {log_prob.item():.3f}")
 ```
+
 运行结果如代码 7 所示。
+
 <div style="text-align: center;">
     <figcaption style="font-size: 14px;"> <b>代码 7 Softmax 策略网络运行结果</b> </figcaption>
 </div>
@@ -958,6 +1051,16 @@ $$
 
 ## 小结
 
+本文首先介绍策略参数化的基本概念，即通过参数化策略函数 $\pi_\theta(a|s)$ 来直接表示策略，读者须记住参数化策略是一个处处可微的分布。
+
+然后通过基于轨迹密度概率和占用测度两种方式推导出策略梯度的目标函数及梯度表达式，分别为式 $\eqref{eq:18}$ 和式 $\eqref{eq:34}$。两种推导方式是等价的，前者更直观易懂，后者更严谨且便于扩展。
+
+在占用测度推导中，读者须谨记平稳分布在强化学习问题中是一定存在的，即随着迭代次数增加，状态分布会收敛到一个固定的分布，这个分布与初始状态分布无关。
+
+接着，介绍了如何对策略函数进行建模，分别针对离散动作空间和连续动作空间，使用多项式分布和高斯分布进行建模，对于入门者来说，只需掌握相关的公式形式以及代码实现即可，不需要深入理解对应分布的梯度计算细节。
+
+然后，介绍了 $\text{REINFORCE}$ 算法的基本原理和实现流程，作为策略梯度方法的入门算法，读者需要理解其核心思想，即通过采样轨迹来估计策略梯度，并使用蒙特卡洛方法进行优化。但由于这类纯策略梯度方法使用率较低，可更多地将其作为理解更复杂算法的理论基础，而不用过于关注其实际应用和代码实现部分。
+
 
 ## 思考
 
@@ -981,3 +1084,4 @@ REINFORCE 算法是无偏的，因为它使用了蒙特卡洛方法来估计策�
 **马尔可夫平稳分布需要满足什么条件？**
 
 **$\text{REINFORCE}$ 算法会比 $\text{Q-learning}$ 算法训练速度更快吗？为什么？**
+

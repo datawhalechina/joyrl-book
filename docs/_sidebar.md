@@ -8,7 +8,7 @@
 - [第六章 深度学习基础](/ch6/main.md)
 - [第七章 DQN算法](/ch7/main.md)
 - [第八章 DQN算法进阶](/ch8/main.md)
-- [第九章 策略梯度](/ch9/main.md)
+- [第九章 策略梯度方法](/ch9/main.md)
 - [第十章 Actor-Critic 算法](/ch10/main.md)
 - [第十一章 DDPG 算法](/ch11/main.md)
 - [第十二章 PPO 算法](/ch12/main.md)
