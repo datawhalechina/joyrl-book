@@ -289,23 +289,22 @@
 \clearpage
 
 
-\section{Policy Gradient算法}
+\section{REINFORCE 算法}
 \begin{algorithm}[H] % [H]固定位置
-    \floatname{algorithm}{{REINFORCE算法：Monte-Carlo Policy Gradient}\footnotemark[1]} 
+    \floatname{algorithm}{{ REINFORCE 算法}}
 	\renewcommand{\thealgorithm}{} % 去掉算法标号
 	\caption{} 
 	\begin{algorithmic}[1] % [1]显示步数
-		\STATE 初始化策略参数$\boldsymbol{\theta} \in \mathbb{R}^{d^{\prime}}($ e.g., to $\mathbf{0})$
-		\FOR {回合数 = $1,M$}
-			\STATE 根据策略$\pi(\cdot \mid \cdot, \boldsymbol{\theta})$采样一个(或几个)回合的transition
-			\FOR {时步 = $0,1,2,...,T-1$}
-				\STATE 计算回报$G \leftarrow \sum_{k=t+1}^{T} \gamma^{k-t-1} R_{k}$
-				\STATE 更新策略$\boldsymbol{\theta} \leftarrow {\boldsymbol{\theta}+\alpha \gamma^{t}} G \nabla \ln \pi\left(A_{t} \mid S_{t}, \boldsymbol{\theta}\right)$
+		\STATE 初始化策略参数 $\theta$
+		\FOR {迭代次数 = $1,M$}
+			\STATE 根据策略 $\pi_{\theta}$ 采样轨迹：$\tau=\left\{s_{0}, a_{0}, r_{0}, \cdots, s_{T}, a_{T}, r_{T}\right\}$
+			\FOR {时步 $t = 0,1,\cdots,T-1$}
+				\STATE 计算回报$G \leftarrow \sum_{k=t+1}^{T} \gamma^{k-t-1} r_{k}$
+				\STATE 更新策略$\theta \leftarrow {\theta+\alpha \gamma^{t}} G \nabla \ln \pi_{\theta}\left(a_{t} \mid s_{t}\right)$
 			\ENDFOR
 		\ENDFOR
 	\end{algorithmic}
 \end{algorithm}
-\footnotetext[1]{Reinforcement Learning: An Introduction}
 \clearpage
 \section{Advantage Actor Critic算法}
 \begin{algorithm}[H] % [H]固定位置
