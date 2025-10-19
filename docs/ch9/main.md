@@ -1,8 +1,6 @@
-# 策略梯度
-
 ## 基础概念
 
-一些帮助理解文章的关键符号说明，见表 1 。
+一些帮助理解文章的关键符号或名词说明，见表 1 。
 
 <div style="text-align: center;">
     <figcaption style="font-size: 14px;"> <b>表 1 符号说明</b> </figcaption>
@@ -13,6 +11,7 @@
 | $S_t,A_t,R_t$ | 强调一段轨迹中第 $t$ 步的状态、动作、奖励，有时也写作$s_t,a_t,r_t$，大写更强调随机变量 |
 | $Pr$ | 某个事件的概率，以区分与状态转移矩阵 $P$ |
 | $G_t$ | 回报（ $\text{Return}$ ），指从时间步 $t$ 开始的未来（折扣）奖励和 |
+| $\text{rollout}$ | 从某个初始状态出发，根据当前策略与环境交互，采样出一整条轨迹的过程。 |
 
 
 ## 策略参数化
@@ -221,7 +220,9 @@ J(\pi_\theta)=\int_{s_{0}} \rho_{0}\left(s_{0}\right) \sum_{a} \pi_\theta(a|s_0)
 \end{equation}
 $$
 
-乍看初始状态分布 $\rho_0$ 似乎与策略参数 $\theta$ 无关，因此在计算梯度 $\nabla_\theta J(\pi_\theta)$ 时可以将其视为常数项直接提到积分号外面。然而，实际上初始状态分布 $\rho_0$ 会影响智能体后续的状态访问分布（ $\text{state visitation distribution}$ ），进而影响目标函数 $J(\pi_\theta)$ 的值。因此，在计算梯度 $\nabla_\theta J(\pi_\theta)$ 时，不能简单地将初始状态分布 $\rho_0$ 视为常数项。为此，需要引入 **平稳分布**（ $\text{stationary distribution}$ ） 的概念来更好地理解状态访问分布与策略参数 $\theta$ 之间的关系。
+乍看初始状态分布 $\rho_0$ 似乎与策略参数 $\theta$ 无关，因此在计算梯度 $\nabla_\theta J(\pi_\theta)$ 时可以将其视为常数项直接提到积分号外面。然而，实际上初始状态分布 $\rho_0$ 会影响智能体后续的状态访问分布（ $\text{state visitation distribution}$ ），进而影响目标函数 $J(\pi_\theta)$ 的值。
+
+因此，在计算梯度 $\nabla_\theta J(\pi_\theta)$ 时，不能简单地将初始状态分布 $\rho_0$ 视为常数项。为此，需要引入 **平稳分布**（ $\text{stationary distribution}$ ） 的概念来更好地理解状态访问分布与策略参数 $\theta$ 之间的关系。
 
 ### 平稳分布
 
@@ -594,8 +595,9 @@ y_a (1 - y_a), & \text{if } a' = a \\
 \end{equation}
 $$
 
-注意到，由于使用了指数函数，如果某个动作的得分 $z_i$ 较高，对应的 $\exp(z_i)$ 就会成倍增加，换句话说，这会让策略更倾向于“高分动作”。然而，如果得分 $z$ 过大，可能会导致指数函数的输出超出计算机的表示范围，从而导致数值不稳定的问题。为了解决这个问题，通常会在计算 $\text{Softmax}$ 函数时，对所有的得分 $z$ 减去一个常数 $\max(z)$ ，这样可以避免指数函数的输入过大，同时不会改变概率分布的相对关系，如式 $\eqref{eq:softmax_stable}$ 所示。
+注意到，由于使用了指数函数，如果某个动作的得分 $z_i$ 较高，对应的 $\exp(z_i)$ 就会成倍增加，换句话说，这会让策略更倾向于“高分动作”。然而，如果得分 $z$ 过大，可能会导致指数函数的输出超出计算机的表示范围，从而导致数值不稳定的问题。
 
+为了解决这个问题，通常会在计算 $\text{Softmax}$ 函数时，对所有的得分 $z$ 减去一个常数 $\max(z)$ ，这样可以避免指数函数的输入过大，同时不会改变概率分布的相对关系，如式 $\eqref{eq:softmax_stable}$ 所示。
 $$
 \begin{equation}\label{eq:softmax_stable}
 \pi_\theta(a|s) = \frac{\exp(f_\theta(s,a) - \max_{a'} f_\theta(s,a'))}{\sum_{a'} \exp(f_\theta(s,a') - \max_{a''} f_\theta(s,a''))}
@@ -945,6 +947,13 @@ $$
 \nabla_\theta J(\pi_\theta) \approx \frac{1}{N} \sum_{i=1}^{N} \sum_{t=0}^{T} \nabla_\theta \log \pi_\theta(a_t^{(i)}|s_t^{(i)}) G_t^{(i)}
 \end{equation}
 $$
+
+在实际应用中，$\text{REINFORCE}$ 算法的流程如图 3 所示。首先，初始化策略参数 $\theta$ ，然后在每个迭代周期中，采样 $N$ 条轨迹 $\{\tau^{(i)}\}_{i=1}^{N}$ （这个过程称为 $\text{rollout}$，出于简便图中只展示了一条轨迹的采样 ），计算每条轨迹的回报 $G_t^{(i)}$ ，最后根据式 $\eqref{eq:41}$ 计算梯度并更新策略参数 $\theta$ 。
+
+<div align=center>
+<img width="800" src="figs/pseu.png"/>
+<figcaption style="font-size: 14px;">图 3 REINFORCE 算法流程</figcaption>
+</div>
 
 
 ## 小结
