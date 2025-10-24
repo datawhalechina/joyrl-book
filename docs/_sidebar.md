@@ -14,6 +14,8 @@
 - [第十一章 DDPG 算法](/ch11/main.md)
 - [第十二章 PPO 算法](/ch12/main.md)
 - [第十三章 SAC 算法](/ch13/main.md)
+- [第十四章 实战篇](/ch99/torch.md)
+  - [PyTorch 简介](/ch99/torch.md)
 - [习题解答](/solution/main.md)
 - [JoyRL 中文文档](/joyrl_docs/main.md)
   - [基本概念](/joyrl_docs/basic_concept.md)
