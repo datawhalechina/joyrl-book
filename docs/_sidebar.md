@@ -15,7 +15,7 @@
   - [DDPG 算法](/rl_basic/ch11/main.md)
   - [PPO 算法](/rl_basic/ch12/main.md)
   - [SAC 算法](/rl_basic/ch13/main.md)
-  - [实战篇](/rl_basic/ch99/torch.md)
+  - [实战篇](/rl_basic/ch99/README.md)
     - [PyTorch 入门](/rl_basic/ch99/torch.md)
     - [Q-learning 算法](/rl_basic/ch99/q-learning.md)
     - [Sarsa 算法](/rl_basic/ch99/sarsa.md)
