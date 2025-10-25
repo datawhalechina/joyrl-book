@@ -15,7 +15,7 @@
 
 此外，本书中的演示代码会在以`Jupyter Notebook`的形式呈现，具体在[notebooks](./notebooks)文件夹中。
 
-## 在线阅读(内容实时更新)
+## 在线阅读
 
 地址：https://datawhalechina.github.io/joyrl-book/
 
@@ -27,6 +27,7 @@
 | :-------------------------------: | :--: |
 |       [强化学习基础](https://datawhalechina.github.io/joyrl-book/#/rl_basic/README)       | ☑️ |
 | 离线强化学习 |⬜|
+| 大模型与强化学习 |⬜|
 
 ## 主要贡献者
 
