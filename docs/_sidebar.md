@@ -18,6 +18,8 @@
   - [实战篇](/rl_basic/ch99/torch.md)
     - [PyTorch 简介](/rl_basic/ch99/torch.md)
   - [习题解答](/rl_basic/solution/main.md)
+- [离线强化学习](/offline_rl/README.md)
+- [大模型与强化学习](/llm_rl/README.md)
 - [JoyRL 中文文档](/joyrl_docs/main.md)
   - [基本概念](/joyrl_docs/basic_concept.md)
   - [使用说明](/joyrl_docs/usage.md)
