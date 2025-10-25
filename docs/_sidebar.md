@@ -17,6 +17,8 @@
   - [SAC 算法](/rl_basic/ch13/main.md)
   - [实战篇](/rl_basic/ch99/torch.md)
     - [PyTorch 简介](/rl_basic/ch99/torch.md)
+    - [Q-learning 算法](/rl_basic/ch99/q-learning.md)
+    - [Sarsa 算法](/rl_basic/ch99/sarsa.md)
   - [习题解答](/rl_basic/solution/main.md)
 - [离线强化学习](/offline_rl/README.md)
 - [大模型与强化学习](/llm_rl/README.md)
