@@ -63,11 +63,46 @@
       text-align: center;
       margin: 1em 0;
     }
+
+    /* 隐藏 docsify 主题默认的 > 箭头符号，只保留折叠插件的折叠图标 */
+    .sidebar-nav li::before,
+    .sidebar-nav li::after,
+    .sidebar li::before,
+    .sidebar li::after {
+      content: '' !important;
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border: none !important;
+    }
+    
+    /* 更具体地针对theme-simple样式 */
+    .sidebar-nav ul li p::before,
+    .sidebar-nav ul li a::before,
+    .sidebar ul li p::before,
+    .sidebar ul li a::before {
+      content: '' !important;
+      display: none !important;
+    }
   </style>
 </head>
 
 <body>
   <div id="app"></div>
+  
+  <!-- 强制覆盖样式：隐藏默认箭头 -->
+  <style>
+    /* 最高优先级：隐藏所有默认的列表标记和箭头 */
+    aside.sidebar .sidebar-nav ul li::before,
+    aside.sidebar .sidebar-nav ul li p::before,
+    aside.sidebar .sidebar-nav ul li a::before {
+      content: '' !important;
+      display: none !important;
+      visibility: hidden !important;
+    }
+  </style>
 
   <!-- ===================== Docsify 核心配置 ===================== -->
   <script>
@@ -82,6 +117,9 @@
 
       /* 可选：限制侧边栏展示层级 */
       subMaxLevel: 4,
+
+      /* 侧边栏折叠配置 */
+      sidebarDisplayLevel: 1, // 设置为1，展示一级菜单，子菜单可折叠
 
       /* 你在用 docsify-latex，但我们也保留 docsify 原生 markdown 渲染配置入口 */
       latex: {
@@ -238,6 +276,9 @@
   <script src="https://cdn.jsdelivr.net/npm/docsify@4"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
+  <!-- 侧边栏折叠插件 -->
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify-sidebar-collapse/dist/sidebar.min.css" />
+  <script src="//cdn.jsdelivr.net/npm/docsify-sidebar-collapse/dist/docsify-sidebar-collapse.min.js"></script>
 
   <!-- 自动编号的 MathJax 配置 -->
   <script>
@@ -310,5 +351,6 @@
       }
     }
   </script>
+
 </body>
 </html>
