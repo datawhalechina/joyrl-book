@@ -13,6 +13,7 @@
   - [策略梯度方法](/rl_basic/ch9/main.md)
   - [Actor-Critic 算法](/rl_basic/ch10/main.md)
   - [DDPG 算法](/rl_basic/ch11/main.md)
+  - [TRPO 算法](/rl_basic/ch11_1/main.md)
   - [PPO 算法](/rl_basic/ch12/main.md)
   - [SAC 算法](/rl_basic/ch13/main.md)
   - [实战篇](/rl_basic/ch99/README.md)

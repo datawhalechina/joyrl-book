@@ -13,6 +13,7 @@
 | [策略梯度](./ch9/main) | 随机性策略、REINFORCE | ☑️ |
 | [Actor-Critic算法](./ch10/main) | A2C、A3C | ☑️ |
 | [DDPG算法](./ch11/main) | DDPG、TD3 | ☑️ |
+| [TRPO算法](./ch11_1/main) | TRPO | ⬜ |
 | [PPO算法](./ch12/main) | 重要性采样、PPO | ☑️ |
 | [SAC算法](./ch13/main) | 最大熵强化学习、Soft Q、SAC | ☑️ |
 | 模仿学习 | 行为克隆、逆强化学习 | ⬜ |
