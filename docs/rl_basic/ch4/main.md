@@ -70,6 +70,8 @@ $$
 
 ## 蒙特卡洛预测
 
+### 蒙特卡洛估计
+
 蒙特卡洛估计是一种用随机采样近似求期望、积分或概率分布特征的通用方法。换句话说，如果想求一个复杂的数学期望（或积分），而无法直接解析求解时，就可以用大量随机样本的平均值去逼近它。
 
 假设我们想要估计某个函数 $f(x)$ 的期望，如式 $\eqref{eq:expectation}$ 所示。
@@ -118,9 +120,7 @@ print("Estimated π:", monte_carlo_pi())
 
 运行代码后，可以得到一个接近 $\pi$ 的估计值。随着采样数量的增加，估计值会越来越精确。   
 
-**蒙特卡洛预测**（$\text{Monte Carlo Prediction}$）则指的是，在强化学习中，利用蒙特卡洛估计来预测给定策略 $\pi$ 下的状态价值 $V_\pi(s)$ 或动作价值 $Q_\pi(s,a)$。
-
-我们先看如何预测或者说估计状态价值，思路是多次完整地执行策略 $\pi$，每次执行都会产生一条完整的轨迹（从初始状态到终止状态），然后根据这些轨迹来计算各个状态的回报，最后取平均作为该状态的价值估计，如式 $\eqref{eq:mc_value_estimate}$ 所示。
+**蒙特卡洛预测**（$\text{Monte Carlo Prediction}$）则指的是，在强化学习中，利用蒙特卡洛估计来预测给定策略 $\pi$ 下的状态价值 $V_\pi(s)$。具体思路是多次完整地执行策略 $\pi$，每次执行都会产生一条完整的轨迹（从初始状态到终止状态），然后根据这些轨迹来计算各个状态的回报，最后取平均作为该状态的价值估计，如式 $\eqref{eq:mc_value_estimate}$ 所示。
 
 $$
 \begin{equation}\label{eq:mc_value_estimate}
@@ -128,33 +128,216 @@ V_\pi(s) \approx \frac{1}{N(s)} \sum_{i=1}^{N(s)} G_t^{(i)}
 \end{equation}
 $$
 
-蒙特卡洛方法主要分成两种算法，一种是首次访问蒙特卡洛（$\text{first-visit Monte Carlo，FVMC}$）方法，另外一种是每次访问蒙特卡洛（$\text{every-visit Monte Carlo，EVMC}$）方法。$\text{FVMC}$ 方法主要包含两个步骤，首先是产生一个回合的完整轨迹，然后遍历轨迹计算每个状态的回报。注意，只在第一次遍历到某个状态时会记录并计算对应的回报，对应伪代码如图 $\text{4-3}$ 所示。
+### 增量式更新
 
-而在 $\text{EVMC}$ 方法中不会忽略同一状态的多个回报，在前面的示例中，我们计算价值函数的方式就是 $\text{every-visit}$ ，比如对于状态 $s_4$ ，我们考虑了所有轨迹即 $G_{\tau_3}$ 和 $G_{\tau_4}$ 的回报，而在 $\text{FVMC}$ 我们只会记录首次遍历的回报，即 $G_{\tau_3}$ 和 $G_{\tau_4}$ 其中的一个，具体取决于遍历到 $s_4$ 时对应的轨迹是哪一条。 
+在实际强化学习应用中，由于状态空间可能非常大，估计状态价值所需的轨迹数量可能上万甚至更多。一方面，轨迹是通过智能体与环境交互产生的，这一交互过程可能也会非常耗时；另一方面，存储和处理大量轨迹数据也会带来计算和内存的压力。为了解决这些问题，蒙特卡洛预测通常采用增量式更新的方式来估计状态价值，即**边采样边更新**，而不是等采样完所有轨迹后再进行批量更新。
+
+如式 $\eqref{eq:incremental_update}$ 所示，增量式更新的基本思想是每次采样到一个新的回报 $G$ 后，立即用它来更新对应状态 $s$ 的价值估计 $V(s)$。
+
+$$
+\begin{equation}\label{eq:incremental_update}
+V(s) \leftarrow V(s) + \frac{1}{N(s)} [G - V(s)]
+\end{equation}
+$$
+
+其中 $N(s)$ 是状态 $s$ 被访问的次数，$G$ 是当前采样到的回报。或者使用常数步长，如式 $\eqref{eq:constant_step_size}$ 所示。
+
+$$
+\begin{equation}\label{eq:constant_step_size}
+V(s) \leftarrow V(s) + \alpha [G - V(s)]
+\end{equation}
+$$
+
+其中 $\alpha \in (0,1]$ 是学习率，$\alpha$ 越大，收敛速度很快但波动也较大；$\alpha$ 越小，收敛速度较慢但更稳定。
+
+可以发现，增量式更新的核心思想如式 $\eqref{eq:incremental_update_core}$ 所示。
+
+$$
+\begin{equation}\label{eq:incremental_update_core}
+新的估计值 \leftarrow 旧的估计值 + 步长 \times（目标值-旧的估计值）
+\end{equation}
+$$
+
+### 首次访问蒙特卡洛
+
+在增量式更新的基础上，蒙特卡洛方法主要分成两种算法，一种是首次访问蒙特卡洛（$\text{first-visit Monte Carlo，FVMC}$）方法，另外一种是每次访问蒙特卡洛（$\text{every-visit Monte Carlo，EVMC}$）方法。$\text{FVMC}$ 方法主要包含两个步骤，首先是产生一个回合的完整轨迹，然后遍历轨迹计算每个状态的回报。
+
+我们先来看首次访问蒙特卡洛（$\text{FVMC}$）方法的具体实现，算法流程如图 2 所示。
 
 <div align=center>
 <img width="400" src="figs/fvmc_pseu.png"/>
 </div>
-<div align=center>图 $\text{4-3}$ 首次访问蒙特卡洛算法伪代码</div>
+<div align=center>图 2 首次访问蒙特卡洛算法伪代码</div>
 
-实际上无论是 $\text{FVMC}$ 还是 $\text{EVMC}$ 在实际更新价值函数的时候是不会像伪代码中体现的那样 $V\left(S_t\right) \leftarrow \operatorname{average}\left(\operatorname{Returns}\left(S_t\right)\right)$，每次计算到新的回报 $ G_t = \operatorname{average}\left(\operatorname{Returns}\left(S_t\right)\right)$ 直接就赋值到已有的价值函数中，而是以一种递进更新的方式进行的，如式 $\text{(4.3)}$ 所示。
+假设我们已经采样得到了一条完整的轨迹 $\tau = \{S_0, A_0, R_1, S_1, A_1, R_2, \ldots, S_{T-1}, A_{T-1}, R_T, S_T\}$，其中 $S_T$ 是终止状态。对于轨迹中的每个状态 $S_t$，我们检查它是否是该状态在当前轨迹中的首次出现。如果是首次出现，我们计算从该时间步 $t$ 开始的回报 $G_t$，并将其添加到该状态的回报列表中，最后更新该状态的价值函数 $V(S_t)$ 为回报列表的平均值。
 
-$$
-\tag{4.3}
-新的估计值 \leftarrow 旧的估计值 + 步长 *（目标值-旧的估计值）
-$$
+回头看我们前面的示例，可以用 $\text{FVMC}$ 方法来实现状态价值函数的估计，如代码 2 所示。
 
-这样的好处就是不会因为个别不好的样本而导致更新的急剧变化，从而导致学习得不稳定，这种模式在今天的深度学习中普遍可见，这里的步长就是深度学习中的学习率。
+<div style="text-align: center;">
+    <figcaption style="font-size: 14px;"> <b>代码 2 首次访问蒙特卡洛方法估计状态价值函数</b> </figcaption>
+</div>
 
-对应到蒙特卡洛方法中，更新公式可表示为式 $\text{(4.4)}$ 。
+```python
+import numpy as np
+from collections import defaultdict
 
-$$
-\tag{4.4}
-V(s_t) \leftarrow V(s_t) + \alpha[G_t- V(s_{t})]
-$$
+# ----------- 环境定义 -----------
+states = ['s1', 's2', 's3', 's4']
+gamma = 0.9
+R = -1
+terminal = 's4'
 
-其中 $\alpha$ 表示学习率，$G_t- V(S_{t+1})$为目标值与估计值之间的误差（ $\text{error}$ ）。此外，$\text{FVMC}$ 是一种基于回合的增量式方法，具有无偏性和收敛快的优点，但是在状态空间较大的情况下，依然需要训练很多个回合才能达到稳定的结果。而 $\text{EVMC}$ 则是更为精确的预测方法，但是计算的成本相对也更高。
+# 状态转移（确定性）
+transitions = {
+    's1': {'right': 's2', 'down': 's3'},
+    's2': {'down': 's4'},
+    's3': {'right': 's4'},
+}
 
+# 策略 π：在合法动作间随机选择
+def policy(state):
+    actions = list(transitions[state].keys())
+    return np.random.choice(actions)
+
+# 生成一条完整轨迹（从 s1 到 s4）
+def generate_episode():
+    episode = []
+    state = 's1'
+    while state != terminal:
+        action = policy(state)
+        next_state = transitions[state][action]
+        episode.append((state, action, R))
+        state = next_state
+    episode.append((terminal, None, 0))  # 终止
+    return episode
+
+def first_visit_mc(num_episodes=1000):
+    V = defaultdict(float)
+    returns = defaultdict(list)
+
+    for _ in range(num_episodes):
+        episode = generate_episode()
+        G = 0
+        visited = set()  # 用于记录首访
+
+        # 反向遍历轨迹
+        for state, action, reward in reversed(episode):
+            G = gamma * G + reward
+            if state not in visited:
+                visited.add(state)
+                returns[state].append(G)
+                V[state] = np.mean(returns[state])
+    return V
+
+if __name__ == "__main__":
+    V_first = first_visit_mc()
+    print("First-Visit MC:")
+    for s in states:
+        print(f"  {s}: {V_first[s]:.2f}")
+```
+
+运行结果如代码 3 所示。
+
+<div style="text-align: center;">
+    <figcaption style="font-size: 14px;"> <b>代码 3 首次访问蒙特卡洛方法估计状态价值函数结果</b> </figcaption>
+</div>
+
+```
+First-Visit MC:
+  s1: -1.90
+  s2: -1.00
+  s3: -1.00
+  s4: 0.00
+```
+
+可以发现，估计的状态价值函数与我们前面根据定义计算的结果是一致的。
+
+注意，只在第一次遍历到某个状态时会记录并计算对应的回报，对应伪代码如图 2 所示。
+
+### 每次访问蒙特卡洛
+
+在 $\text{EVMC}$ 方法中则不会忽略同一状态的多个回报，具体代码实现如代码 4 所示。
+
+<div style="text-align: center;">
+    <figcaption style="font-size: 14px;"> <b>代码 4 每次访问蒙特卡洛方法估计状态价值函数</b> </figcaption>
+</div>
+
+```python
+import numpy as np
+from collections import defaultdict
+
+# ----------- 环境定义 -----------
+states = ['s1', 's2', 's3', 's4']
+gamma = 0.9
+R = -1
+terminal = 's4'
+
+# 状态转移（确定性）
+transitions = {
+    's1': {'right': 's2', 'down': 's3'},
+    's2': {'down': 's4'},
+    's3': {'right': 's4'},
+}
+
+# 策略 π：在合法动作间随机选择
+def policy(state):
+    actions = list(transitions[state].keys())
+    return np.random.choice(actions)
+
+# 生成一条完整轨迹（从 s1 到 s4）
+def generate_episode():
+    episode = []
+    state = 's1'
+    while state != terminal:
+        action = policy(state)
+        next_state = transitions[state][action]
+        episode.append((state, action, R))
+        state = next_state
+    episode.append((terminal, None, 0))  # 终止
+    return episode
+
+def every_visit_mc(num_episodes=1000):
+    V = defaultdict(float)
+    returns = defaultdict(list)
+
+    for _ in range(num_episodes):
+        episode = generate_episode()
+        G = 0
+
+        # 反向遍历轨迹（每次出现都更新）
+        for state, action, reward in reversed(episode):
+            G = gamma * G + reward
+            returns[state].append(G)
+            V[state] = np.mean(returns[state])
+    return V
+
+    return V
+
+if __name__ == "__main__":
+    V_every = every_visit_mc()
+
+    print("\nEvery-Visit MC:")
+    for s in states:
+        print(f"  {s}: {V_every[s]:.2f}")
+```
+
+同样运行结果如代码 5 所示。
+
+<div style="text-align: center;">
+    <figcaption style="font-size: 14px;"> <b>代码 5 每次访问蒙特卡洛方法估计状态价值函数结果</b> </figcaption>
+</div>
+
+```
+Every-Visit MC:
+  s1: -1.90
+  s2: -1.00
+  s3: -1.00
+  s4: 0.00
+```
+
+总的来说，$\text{FVMC}$ 是一种基于回合的增量式方法，具有无偏性和收敛快的优点，但是在状态空间较大的情况下，依然需要训练很多个回合才能达到稳定的结果。而 $\text{EVMC}$ 则是更为精确的预测方法，但是计算的成本相对也更高。
+
+## 蒙特卡洛估计动作价值
 
 ## 小结
 
