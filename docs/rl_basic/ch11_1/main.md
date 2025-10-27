@@ -32,7 +32,7 @@ D_{\text{KL}}(P || Q) = \sum_{x} P(x) \log \frac{P(x)}{Q(x)}
 \end{equation}
 $$
 
-其中，$P$ 和 $Q$ 分别表示两个概率分布， $\text{KL}$ 散度的值越大，表示两个分布之间的差异越大；反之，值越小，表示两个分布越相似。代入到策略中，我们可以定义新旧策略之间的 $\text{KL}$ 散度，如式 $\eqref{eq:kl_policy}$ 所示。
+其中，$P$ 是真实分布，$Q$ 是理论（拟合）分布。衡量的目标是使得 $Q$ 尽可能接近 $P$， $\text{KL}$ 散度的值越大，表示两个分布之间的差异越大；反之，值越小，表示两个分布越相似。代入到策略中，我们可以定义新旧策略之间的 $\text{KL}$ 散度，如式 $\eqref{eq:kl_policy}$ 所示。
 
 $$
 \begin{equation}\label{eq:kl_policy}
