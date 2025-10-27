@@ -44,6 +44,31 @@
       position: relative;
       z-index: 20 !important;
     }
+    
+    /* 居中 Markdown 表格（整张表水平居中） */
+    .markdown-section table {
+      width: auto !important;              /* 不占满整行 */
+      margin-left: auto !important;        /* 左边自动边距 */
+      margin-right: auto !important;       /* 右边自动边距 */
+      display: table !important;           /* 确保是表格显示模式 */
+    }
+    
+    /* 表格外层容器居中 */
+    article.markdown-section {
+      text-align: left;  /* 保持文本左对齐 */
+    }
+    
+    /* 表格本身居中 */
+    .content table,
+    section.content table,
+    main table {
+      margin-left: auto !important;
+      margin-right: auto !important;
+      width: auto !important;
+    }
+    
+    /* 可选：表格标题也居中 */
+    .markdown-section table caption { text-align: center; }
 
     .giscus,
     .giscus-frame {
