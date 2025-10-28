@@ -1,6 +1,8 @@
 # 蒙特卡洛方法
 
-蒙特卡洛方法（ $\text{Monte Carlo，MC}$ ）的核心思想是通过大量的随机采样来近似估计期望或积分。在强化学习中，一方面可以用来解决预测问题，即估计状态价值函数 $V(s)$ 或动作价值函数 $Q(s,a)$。另一方面，可以用来优化策略，即通过采样来评估和改进策略。
+蒙特卡洛方法的核心思想是通过大量的随机采样来近似估计期望或积分。在强化学习中，一方面可以用来解决预测问题，即估计状态价值函数 $V(s)$ 或动作价值函数 $Q(s,a)$。另一方面，可以用来优化策略，即通过采样来评估和改进策略来解决控制问题。
+
+蒙特卡洛预测包括首次访问法和每次访问法两种基本方法，前者只在每个状态的首次访问时更新价值估计，后者则在每次访问时都进行更新。
 
 ## 状态价值计算示例
 
@@ -177,7 +179,7 @@ $$
 我们先来看首次访问蒙特卡洛（$\text{FVMC}$）方法的具体实现，算法流程如图 2 所示。
 
 <div align=center>
-<img width="400" src="figs/fvmc_pseu.png"/>
+<img width="600" src="figs/fvmc_pseu.png"/>
 </div>
 <div align=center>图 2 首次访问蒙特卡洛算法伪代码</div>
 
@@ -349,9 +351,121 @@ Every-Visit MC:
 
 总的来说，$\text{FVMC}$ 是一种基于回合的增量式方法，具有无偏性和收敛快的优点，但是在状态空间较大的情况下，依然需要训练很多个回合才能达到稳定的结果。而 $\text{EVMC}$ 则是更为精确的预测方法，但是计算的成本相对也更高。
 
-## 蒙特卡洛估计动作价值
+### 蒙特卡洛动作价值
 
-## 小结
+蒙特卡洛预测或者估计动作价值函数 $Q(s,a)$ 的方法与状态价值函数类似，只不过需要同时考虑状态和动作的组合。具体来说，蒙特卡洛动作价值估计的步骤如下：
 
-本章主要介绍了蒙特卡洛方法的基本思想及其在强化学习中的应用，重点讲解了蒙特卡洛预测算法。通过随机采样和计算回报，蒙特卡洛方法能够有效地估计状态价值函数和动作价值函数。我们还讨论了首次访问蒙特卡洛（$\text{FVMC}$）和每次访问蒙特卡洛（$\text{EVMC}$）两种不同的实现方式，以及它们各自的优缺点。蒙特卡洛方法作为一种无模型的强化学习方法，为后续更复杂的算法奠定了基础。
+1. **生成完整轨迹**：与状态价值函数相同，首先需要通过与环境的交互生成一条完整的轨迹，包括状态、动作和奖励。
+
+2. **计算回报**：对于轨迹中的每个状态-动作对 $(s,a)$，计算从该对开始的回报 $G_t$。
+
+3. **更新价值函数**：根据计算得到的回报更新动作价值函数 $Q(s,a)$，可以使用首次访问或每次访问的方式。
+具体的增量式更新公式与状态价值函数类似，如式 $\eqref{eq:mc_action_value_update}$ 所示。
+
+$$
+\begin{equation}\label{eq:mc_action_value_update}
+Q(s,a) \leftarrow Q(s,a) + \alpha [G - Q(s
+,a)]
+\end{equation}
+$$
+
+其中 $\alpha$ 是学习率，$G$ 是从状态 $s$ 执行动作 $a$ 后得到的回报。
+
+使用`Python` 代码实现蒙特卡洛动作价值估计来解决前面示例的问题，如代码 6 所示。
+
+<div style="text-align: center;">
+    <figcaption style="font-size: 14px;"> <b>代码 6 蒙特卡洛方法估计动作价值函数</b> </figcaption>
+</div>
+
+```python
+import numpy as np
+from collections import defaultdict
+
+states = ['s1', 's2', 's3', 's4']
+actions = ['right', 'down']
+gamma = 0.9
+R = -1
+terminal = 's4'
+
+# 转移定义
+transitions = {
+    ('s1', 'right'): 's2',
+    ('s1', 'down'): 's3',
+    ('s2', 'down'): 's4',
+    ('s3', 'right'): 's4',
+}
+
+def policy(state):
+    # 随机策略 π(a|s)
+    legal = [a for (s,a) in transitions if s == state]
+    return np.random.choice(legal)
+
+def generate_episode():
+    episode = []
+    state = 's1'
+    while state != terminal:
+        action = policy(state)
+        next_state = transitions[(state, action)]
+        episode.append((state, action, R))
+        state = next_state
+    episode.append((terminal, None, 0))
+    return episode
+
+def mc_action_value(num_episodes=1000):
+    Q = defaultdict(float)
+    returns = defaultdict(list)
+
+    for _ in range(num_episodes):
+        episode = generate_episode()
+        G = 0
+        visited = set()
+        for state, action, reward in reversed(episode):
+            G = gamma * G + reward
+            if action is not None and (state, action) not in visited:
+                visited.add((state, action))
+                returns[(state, action)].append(G)
+                Q[(state, action)] = np.mean(returns[(state, action)])
+    return Q
+
+Q = mc_action_value()
+for (s,a), v in Q.items():
+    print(f"Q({s},{a}) = {v:.2f}")
+```
+
+运行结果如代码 7 所示。
+
+<div style="text-align: center;">
+    <figcaption style="font-size: 14px;"> <b>代码 7 蒙特卡洛方法估计动作价值函数结果</b> </figcaption>
+</div>
+
+```python
+Q(s1,down) = -1.90
+Q(s1,right) = -1.90
+Q(s2,down) = -1.00
+Q(s3,right) = -1.00
+```
+
+联系状态价值和动作价值的关系，如式 $\eqref{eq:state_action_value_relation}$ 所示。
+
+$$
+\begin{equation}\label{eq:state_action_value_relation}
+V_\pi(s) = \sum_{a} \pi(a|s) Q_\pi(s,a)
+\end{equation}
+$$
+
+以状态 $s_1$ 为例，由于智能体采用随机策略，即在动作 $a_1$ 和 $a_2$ 之间按同等概率选择，因此可以计算出 $V(s_1)$ 如式 $\eqref{eq:V_s1_from_Q}$ 所示。
+
+$$
+\begin{equation}\label{eq:V_s1_from_Q}
+\begin{aligned}
+V(s_1) &= 0.5 * Q(s_1,a_1) + 0.5 * Q(s_1,a_2)  \\
+&= 0.5 *(-1.9) + 0.5 * (-1.9) \\
+&= -1.9
+\end{aligned}
+\end{equation}
+$$
+
+可以发现，计算结果与前面直接估计的状态价值是一致的。
+
+## 蒙特卡洛控制
 
