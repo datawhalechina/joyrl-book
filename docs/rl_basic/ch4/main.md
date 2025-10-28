@@ -4,6 +4,8 @@
 
 蒙特卡洛预测包括首次访问法和每次访问法两种基本方法，前者只在每个状态的首次访问时更新价值估计，后者则在每次访问时都进行更新。
 
+蒙特卡洛控制则结合了蒙特卡洛预测和策略改进，通过采样来估计动作价值函数，并基于该估计来改进策略，最终实现策略的优化。
+
 ## 状态价值计算示例
 
 为帮助理解蒙特卡洛方法，我们先举一个简单的例子来根据定义计算状态价值，然后再介绍蒙特卡洛预测算法。
@@ -467,5 +469,490 @@ $$
 
 可以发现，计算结果与前面直接估计的状态价值是一致的。
 
+
 ## 蒙特卡洛控制
+
+### 更复杂的蒙特卡洛预测示例
+
+为了更好地理解蒙特卡洛控制方法，先举一个更复杂的蒙特卡洛预测示例。如图 3 所示，在前面示例的基础上，考虑智能体在 $3 \times 3$ 的网格中使用随机策略进行移动，以左上角为起点，右下角为终点，同样规定每次只能向右或向下移动，动作分别用 $a_1$ 和 $a_2$ 表示。用智能体的位置不同的状态，即$s_1,s_2,\ldots,s_9$，初始状态为$S_0=s_1$，终止状态为$s_9$。
+
+
+
+
+<div align=center>
+<img width="500" src="figs/maze_33.png"/>
+</div>
+<div align=center>图 3 3x3 网格示例</div>
+
+
+除了每走一步接收 $-1$ 的奖励之外，这次我们在网格中增加了一些障碍物，例如在位置 $s_4$ 处设置了一个深坑，智能体走到该位置时会受到一个额外的负奖励 $-3$，在位置 $s_5$ 处设置了一个水洼，智能体走到该位置时会受到一个额外的负奖励 $-0.5$。折扣因子 $\gamma=0.9$，目标是计算各个状态的价值函数 $V(s)$。
+
+用 `Python` 代码实现蒙特卡洛方法来估计状态价值函数，如代码 8 所示。
+
+<div style="text-align: center;">
+    <figcaption style="font-size: 14px;"> <b>代码 8 使用蒙特卡洛方法估计 3x3 网格状态价值函数</b> </figcaption>
+</div>
+
+```python
+import random
+from collections import defaultdict
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# ---------- 参数 ----------
+gamma = 0.9
+episodes = 30000
+states = [f"s{i}" for i in range(1, 10)]
+terminal = "s9"
+start = "s1"
+
+coords = {
+    "s1": (0,0), "s2": (0,1), "s3": (0,2),
+    "s4": (1,0), "s5": (1,1), "s6": (1,2),
+    "s7": (2,0), "s8": (2,1), "s9": (2,2)
+}
+
+# ---------- 环境 ----------
+def legal_actions(s):
+    r, c = coords[s]
+    acts = []
+    if c < 2: acts.append("right")
+    if r < 2: acts.append("down")
+    return acts
+
+def step(s, a):
+    r, c = coords[s]
+    if a == "right": r2, c2 = r, c + 1
+    elif a == "down": r2, c2 = r + 1, c
+    s2 = [k for k, v in coords.items() if v == (r2, c2)][0]
+    reward = -1.0
+    # 额外惩罚修改 ↓↓↓
+    if s2 == "s4": reward -= 3.0     # 深坑
+    if s2 == "s5": reward -= 0.5     # 水洼
+    if s2 == "s9": reward += 1.0     # 终点 +1 → 净0
+    done = (s2 == terminal)
+    return s2, reward, done
+
+def policy(s):
+    acts = legal_actions(s)
+    return random.choice(acts)
+
+def generate_episode():
+    episode = []
+    s = start
+    while True:
+        if s == terminal:
+            episode.append((s, None, 0))
+            break
+        a = policy(s)
+        s2, r, done = step(s, a)
+        episode.append((s, a, r))
+        s = s2
+    return episode
+
+# ---------- First-Visit Monte Carlo ----------
+def first_visit_mc(num_episodes=episodes, gamma=0.9):
+    V = defaultdict(float)
+    N = defaultdict(int)
+    for _ in range(num_episodes):
+        episode = generate_episode()
+        G = 0
+        visited = set()
+        for s, a, r in reversed(episode):
+            G = gamma * G + r
+            if s not in visited:
+                visited.add(s)
+                N[s] += 1
+                V[s] += (G - V[s]) / N[s]
+    return V
+
+V = first_visit_mc()
+
+# ---------- 打印结果 ----------
+grid = np.array([[V[f"s{r*3+c+1}"] for c in range(3)] for r in range(3)])
+df = pd.DataFrame(grid.round(3),
+                  columns=["col1","col2","col3"],
+                  index=["row1","row2","row3"])
+print(df)
+
+# ---------- 热力图展示 ----------
+plt.figure(figsize=(5,5))
+plt.imshow(grid, cmap='coolwarm', origin='upper')
+for i in range(3):
+    for j in range(3):
+        plt.text(j, i, f"{grid[i,j]:.2f}", ha='center', va='center', color='black')
+plt.title("Monte Carlo State Values")
+plt.colorbar(label="V(s)")
+plt.tight_layout()
+plt.show()
+```
+
+执行代码后，除了打印出各状态的价值函数结果外，还会生成一个热力图来直观展示各状态的价值分布情况，如图 4 所示。
+
+<div align=center>
+<img width="400" src="figs/maze_33_mc_state_values.png"/>
+</div>
+<div align=center>图 4 3x3 网格中的状态价值热力图</div>
+
+初学者可能会有疑问，为什么平地状态例如 $s_1$ 反而比有障碍物的状态 $s_4$ 和 $s_5$ 价值更低呢？直觉上，我们可能会认为障碍物的存在会降低对应位置的状态价值，但实际上注意状态价值的计算是基于**从该状态出发**的未来回报的期望，而不是仅仅考虑该状态本身的奖励。
+
+由于智能体采用的是随机策略，且动作只能向右或向下移动，因此从起始状态 $s_1$ 出发，智能体有较高的概率会经过障碍物位置 $s_4$ 和 $s_5$，从而导致整体回报降低，因此 $s_1$ 的状态价值较低。
+
+而对于障碍物位置 $s_4$ 和 $s_5$，虽然从别的状态走到它们时身会带来额外的负奖励，但从这些状态出发，例如从 $s_5$ 出发，只能到达平地状态 $s_6$ 、$s_8$ 和终点 $s_9$，这些状态的未来回报相对较高，因此 $s_4$ 和 $s_5$ 的状态价值反而可能高于一些平地位置。
+
+同样地，可以用蒙特卡洛方法来估计动作价值函数 $Q(s,a)$，代码实现如代码 9 所示。
+
+<div style="text-align: center;">
+    <figcaption style="font-size: 14px;"> <b>代码 9 使用蒙特卡洛方法估计 3x3 网格动作价值函数</b> </figcaption>
+</div>
+
+```python
+import random
+from collections import defaultdict
+import numpy as np
+import matplotlib.pyplot as plt
+
+# ---------- 参数 ----------
+gamma = 0.9
+episodes = 30000
+states = [f"s{i}" for i in range(1, 10)]
+terminal = "s9"
+start = "s1"
+
+coords = {
+    "s1": (0,0), "s2": (0,1), "s3": (0,2),
+    "s4": (1,0), "s5": (1,1), "s6": (1,2),
+    "s7": (2,0), "s8": (2,1), "s9": (2,2)
+}
+
+# ---------- 环境 ----------
+def legal_actions(s):
+    r, c = coords[s]
+    acts = []
+    if c < 2: acts.append("right")
+    if r < 2: acts.append("down")
+    return acts
+
+def step(s, a):
+    r, c = coords[s]
+    if a == "right": r2, c2 = r, c + 1
+    elif a == "down": r2, c2 = r + 1, c
+    s2 = [k for k, v in coords.items() if v == (r2, c2)][0]
+    reward = -1.0
+    if s2 == "s4": reward -= 3.0     # 深坑
+    if s2 == "s5": reward -= 0.5     # 水洼
+    if s2 == "s9": reward += 1.0     # 终点奖励 +1 → 净0
+    done = (s2 == terminal)
+    return s2, reward, done
+
+def policy(s):
+    acts = legal_actions(s)
+    return random.choice(acts)
+
+def generate_episode():
+    episode = []
+    s = start
+    while True:
+        if s == terminal:
+            episode.append((s, None, 0))
+            break
+        a = policy(s)
+        s2, r, done = step(s, a)
+        episode.append((s, a, r))
+        s = s2
+    return episode
+
+def first_visit_mc_Q(num_episodes=episodes, gamma=0.9):
+    Q = defaultdict(float)
+    N = defaultdict(int)
+    for _ in range(num_episodes):
+        episode = generate_episode()
+        G = 0
+        visited = set()
+        for s, a, r in reversed(episode):
+            G = gamma * G + r
+            if a is None:
+                continue
+            if (s, a) not in visited:
+                visited.add((s, a))
+                N[(s, a)] += 1
+                Q[(s, a)] += (G - Q[(s, a)]) / N[(s, a)]
+    return Q
+
+Q = first_visit_mc_Q()
+
+# 构建Q值矩阵
+q_right = np.full((3, 3), np.nan)
+q_down = np.full((3, 3), np.nan)
+
+for s in states:
+    if "right" in legal_actions(s):
+        r, c = coords[s]
+        q_right[r, c] = Q[(s, "right")]
+    if "down" in legal_actions(s):
+        r, c = coords[s]
+        q_down[r, c] = Q[(s, "down")]      
+
+for r in range(3):
+    for c in range(3):
+        s = [k for k, v in coords.items() if v == (r, c)][0]
+        print(f"State {s}: Q(s, 'right') = {q_right[r,c]:.2f}, Q(s, 'down') = {q_down[r,c]:.2f}")  
+
+# 可视化 Q(s,a) 热力图
+fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+
+im1 = axes[0].imshow(q_right, cmap='coolwarm', origin='upper')
+axes[0].set_title("Q(s1, a='right')")
+for i in range(3):
+    for j in range(3):
+        if not np.isnan(q_right[i, j]):
+            axes[0].text(j, i, f"{q_right[i,j]:.2f}", ha='center', va='center', color='black')
+fig.colorbar(im1, ax=axes[0])
+
+im2 = axes[1].imshow(q_down, cmap='coolwarm', origin='upper')
+axes[1].set_title("Q(s1, a='down')")
+for i in range(3):
+    for j in range(3):
+        if not np.isnan(q_down[i, j]):
+            axes[1].text(j, i, f"{q_down[i,j]:.2f}", ha='center', va='center', color='black')
+fig.colorbar(im2, ax=axes[1])
+
+plt.suptitle("Monte Carlo Action Values")
+plt.tight_layout()
+plt.show()
+```
+
+执行代码后，可以得到各状态-动作对的动作价值函数结果，并生成两个热力图来直观展示各状态在不同动作下的价值分布情况，如图 5 所示。
+
+<div align=center>
+<img width="800" src="figs/maze_33_mc_action_values.png"/>
+</div>
+<div align=center>图 5 3x3 网格中的动作价值热力图</div>
+
+可以发现，从状态 $s_1$ 出发，选择向右移动（动作 $a_1$）和向下移动（动作 $a_2$）的动作价值分别为 $Q(s_1,a_1) = -2.93$ 和 $Q(s_1,a_2) = -5.93$，这表明在随机策略下，选择向右移动的动作相对更优一些，因为对应的动作价值更高。
+
+### 蒙特卡洛控制算法
+
+在计算动作价值的过程中，可以借助动态规划中策略迭代的思想，先进行策略评估，即预测动作价值，然后基于当前的动作价值函数进行策略改进，形成一个新的策略，如式 $\eqref{eq:policy_improvement}$ 所示。
+
+$$
+\begin{equation}\label{eq:policy_improvement}
+\pi_0 \rightarrow Q_{\pi_0} \rightarrow \pi_1 \rightarrow Q_{\pi_1} \rightarrow \pi_2 \rightarrow \ldots \rightarrow \pi^* \rightarrow Q_{\pi^*}
+\end{equation}
+$$
+
+这种交替进行策略评估和策略改进的过程，称为**蒙特卡洛控制**（$\text{Monte Carlo Control}$），算法流程如图 6 所示。
+
+<div align=center>
+<img width="600" src="figs/mc_control_pseu.png"/>
+</div>
+<div align=center>图 6 蒙特卡洛控制算法伪代码</div>
+
+在 $3 \times 3$ 网格的示例中，可以用蒙特卡洛控制方法来学习一个更优的策略，代码实现如代码 10 所示。
+
+<div style="text-align: center;">
+    <figcaption style="font-size: 14px;"> <b>代码 10 使用蒙特卡洛控制方法学习 3x3 网格最优策略</b> </figcaption>
+</div>
+
+```python
+import random
+from collections import defaultdict
+import numpy as np
+import matplotlib.pyplot as plt
+
+# ---------- 环境定义 ----------
+gamma = 0.9
+states = [f"s{i}" for i in range(1, 10)]
+terminal = "s9"
+
+coords = {
+    "s1": (0,0), "s2": (0,1), "s3": (0,2),
+    "s4": (1,0), "s5": (1,1), "s6": (1,2),
+    "s7": (2,0), "s8": (2,1), "s9": (2,2)
+}
+
+def legal_actions(s):
+    r, c = coords[s]
+    acts = []
+    if c < 2: acts.append("right")
+    if r < 2: acts.append("down")
+    return acts
+
+def step(s, a):
+    r, c = coords[s]
+    if a == "right": r2, c2 = r, c + 1
+    elif a == "down": r2, c2 = r + 1, c
+    s2 = [k for k, v in coords.items() if v == (r2, c2)][0]
+
+    reward = -1.0
+    if s2 == "s4": reward -= 3.0
+    if s2 == "s5": reward -= 0.5
+    if s2 == "s9": reward += 1.0
+    done = (s2 == terminal)
+    return s2, reward, done
+
+# ---------- Monte Carlo ES 控制 ----------
+def monte_carlo_es(num_episodes=10000, gamma=0.9):
+    Q = defaultdict(float)
+    Returns = defaultdict(list)
+    policy = {}
+
+    # 初始化策略 π 随机
+    for s in states:
+        actions = legal_actions(s)
+        if actions:
+            policy[s] = random.choice(actions)
+
+    for episode in range(num_episodes):
+        # Exploring Starts: 随机选起点 (s0, a0)
+        s0 = random.choice([s for s in states if s != terminal])
+        actions = legal_actions(s0)
+        if not actions:
+            continue
+        a0 = random.choice(actions)
+
+        # 生成一条完整轨迹
+        episode_list = []
+        s, a = s0, a0
+        while True:
+            s_next, r, done = step(s, a)
+            episode_list.append((s, a, r))
+            if done:
+                break
+            a = policy.get(s_next, random.choice(legal_actions(s_next)))
+            s = s_next
+
+        # 反向计算 G 并更新 Q
+        G = 0
+        visited = set()
+        for s, a, r in reversed(episode_list):
+            G = gamma * G + r
+            if (s, a) not in visited:
+                visited.add((s, a))
+                Returns[(s,a)].append(G)
+                Q[(s,a)] = np.mean(Returns[(s,a)])
+                # 策略改进：贪婪选择
+                policy[s] = max(legal_actions(s), key=lambda x: Q[(s,x)])
+    return policy, Q
+
+policy, Q = monte_carlo_es()
+
+# ---------- 输出结果 ----------
+print("最优策略 π(s):")
+for s in states:
+    if s in policy:
+        print(f"{s}: {policy[s]}")
+print("\n示例部分 Q 值:")
+for k in list(Q.keys())[:10]:
+    print(k, "=", round(Q[k], 2))
+
+import matplotlib.pyplot as plt
+
+# ---------- 绘制最优策略箭头图（从 s1 出发） ----------
+fig, ax = plt.subplots(figsize=(5, 5))
+ax.set_xlim(-0.5, 2.5)
+ax.set_ylim(-0.5, 2.5)
+ax.set_xticks(range(3))
+ax.set_yticks(range(3))
+ax.set_xticklabels(["col1","col2","col3"])
+ax.set_yticklabels(["row1","row2","row3"])
+ax.set_title("Optimal Policy Arrows (from s1)")
+
+# 画方格背景（起点/终点/水洼/深坑）
+colors = {"s1":"#b2df8a", "s4":"#999999", "s5":"#80b1d3", "s9":"#fdb462"}
+for s, (r, c) in coords.items():
+    rect = plt.Rectangle((c-0.5, r-0.5), 1, 1,
+                         facecolor=colors.get(s, "white"),
+                         edgecolor='black', lw=1.5)
+    ax.add_patch(rect)
+    ax.text(c, r, s, ha='center', va='center', fontsize=12, fontweight='bold')
+
+import matplotlib.pyplot as plt
+
+# ---------- 构造从 s1 出发的最优路径 ----------
+path = ["s1"]
+s = "s1"
+while s != "s9":
+    a = policy[s]
+    r, c = coords[s]
+    if a == "right":
+        s_next = [k for k, v in coords.items() if v == (r, c+1)][0]
+    else:  # down
+        s_next = [k for k, v in coords.items() if v == (r+1, c)][0]
+    path.append(s_next)
+    s = s_next
+
+# ---------- 准备通用绘图函数 ----------
+def draw_policy(ax, highlight_path=False):
+    ax.set_xlim(-0.5, 2.5)
+    ax.set_ylim(-0.5, 2.5)
+    ax.set_xticks(range(3))
+    ax.set_yticks(range(3))
+    ax.set_xticklabels(["col1","col2","col3"])
+    ax.set_yticklabels(["row1","row2","row3"])
+    ax.grid(True)
+
+    # 背景方格：起点、终点、水洼、深坑
+    colors = {"s1":"#b2df8a", "s4":"#999999", "s5":"#80b1d3", "s9":"#fdb462"}
+    for s, (r, c) in coords.items():
+        rect = plt.Rectangle((c-0.5, r-0.5), 1, 1,
+                             facecolor=colors.get(s, "white"),
+                             edgecolor='black', lw=1.5)
+        ax.add_patch(rect)
+        ax.text(c, r, s, ha='center', va='center', fontsize=12, fontweight='bold')
+
+    # 策略箭头（黑色）
+    for s, a in policy.items():
+        if s == "s9":  # 终点不画箭头
+            continue
+        r, c = coords[s]
+        dx, dy = 0, 0
+        if a == "right": dx = 0.4
+        elif a == "down": dy = 0.4
+        ax.arrow(c, r, dx, dy, head_width=0.15, head_length=0.15, fc='black', ec='black')
+
+    # 若 highlight_path=True，则绘制红色最优路径
+    if highlight_path:
+        for i in range(len(path)-1):
+            s1, s2 = path[i], path[i+1]
+            r1, c1 = coords[s1]
+            r2, c2 = coords[s2]
+            ax.arrow(c1, r1, c2-c1, r2-r1, head_width=0.18, head_length=0.18,
+                     fc='red', ec='red', lw=2)
+
+    ax.invert_yaxis()
+
+print("最优路径：", " → ".join(path))
+# ---------- 绘制对比图 ----------
+fig, axes = plt.subplots(1, 2, figsize=(10, 5))
+draw_policy(axes[0], highlight_path=False)
+axes[0].set_title("Global Optimal Policy π(s)")
+
+draw_policy(axes[1], highlight_path=True)
+axes[1].set_title("Trajectory from s1 (Red Arrows)")
+
+plt.suptitle("Monte Carlo ES Policy vs Optimal Path", fontsize=14)
+plt.tight_layout()
+plt.show()
+
+```
+
+执行代码后，可以得到最优策略 $\pi(s)$ 以及从起始状态 $s_1$ 出发的最优路径，并生成对比图来展示全局最优策略和从 $s_1$ 出发的最优路径，如图 7 所示。
+
+<div align=center>
+<img width="800" src="figs/maze_33_mc_control_policy.png"/>
+</div>
+<div align=center>图 7 3x3 网格中的蒙特卡洛控制最优策略与路径</div>
+
+左图展示了不同状态下的全局最优策略，右图用红色箭头高亮显示了从起始状态 $s_1$ 出发的最优路径，如式 $\eqref{eq:optimal_path}$ 所示。
+
+$$
+\begin{equation}\label{eq:optimal_path}
+s_1 \rightarrow s_2 \rightarrow s_3 \rightarrow s_6 \rightarrow s_9
+\end{equation}
+$$
+
+
+可以看到，智能体避开了深坑 $s_4$ 和水洼 $s_5$，选择了一条累计回报较高的路径到达终点 $s_9$，这验证了蒙特卡洛控制方法在学习最优策略方面的有效性。
 
