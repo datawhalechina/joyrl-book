@@ -734,7 +734,7 @@ plt.show()
 
 ### 蒙特卡洛控制算法
 
-在计算动作价值的过程中，可以借助动态规划中策略迭代的思想，先进行策略评估，即预测动作价值，然后基于当前的动作价值函数进行策略改进，形成一个新的策略，如式 $\eqref{eq:policy_improvement}$ 所示。
+在计算动作价值的过程中，可以借鉴动态规划中策略迭代的思想，先进行策略评估，即预测动作价值，然后基于当前的动作价值函数进行策略改进，形成一个新的策略，如式 $\eqref{eq:policy_improvement}$ 所示。
 
 $$
 \begin{equation}\label{eq:policy_improvement}
@@ -742,7 +742,7 @@ $$
 \end{equation}
 $$
 
-这种交替进行策略评估和策略改进的过程，称为**蒙特卡洛控制**（$\text{Monte Carlo Control}$），算法流程如图 6 所示。
+这种利用蒙特卡洛方法交替进行策略评估和策略改进的过程，称为**蒙特卡洛控制**（$\text{Monte Carlo Control}$），算法流程如图 6 所示。
 
 <div align=center>
 <img width="600" src="figs/mc_control_pseu.png"/>
