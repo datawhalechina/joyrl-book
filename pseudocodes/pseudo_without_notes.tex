@@ -156,14 +156,14 @@
 
 \section{Q learning算法}
 \begin{algorithm}[H] % [H]固定位置
-    \floatname{algorithm}{{Q-learning算法}\footnotemark[1]}
+    \floatname{algorithm}{{Q-learning算法}}
 	\renewcommand{\thealgorithm}{} % 去掉算法标号
 	\caption{} 
 	\begin{algorithmic}[1] % [1]显示步数
-		\STATE 初始化Q表$Q(s,a)$为任意值，但其中$Q(s_{terminal},)=0$，即终止状态对应的Q值为0
+		\STATE 初始化 $Q(s,a)$ 为任意值，但对于终止状态即 $Q(s_{T},)=0$
 		\FOR {回合数 = $1,M$}
 			\STATE 重置环境，获得初始状态$s_1$
-			\FOR {时步 = $1,T$}
+			\FOR {时步 t= $1,\cdots, T$}
 				\STATE 根据$\varepsilon-greedy$策略采样动作$a_t$
 				\STATE 环境根据$a_t$反馈奖励$r_t$和下一个状态$s_{t+1}$
 				\STATE {\bfseries 更新策略：}
@@ -173,19 +173,18 @@
 		\ENDFOR
 	\end{algorithmic}
 \end{algorithm}
-\footnotetext[1]{Reinforcement Learning: An Introduction}
 \clearpage
 \section{Sarsa算法}
 \begin{algorithm}[H] % [H]固定位置
-    \floatname{algorithm}{{Sarsa算法}\footnotemark[1]}
+    \floatname{algorithm}{{Sarsa算法}}
 	\renewcommand{\thealgorithm}{} % 去掉算法标号
 	\caption{} 
 	\begin{algorithmic}[1] % [1]显示步数
-		\STATE 初始化Q表$Q(s,a)$为任意值，但其中$Q(s_{terminal},)=0$，即终止状态对应的Q值为0
+		\STATE 初始化 $Q(s,a)$ 为任意值，但对于终止状态即 $Q(s_{T},)=0$
 		\FOR {回合数 = $1,M$}
-			\STATE 重置环境，获得初始状态$s_1$
-			\STATE 根据$\varepsilon-greedy$策略采样初始动作$a_1$
-			\FOR {时步 = $1,t$}
+			\STATE 重置环境，获得初始状态$s_0$
+			\STATE 根据$\varepsilon-greedy$策略采样初始动作$a_0$
+			\FOR {时步 t= $1,\cdots, T$}
 				\STATE 环境根据$a_t$反馈奖励$r_t$和下一个状态$s_{t+1}$
 				\STATE 根据$\varepsilon-greedy$策略$s_{t+1}$和采样动作$a_{t+1}$
 				\STATE {\bfseries 更新策略：}
@@ -196,7 +195,6 @@
 		\ENDFOR
 	\end{algorithmic}
 \end{algorithm}
-\footnotetext[1]{Reinforcement Learning: An Introduction}
 \clearpage
 
 \section{DQN算法}

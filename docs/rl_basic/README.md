@@ -5,8 +5,8 @@
 |       [绪论](./ch1/main)       |  | ☑️ |
 | [马尔可夫决策过程](./ch2/main) | 马尔可夫决策过程、状态转移矩阵 | ☑️ |
 |     [动态规划](./ch3/main)     | 贝尔曼方程、策略迭代、价值迭代 | ☑️ |
-|    [免模型预测](./ch4/main)    | 蒙特卡洛、时序差分 | ☑️ |
-|    [免模型控制](./ch5/main)    | Q-learning 算法、Sarsa 算法 | ☑️ |
+|    [蒙特卡洛方法](./ch4/main)    | 蒙特卡洛预测、蒙特卡洛控制 | ☑️ |
+|    [时序差分方法](./ch4_1/main)    | 时序差分估计、n步时序差分、Q-learning 算法、Sarsa 算法 | ☑️ |
 | [深度学习基础](./ch6/main) | 神经网络、梯度下降 | ☑️ |
 | [DQN算法](./ch7/main) | DQN 算法、目标网络、经验回放 | ☑️ |
 | [DQN算法进阶](./ch8/main) | Double DQN、Noisy DQN、Dueling DQN、PER DQN、C51、Rainbow DQN | ☑️ |
