@@ -7,7 +7,7 @@
   - [动态规划](/rl_basic/ch3/main.md)
   - [蒙特卡洛方法](/rl_basic/ch4/main.md)
   - [时序差分方法](/rl_basic/ch4_1/main.md)
-  - [经典强化学习算法](/rl_basic/ch5/main.md)
+  - [Dyna-Q 算法](/rl_basic/ch5/main.md)
   - [深度学习基础](/rl_basic/ch6/main.md)
   - [DQN算法](/rl_basic/ch7/main.md)
   - [DQN算法进阶](/rl_basic/ch8/main.md)
