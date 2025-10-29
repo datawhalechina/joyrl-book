@@ -17,3 +17,6 @@ pseudo.dvi
 pseudo_without_notes.fdb_latexmk
 pseudo_without_notes.fls
 pseudo_without_notes.synctex.gz
+
+# local test python
+/docs/rl_basic/ch11_1/test_trpo.py
