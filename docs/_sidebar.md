@@ -21,6 +21,7 @@
     - [PyTorch 入门](/rl_basic/ch99/torch.md)
     - [Q-learning 算法](/rl_basic/ch99/q-learning.md)
     - [Sarsa 算法](/rl_basic/ch99/sarsa.md)
+    - [TRPO 算法](/rl_basic/ch99/trpo.md)
   - [习题解答](/rl_basic/solution/main.md)
 - [离线强化学习](/offline_rl/)
 - [大模型与强化学习](/llm_rl/)
