@@ -1,4 +1,4 @@
-# 第 6 章 深度学习基础
+# 深度学习基础
 
 在教程前面部分我们介绍了强化学习的基础内容，包含马尔可夫决策过程、预测与控制等，其中经典的预测与控制算法主要包括动态规划、蒙特卡洛方法和时序差分方法等。
 
@@ -131,6 +131,104 @@ $$
 | 贝叶斯线性回归 |      估计参数分布      |  不确定性估计  | 计算复杂           | $\text{Bayesian TD}$                  |
 
 
+## 梯度下降示例
+
+本节将继续以前面章节中的 $3\times3$ 网格世界为例，演示如何使用线性函数近似和梯度下降，并结合时序差分方法来估计状态价值函数 $V(s)$。
+
+先回顾一下网格世界的环境设置，如图 1 所示。考虑智能体在 $3 \times 3$ 的网格中使用随机策略进行移动，以左上角为起点，右下角为终点，同样规定每次只能向右或向下移动，动作分别用 $a_1$ 和 $a_2$ 表示。用智能体的位置不同的状态，即$s_1,s_2,\ldots,s_9$，初始状态为$S_0=s_1$，终止状态为$s_9$。
+
+<div align=center>
+<img width="500" src="figs/maze_33.png"/>
+</div>
+<div align=center>图 1 3x3 网格示例</div>
+
+除了每走一步接收 $-1$ 的奖励之外，这次我们在网格中增加了一些障碍物，例如在位置 $s_4$ 处设置了一个深坑，智能体走到该位置时会受到一个额外的负奖励 $-3$，在位置 $s_5$ 处设置了一个水洼，智能体走到该位置时会受到一个额外的负奖励 $-0.5$。折扣因子 $\gamma=0.9$，目标是计算各个状态的价值函数 $V(s)$。
+
+在时序车分方法中，使用自举的方式来更新状态价值函数的估计值，如式 $\eqref{eq:5}$ 所示。
+
+$$
+\begin{equation}\label{eq:5}
+V(s_t) \leftarrow V(s_t) + \alpha \left[ R_{t+1} + \gamma V(s_{t+1}) - V(s_t) \right]
+\end{equation}
+$$
+
+将这里的 $V(s)$ 用线性函数近似来替换原来的表格表示，如式 $\eqref{eq:6}$ 所示。
+
+$$
+\begin{equation}\label{eq:6}
+V_{\theta}(s) = \boldsymbol{\theta}^T \boldsymbol{\phi}(s)
+\end{equation}
+$$
+
+由于是线性函数，因此对应的梯度非常简单，如式 $\eqref{eq:11}$ 所示。
+
+$$
+\begin{equation}\label{eq:11}
+\nabla_{\boldsymbol{\theta}} V_{\theta}(s) = \boldsymbol{\phi}(s)
+\end{equation}
+$$
+
+
+在这个网格示例中，我们可以设计一个简单的特征映射 $\boldsymbol{\phi}(s)$，将状态 $s$ 映射为一个包含位置坐标和障碍物信息的特征向量。例如，状态 $s$ 的特征向量可以设计如表 4 所示。
+
+<div style="text-align: center;">
+    <figcaption style="font-size: 14px;"> <b>表 3 ：状态特征映射示例</b> </figcaption>
+</div>
+
+| 状态 $s$ | 行坐标 | 列坐标 | 行列乘积 | 行坐标平方 | 列坐标平方 | 是否深坑 | 是否水洼 |
+| :------: | :-----------------: | :-----------------: | :----------: | :--------: | :--------: | :------: | :------: |
+|   $s_1$  |        0.0        |        0.0        |      0.0     |      0.0   |      0.0   |    0.0   |    0.0   |
+|   $s_2$  |        0.0        |       0.5         |      0.0     |      0.0   |     0.25   |    0.0   |    0.0   |
+|   $s_3$  |        0.0        |        1.0        |      0.0     |      0.0   |      1.0   |    0.0   |    0.0   |
+|   $s_4$  |       0.5         |        0.0        |      0.0     |     0.25   |      0.0   |    1.0   |    0.0   |
+|   $s_5$  |       0.5         |       0.5         |     0.25     |     0.25   |     0.25   |    0.0   |    1.0   |
+|   $s_6$  |       0.5         |        1.0        |      0.5     |     0.25   |      1.0   |    0.0   |    0.0   |
+|   $s_7$  |        1.0        |        0.0        |      0.0     |      1.0   |      0.0   |    0.0   |    0.0   |
+|   $s_8$  |        1.0        |       0.5         |      0.5     |      1.0   |     0.25   |    0.0   |    0.0   |
+|   $s_9$  |        1.0        |        1.0        |      1.0     |      1.0   |      1.0   |    0.0   |    0.0   |
+|   特征表示   |    $\text{r}$ | $\text{c}$ |    $\text{r}\times \text{c}$    |   $\text{r}^2$   |  $\text{c}^2$  |  $\text{is\_pit}$  | $\text{is\_puddle}$ |
+| 权重表示 |     $\theta_1$     |     $\theta_2$     |    $\theta_3$    |   $\theta_4$  |   $\theta_5$  |   $\theta_6$  |   $\theta_7$  |
+
+注意行列坐标为了了避免数值过大，均做了归一化处理，取值范围为 $[0,1]$。此外，还引入了两个二值特征，分别表示当前状态是否为深坑（$\text{is\_pit}$）或水洼（$\text{is\_puddle}$）。
+
+然后再加上偏置项，总共八个特征。这样，状态 $s$ 的价值函数估计 $\eqref{eq:6}$ 可以展开如式 $\eqref{eq:7}$ 所示。
+
+$$
+\begin{equation}\label{eq:7}
+V_{\theta}(s) = \theta_0 + \theta_1 \cdot \text{r} + \theta_2 \cdot \text{c} + \theta_3 \cdot (\text{r} \times \text{c}) + \theta_4 \cdot \text{r}^2 + \theta_5 \cdot \text{c}^2 + \theta_6 \cdot \text{is\_pit} + \theta_7 \cdot \text{is\_puddle}
+\end{equation}
+$$
+
+如何更新参数呢？依然可以用蒙特卡洛方法或时序差分方法来计算目标值，然后通过梯度下降来更新参数。对于蒙特卡洛更新，可以使用完整回合的累积奖励作为目标值 $G_t$，如式 $\eqref{eq:8}$ 所示。
+
+$$
+\begin{equation}\label{eq:8}
+\begin{aligned}
+\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} + \alpha \left[ G_t - V_{\theta}(s_t) \right] \nabla_{\boldsymbol{\theta}} V_{\theta}(s_t) = \boldsymbol{\theta} + \alpha \left[ G_t - V_{\theta}(s_t) \right] \boldsymbol{\phi}(s_t)
+\end{aligned}
+\end{equation}
+$$
+
+对于时序差分更新，可以使用单步奖励加上下一个状态的估计价值作为目标值，如式 $\eqref{eq:9}$ 所示。
+
+$$
+\begin{equation}\label{eq:9}
+\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} + \alpha \left[ R_{t+1} + \gamma V_{\theta}(s_{t+1}) - V_{\theta}(s_t) \right] \nabla_{\boldsymbol{\theta}} V_{\theta}(s_t) = \boldsymbol{\theta} + \alpha \left[ R_{t+1} + \gamma V_{\theta}(s_{t+1}) - V_{\theta}(s_t) \right] \boldsymbol{\phi}(s_t)
+\end{equation}
+$$
+
+注意，时序差分更新中实际上是一个半梯度更新，因为目标值 $R_{t+1} + \gamma V_{\theta}(s_{t+1})$ 也依赖于参数 $\boldsymbol{\theta}$，即原本的完整梯度应包含目标值对参数的导数，如式 $\eqref{eq:10}$ 所示。
+
+$$
+\begin{equation}\label{eq:10}
+\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} + \alpha \left[ R_{t+1} + \gamma V_{\theta}(s_{t+1}) - V_{\theta}(s_t) \right] \left( \nabla_{\boldsymbol{\theta}} V_{\theta}(s_t) - \gamma \nabla_{\boldsymbol{\theta}} V_{\theta}(s_{t+1}) \right)
+\end{equation}
+$$
+
+然而，实际应用中通常忽略目标值对参数的依赖，只使用半梯度更新。这样的做法已经被证明可以收敛到一个较好的解，且计算更为简单。此外如果直接使用完整梯度，反而会破坏时序差分的递推结果，从而导致不稳定。
+
+基于上述设置，我们可以实现一个简单的半梯度 $\text{TD(0)}$ 算法来估计状态价值函数 $V(s)$，具体代码如下面所示。
+
 ```python
 import numpy as np
 import pandas as pd
@@ -199,10 +297,25 @@ grid = np.array([[V_hat(f"s{r*3+c+1}") for c in range(3)] for r in range(3)])
 print(pd.DataFrame(np.round(grid,3),
                    index=["row1","row2","row3"],
                    columns=["col1","col2","col3"]))
-print("\nweights:", np.round(w,4))
+print("\nweights:", np.round(w,3))
 ```
 
+运行上述代码后，可以得到结果如代码 2 所示。
+
+```
+       col1   col2   col3
+row1 -4.456 -2.148 -0.906
+row2 -2.030 -0.866  0.117
+row3 -0.875  0.185  0.000
+
+weights: [-4.456  5.501  5.679 -2.494 -1.921 -2.13   0.155 -0.364]
+```
+
+可以看到，状态价值函数 $V(s)$ 的估计结果与之前使用表格方法得到的结果较为接近，说明线性函数近似结合梯度下降和时序差分方法在这个示例问题中能够有效地估计状态价值函数。
+
 ## 神经网络近似
+
+前面讲到，线性函数近似或者拟合价值函数在某些简单问题中表现良好，但在面对复杂的环境和高维状态空间时，线性函数的表达能力有限，难以捕捉复杂的非线性关系。
 
 随着深度学习的发展，神经网络成为了更强大的函数近似工具。神经网络通过多层非线性变换，能够捕捉复杂的模式和关系，从而更准确地估计价值函数，如式 $\eqref{eq:2}$ 所示。
 
@@ -233,164 +346,141 @@ $$
 
 使用独热编码后，神经网络可以更好地学习到不同状态之间的区别，从而提高价值函数的估计精度。此外，如果状态空间较大，独热编码会导致输入向量维度过高，这时可以考虑使用嵌入层（$\text{embedding layer}$）来降低维度，从而提高计算效率，具体内容将在后续展开讲解。
 
-### Q 网络
+```python
+"""
+3x3 网格：NN 近似 V_pi(s)
+- 动作：right / down（越界不可选）
+- 奖励：每步 -1；进 s4 额外 -3；进 s5 额外 -0.5；到 s9 +1（等价进终点净0）
+- 策略：在可行动作间均匀随机
+- 训练：TD(0) 半梯度（也可切换成蒙特卡洛回归）
+"""
+import math, random, numpy as np
+import torch, torch.nn as nn, torch.optim as optim
+from collections import defaultdict
 
+# ----------------- 环境 -----------------
+gamma = 0.9
+states = [f"s{i}" for i in range(1,10)]
+terminal = "s9"
+coords = {
+    "s1":(0,0), "s2":(0,1), "s3":(0,2),
+    "s4":(1,0), "s5":(1,1), "s6":(1,2),
+    "s7":(2,0), "s8":(2,1), "s9":(2,2),
+}
+def legal_actions(s):
+    r,c = coords[s]
+    acts=[]
+    if c<2: acts.append("right")
+    if r<2: acts.append("down")
+    return acts
 
+def step(s,a):
+    r,c = coords[s]
+    if a=="right": r2,c2=r,c+1
+    else:          r2,c2=r+1,c
+    s2 = next(k for k,v in coords.items() if v==(r2,c2))
+    # 奖励
+    rwd = -1.0
+    if s2=="s4": rwd -= 3.0
+    if s2=="s5": rwd -= 0.5
+    if s2=="s9": rwd += 1.0   # 到终点净0
+    done = (s2==terminal)
+    return s2, rwd, done
 
-## 6.1 强化学习与深度学习的关系
+def random_policy(s):
+    return random.choice(legal_actions(s))
 
-之前我们讲到了强化学习的问题可以拆分成两类问题，即预测和控制。预测的主要目的是根据环境的状态和动作来预测状态价值和动作价值，而控制的主要目的是根据状态价值和动作价值来选择动作。换句话说，预测主要是告诉我们当前状态下采取什么动作比较好，而控制则是按照某种方式决策。就好比军师与主公的关系，军师提供他认为最佳的策略，而主公则决定是否采纳这个策略。
+# ----------------- 特征（可换成 one-hot） -----------------
+def phi(s):
+    r,c = coords[s]
+    rn, cn = r/2.0, c/2.0                    # 归一化到 [0,1]
+    is_pit    = 1.0 if s=="s4" else 0.0
+    is_puddle = 1.0 if s=="s5" else 0.0
+    return np.array([1.0, rn, cn, rn*cn, rn*rn, cn*cn, is_pit, is_puddle], dtype=np.float32)
 
+feat_dim = len(phi("s1"))
 
-不知道读者们是否看过《超智能足球》这部热血动漫，老实讲它是笔者看过比较好的带有高科技元素的足球动漫，主要讲述的是主角团带领着他们的超智能足球机器人组队打入世界大赛的故事，也是启引笔者选择强化学习的初衷之一。
+# ----------------- 神经网络 -----------------
+class ValueNet(nn.Module):
+    def __init__(self, in_dim):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(in_dim, 64), nn.ReLU(),
+            nn.Linear(64, 64), nn.ReLU(),
+            nn.Linear(64, 1)
+        )
+    def forward(self, x):    # x: [B, in_dim]
+        return self.net(x).squeeze(-1)
 
-如图 $\text{6-1}$ 所示，其中有一队叫做英国三狮，主要领队是尼尔逊和巴菲斯，巴菲斯是一个超级数据分析专家，他能在各种场景下计算对手传球、射门的概率，也包括我方进球和传球的各种收益，然后尼尔逊会根据他的数据分析结果来决定下一步行动。尼尔逊也是一个非常有头脑的领队，他不会只依靠巴菲斯的计算结果，而是会结合自身的经验和对足球的直觉来做出数据之外的决策。这个数据之外的决策在强化学习中叫做探索，也就是说尼尔逊会根据巴菲斯的计算结果来做出决策，但是他也会根据自己的经验和直觉来做出一些不确定的决策，这样才能保证他的队伍不会被对手轻易的猜到。
+device = torch.device("cpu")
+net = ValueNet(feat_dim).to(device)
+opt = optim.Adam(net.parameters(), lr=1e-3)
 
-<div align=center>
-<img width="400" src="figs/ggo.png"/>
-</div>
-<div align=center>图 $\text{6-1}$ 预测与控制示例</div>
+# ----------------- 训练开关 -----------------
+USE_TD0 = True   # True: TD(0)；False: 蒙特卡洛回归
 
-以上就是预测和控制的关系，通常在强化学习中预测和控制的部分看起来是共用一个 $Q$ 表或者神经网络的，因此读者们可能会因为主要关注价值函数的估计而忽视掉控制这层关系，控制通常在采样动作的过程中体现出来。其实在前面也提到过，预测也相当于人的眼睛和大脑的视觉神经处理部分，而控制相当于大脑的决策神经处理部分，看似是两个独立的部分，但实际上是相互依赖的，预测的结果会影响到控制的决策，而控制的决策也会影响到预测的结果。
+# ----------------- 训练 -----------------
+episodes = 40000
+batch_buf_s, batch_buf_target = [], []
 
-讲到这里，读者应该不难理解，深度学习就是用来提高强化学习中预测的效果的，因为深度学习本身就是一个目前预测和分类效果俱佳的工具。比如 $\text{Q-learning}$ 的 $Q$ 表就完全可以用神经网络来拟合。注意，深度学习只是一种非常广泛的应用，但并不是强化学习的必要条件，也可以是一些传统的预测模型，例如决策树、贝叶斯模型等等，因此读者在研究相关问题时需要充分打开思路。类似地，在控制问题中，也可以利用深度学习或者其他的方法来提高性能，例如结合进化算法来提高强化学习的探索能力。
+def tensorify(ss):  # list[str] -> tensor
+    feats = np.stack([phi(s) for s in ss], axis=0)
+    return torch.tensor(feats, dtype=torch.float32, device=device)
 
-从训练模式上来看，深度学习和强化学习，尤其是结合了深度学习的深度强化学习，都是基于**大量的样本**来对相应算法进行迭代更新并且达到最优的，这个过程我们称之为**训练**。但与另外两者不同的是，强化学习是在交互中产生样本的，是一个产生样本、算法更新、再次产生样本、再次算法更新的动态循环训练过程，而不是一个准备样本、算法更新的静态训练过程。
+for ep in range(episodes):
+    # Exploring starts 也行；此处固定从 s1
+    s = "s1"
+    traj = []  # for MC
+    while s != terminal:
+        a = random_policy(s)
+        s2, rwd, done = step(s, a)
 
-这本质上还是跟要解决的问题不同有关，强化学习解决的是序列决策问题，而深度学习解决的是“打标签”问题，即给定一张图片，我们需要判断这张图片是猫还是狗，这里的猫和狗就是标签，当然也可以让算法自动打标签，这就是监督学习与无监督学习的区别。而强化学习解决的是“打分数”问题，即给定一个状态，我们需要判断这个状态是好还是坏，这里的好和坏就是分数。当然，这只是一个比喻，实际上强化学习也可以解决“打标签”问题，只不过这个标签是一个连续的值，而不是离散的值，比如我们可以给定一张图片，然后判断这张图片的美观程度，这里的美观程度就是一个连续的值，而不是离散的值。
+        if USE_TD0:
+            # TD(0) 半梯度：target = r + γ V(s')，并 detach V(s')
+            with torch.no_grad():
+                v_sp = 0.0 if done else net(tensorify([s2]))[0].item()
+            target = rwd + gamma * v_sp
+            preds = net(tensorify([s]))
+            loss = nn.MSELoss()(preds, torch.tensor([target], dtype=torch.float32, device=device))
+            opt.zero_grad(); loss.backward(); opt.step()
+        else:
+            # 先记轨迹，等 episode 结束再做 MC 回归
+            traj.append((s, rwd))
+        s = s2
 
-如图 $\text{6-2}$ 所示，除了训练生成模型之外，强化学习相当于在深度学习的基础上增加了一条回路，即继续与环境交互产生样本。相信学过控制系统的读者很快会意识到，这个回路就是一个典型的反馈系统机制，模型的输出一开始并不能达到预期的值，因此通过动态地不断与环境交互来产生一些反馈信息，从而训练出一个更好的模型。
+    if not USE_TD0:
+        # 蒙特卡洛：从后往前算 G，并回归到 V(s)
+        G = 0.0
+        for s, rwd in reversed(traj):
+            G = rwd + gamma*G
+            batch_buf_s.append(s); batch_buf_target.append(G)
+        # 小批量更新
+        if len(batch_buf_s) >= 64:
+            X = tensorify(batch_buf_s)
+            y = torch.tensor(batch_buf_target, dtype=torch.float32, device=device)
+            pred = net(X)
+            loss = nn.MSELoss()(pred, y)
+            opt.zero_grad(); loss.backward(); opt.step()
+            batch_buf_s.clear(); batch_buf_target.clear()
 
-<div align=center>
-<img width="600" src="figs/dl_rl.png"/>
-</div>
-<div align=center>图 $\text{6-2}$ 深度学习与强化学习示例</div>
+# ----------------- 评估与打印 -----------------
+with torch.no_grad():
+    grid = np.zeros((3,3), dtype=np.float32)
+    for r in range(3):
+        for c in range(3):
+            sid = f"s{r*3+c+1}"
+            grid[r,c] = 0.0 if sid==terminal else net(tensorify([sid]))[0].item()
+    print("Estimated V_pi(s) by NN (rows=row1..row3):")
+    print(np.round(grid, 3))
 
+# 热力图：
+# import matplotlib.pyplot as plt
+# plt.imshow(grid, origin='upper'); 
+# for i in range(3):
+#   for j in range(3): plt.text(j,i,f"{grid[i,j]:.2f}",ha='center',va='center')
+# plt.title("NN-approximated V(s)"); plt.colorbar(); plt.show()
+```
 
-
-## 6.2 线性回归
-
-本节开始总结归纳强化学习用到的一些深度学习模型，首先是线性模型。严格来说，线性模型并不是深度学习模型，而是传统的机器学习模型，但它是深度学习模型的基础，在深度学习中相当于单层的神经网络。在线性模型中，应用较为广泛的两个基础模型就是线性回归和逻辑回归，通常分别用于解决回归和分类问题，尽管后者也可以用来解决回归问题。
-
-以典型的房价预测问题为例，假设一套房子有 $m$ 个特征，例如建造年份、房子面积等，分别记为 $x_1, x_2, \cdots, x_m$，用向量表示为式 $\eqref{eq:11}$ 。
-
-$$
-\begin{equation}\label{eq:11}
-\boldsymbol{x}=\left[x_1, x_2, \cdots, x_m\right]
-\end{equation}
-$$
-
-那么房价 $y$ 可以表示为式 $\text{(6.2)}$。
-
-$$
-\tag{6.2}
-f(\boldsymbol{x} ; \boldsymbol{w}, b) = w_1 x_1+w_2 x_2+\cdots+w_m x_m+b = \boldsymbol{w}^T \boldsymbol{x}+b
-$$
-
-其中 $\boldsymbol{w}$ 和 $b$ 是模型的参数，$f(\boldsymbol{x} ; \boldsymbol{w}, b)$ 是模型的输出，也就是我们要预测的房价。出于简化考虑，通常我们会用一个符号 $\boldsymbol{\theta}$ 来表示 $\boldsymbol{w}$ 和 $b$，如式 $\text{(6.3)}$ 所示。
-
-$$
-\tag{6.3}
-f^{\theta}(\boldsymbol{x}) = \boldsymbol{\theta}^T \boldsymbol{x}
-$$
-
-在这类问题中，这样的关系可以用模型来表述，我们的目标是求得一组最优的参数 $\boldsymbol{\theta^{*}}$ ，使得该模型尽可能地能够根据房屋的 $m$ 个特征准确预测对应的房价。这类问题也叫做拟合问题，比如我们可以用一条直线来拟合一组散点，这条直线代表的就是模型。用来拟合最优参数的这些散点或者说数据称作样本，实际应用中由于需要拟合的模型是未知且复杂的，不可能用一个简单的函数来表示，因此需要大量的样本来训练模型，这些样本也就是训练集。
-
-另外注意，这里是近似求解，因为几乎不可能找到一种模型能够完美拟合所有的样本，即找到最优解，甚至这个最优解不一定存在。因此，这类问题也普遍存在过拟合和欠拟合的问题，欠拟合指的是模型在训练集上表现就很差（可能在测试集中表现还行），而过拟合则是指在训练集上表现很好，但在测试集上表现很差。这两种情况都是不理想的，本质上都是陷入了局部最优解的问题，因此我们有时候需要一些方法来解决这个问题，比如正则化、数据增强等。
-
-## 6.3 梯度下降
-
-回到问题本身，这类问题的解决方法也有很多种，例如最小二乘法、牛顿法等，但目前最流行的方法还是梯度下降。其基本思想如下。
-
-* 初始化参数：选择一个初始点或参数的初始值。
-* 计算梯度：在当前点计算函数的梯度，即函数关于各参数的偏导数。梯度指向函数值增加最快的方向。
-* 更新参数：按照负梯度方向更新参数，这样可以减少函数值。这个过程在神经网络中一般是以反向传播算法来实现的。
-* 重复上述二三步骤，直到梯度趋近于 0 或者达到一定迭代次数。
-
-梯度下降本质上是一种基于贪心思想的方法,它的泛化能力很强，能够基于任何**可导的函数**求解最优解。如图 $\text{6-3}$ 所示，假设我们要找到一个山谷中的最低点，也就是下山，那么我们可以从任意一点出发，然后沿着最陡峭的方向向下走，这样就能够找到山谷中的最低点。这里的最陡峭的方向就是梯度方向，而沿着这个方向走的步长就是学习率，这个学习率一般是一个超参数，需要我们自己来设定。
-
-一般情况下，我们会将学习率设定为一个较小的值，这样可以保证我们不会错过最低点，但是如果学习率过小，那么我们就需要更多的迭代次数才能够达到最低点。每次梯度下降的迭代过程中，我们都会选取一个小批量的样本来计算梯度，这个小批量的样本称为一个 $\text{batch}$ 。这个批量相当于下山过程中我们看到的视野，如果批量太小的话，由于看不到更远的地方，我们就很容易被一些局部的山峰所迷惑，即陷入局部最优解。但是如果批量太大的话，那么我们就需要更多的计算资源。因此，我们需要根据实际情况来选择一个合适的 $\text{batch}$ 大小。
-
-<div align=center>
-<img width="600" src="figs/gd.png"/>
-</div>
-<div align=center>图 $\text{6-3}$ 梯度下降示例</div>
-
-除了调整学习率和批量大小之外，我们还可以对梯度下降的机制进行一些处理，比如加入动量、$\text{Adam}$ 等，这类工具我们一般称之为优化器（ $\text{optimizer}$ ）。动量法的基本思想是在梯度下降的过程中，不仅仅考虑当前的梯度，还要考虑之前的梯度，这样可以加快梯度下降的速度，同时也可以减少梯度下降过程中的震荡。
-
-$\text{Adam}$ 是一种自适应的优化算法，它不仅仅考虑了当前的梯度，还考虑了之前的梯度的平方，这样可以更加准确地估计梯度的方向，从而加快梯度下降的速度，也是目前最流行的优化器之一。注意在做强化学习应用或研究的时候，我们并不需要太纠结于优化器的选择，因为这些优化器的效果并没有太大的差别，而且我们也不需要去了解它们的具体原理，只需要知道它们的大致作用就可以了。
-
-此外，从训练中样本选择的方式来看，梯度下降可以分为单纯的梯度下降和随机梯度下降（ $\text{stochastic gradient descent, SGD}$ ）。前者是按照样本原本的顺序不断迭代去拟合模型参数，后者则是随机抽取样本，这样做的好处就是利用随机性可能帮助算法跳出一些局部最优解，从而使得算法的收敛性更高，增强鲁棒性。从批的大小来看，又可以分为批量梯度下降和小批量梯度下降（ $\text{mini-batch gradient descent}$ ），前者每次使用整个训练样本来迭代，也就是 $\text{batch}$ 很大，这样做的好处是每次迭代的方向比较准确，但是计算开销比较大。
-
-后者每则次使用一小部分样本来迭代，也就是 $\text{batch}$ 很小，这样做的好处是计算开销比较小，但是每次迭代的方向比较不准确。综合来看，我们通常使用小批量的随机梯度下降 $\text{mini-batch stochastic gradient descent}$，这样可以兼顾到所有的优点，从而使得训练更加稳定，算法效果也会更好。
-
-## 6.4 逻辑回归
-
-简单介绍完梯度下降之后，我们就可以继续介绍一些模型了，现在是逻辑回归。注意，虽然逻辑回归名字中带有回归，但是它是用来解决分类问题的，而不是回归问题（即预测问题）。在分类问题中，我们的目标是预测样本的类别，而不是预测一个连续的值。例如，我们要预测一封邮件是否是垃圾邮件，这就是一个二分类问题，通常输出 $0$ 和 $1$ 等离散的数字来表示对应的类别。在形式上，逻辑回归和线性回归非常相似，如图 $\text{6-4}$ 所示，就是在线性模型的后面增加一个 $\text{sigmoid}$ 函数，我们一般称之为激活函数。
-
-<div align=center>
-<img width="800" src="figs/logistic_struction.png"/>
-</div>
-<div align=center>图 $\text{6-4}$ 逻辑回归结构</div>
-
-$\text{sigmoid}$ 函数定义为式 $\text{(6.4)}$。
-
-$$
-\tag{6.4}
-sigmoid(z) = \frac{1}{1+exp(-z)}
-$$
-
-如图 $\text{6-5}$ 所示，$\text{sigmoid}$ 函数可以将输入的任意实数映射到 $(0,1)$ 的区间内，对其输出的值进行判断，例如小于 $0.5$ 我们认为预测的是类别 $0$，反之是类别 $1$ ，这样一来通过梯度下降来求解模型参数就可以用于实现二分类问题了。注意，虽然逻辑回归只是在线性回归模型基础上增加了一个激活函数，但两个模型是完全不同的，包括损失函数等等。线性回归的损失函数是均方差损失，而逻辑回归模型一般是交叉熵损失，这两种损失函数在深度学习和深度强化学习中都很常见。
-
-<div align=center>
-<img width="400" src="figs/sigmoid.png"/>
-</div>
-<div align=center>图 $\text{6-5}$ $\text{sigmoid}$ 函数图像</div>
-
-逻辑回归的主要优点在于增加了模型的非线性能力，同时模型的参数也比较容易求解，但是它也有一些缺点，例如它的非线性能力还是比较弱的，而且它只能解决二分类问题，不能解决多分类问题。在实际应用中，我们一般会将多个二分类问题组合成一个多分类问题，例如将 $\text{sigmoid}$ 函数换成 $\text{softmax}$ 回归函数等。
-
-其实，逻辑回归的模型结构已经跟生物神经网络的最小单位神经元很相似了。如图 $\text{6-6}$ 所示，我们知道神经元之间是通过生物电信号来传递信息的，在每个神经元的末端会有一个叫做突触的结构，会根据信号的不同来激活不同的受体并传递给下一个神经元。当然，每个神经元也会同时接收来自不同神经元的信号并通过细胞核处理，人工神经网络中这个处理过程就相当于线性加权处理，即 $\boldsymbol{w}^T \boldsymbol{x}$, 然后通过激活函数来判断是否激活。
-
-
-<div align=center>
-<img width="700" src="figs/ann_vs_dnn.png"/>
-</div>
-<div align=center>图 $\text{6-6}$ 生物神经网络与人工神经网络的对比</div>
-
-同时，逻辑回归这类模型的结构也比较灵活多变，可以通过横向堆叠的形式来增加模型的复杂度，例如增加隐藏层等，这样就能解决更复杂的问题，这就是接下来要讲的神经网络模型。并且，我们可以认为逻辑回归就是一个最简单的人工神经网络模型。
-
-## 6.5 全连接网络
-
-如图 $\text{6-7}$ 所示，将线性层横向堆叠起来，前一层网络的所有神经元的输出都会输入到下一层的所有神经元中，这样就可以得到一个全连接网络。其中，每个线性层的输出都会经过一个激活函数（图中已略去），这样就可以增加模型的非线性能力。
-
-<div align=center>
-<img width="400" src="figs/mlp.png"/>
-</div>
-<div align=center>图 $\text{6-7}$ 全连接网络</div>
-
-我们把这样的网络叫做全连接网络（$\text{fully connected network}$），也称作多层感知机（$\text{multi-layer perceptron，MLP}$），是最基础的深度神经网络模型。把神经网络模型中前一层的输入向量记为 $\boldsymbol{x^{l-1}}\in \mathbb{R}^{d^{l-1}}$ ，其中第一层的输入也就是整个模型的输入可记为$\boldsymbol{x^0}$，每一个全连接层将前一层的输入映射到$\boldsymbol{x^{l}}\in \mathbb{R}^{d^{l}}$，也就是后一层的输入，具体定义为式 $\text{(6.5)}$。
-
-$$
-\tag{6.5}
-\boldsymbol{x}^{l}=\sigma(\boldsymbol{z}), \quad \boldsymbol{z}=\boldsymbol{W} \boldsymbol{x^{l-1}}+\boldsymbol{b} = \boldsymbol{\theta} \boldsymbol{x^{l-1}}
-$$
-
-其中 $\boldsymbol{W}\in \mathbb{R}^{d^{l-1} \times d^{l}}$ 是权重矩阵，$\boldsymbol{b}$ 为偏置矩阵，与线性模型类似，这两个参数我们通常看作一个参数 $\boldsymbol{\theta}$。$\sigma(\cdot)$ 是激活函数，除了 $\text{sigmoid}$ 函数之外，还包括 $\text{softmax}$ 函数、$\text{ReLU}$ 函数和 $\text{tanh}$ 函数等等激活函数。其中最常用的是 $\text{ReLU}$ 函数 和 $\text{tanh}$ 函数，前者将神经元也就是线性函数的输出映射到 $(0,1)$ 之间，后者则映射到$-1$到$1$之间。
-
-前面讲到，在强化学习中我们会用神经网络来近似动作价值函数，动作价值函数的输入是状态，输出是各个动作对应的价值，在有些连续动作问题中比如汽车方向盘转动角度是$-90$度到$90$度之间，这种情况下使用 $\text{tanh}$ 激活函数能够使得神经网络负值以便于更好地近似状态动作函数。顺便提一句，这里还有一种做法是我们可以把动作空间映射到正值的范围，例如$(0,180)$区间，这样一来对应的神经网络模型激活函数使用 $\text{ReLU}$ 函数会更好些。总而言之，激活函数的选择需要根据具体的问题来定，没有一种激活函数适用于所有的问题。
-
-在了解到神经网络前后层的关系之后，我们就可以表示一个 $l$ 层的神经网络模型，如式 $\text{(6.6)}$ 所示。
-$$
-\tag{6.6}
-\begin{split}
-    第 1 层: \quad \boldsymbol{x}^{(1)}=\sigma_1\left(\boldsymbol{W}^{(1)} \boldsymbol{x}^{(0)}+\boldsymbol{b}^{(1)}\right),\\
-    第 2 层: \quad \boldsymbol{x}^{(2)}=\sigma_2\left(\boldsymbol{W}^{(2)} \boldsymbol{x}^{(1)}+\boldsymbol{b}^{(2)}\right),\\
-    \vdots \quad \vdots\\
-    第 l 层: \quad \boldsymbol{x}^{(l)}=\sigma_l\left(\boldsymbol{W}^{(l)} \boldsymbol{x}^{(l-1)}+\boldsymbol{b}^{(l)}\right)\\
-\end{split}
-$$
-
-从上面的式子可以看出，神经网络模型的参数包括每一层的权重矩阵和偏置矩阵，也就是 $\boldsymbol{\theta}=\{\boldsymbol{W}^{(1)},\boldsymbol{b}^{(1)},\boldsymbol{W}^{(2)},\boldsymbol{b}^{(2)},\cdots,\boldsymbol{W}^{(l)},\boldsymbol{b}^{(l)}\}$，这些参数都是需要我们去学习的，也就是说我们需要找到一组参数使得神经网络模型的输出尽可能地接近真实值，这个过程就是神经网络的训练过程。同基础的线性模型类似，神经网络也可以通过梯度下降的方法来求解最优参数。
 
 ## 6.6 更高级的神经网络
 
@@ -414,12 +504,12 @@ $$
 还有一种特殊的结构，叫做 $\text{Transformer}$。虽然它也是为了处理序列数据而设计的，但是是一个完全不同的结构，不再依赖循环来处理序列，而是使用自注意机制 ($\text{self-attention mechanism}$) 来同时考虑序列中的所有元素。并且 $\text{Transformer}$ 的设计特别适合并行计算，使得训练速度更快。自从被提出以后，$\text{Transformer}$ 就被广泛应用于自然语言处理领域，例如 $\text{BERT}$ 以及现在特别流行的 $\text{GPT}$ 等模型。
 
 
-## 6.7 本章小结
+## 思考
 
-本章主要总结了深度学习中常见的一些网络结构，以及梯度下降技巧，读者需要了解相关的深度学习基础，以便于向之后的深度强化学习章节过渡。
+**全连接网络、卷积神经网络、循环神经网络分别适用于什么场景？**
 
-## 6.8 练习题
+全连接网络是一种最基本的神经网络结构，每个神经元都与上一层的所有神经元相连。全连接网络适合于输入数据维度较低、数据量较小的场景，例如手写数字识别等。卷积神经网络是一种专门用于处理图像等二维数据的神经网络结构，其核心是卷积层和池化层。卷积神经网络适合于图像、语音等二维或多维数据的处理，可以有效地利用数据的局部特征，例如图像分类、目标检测等。循环神经网络是一种处理序列数据的神经网络结构，其核心是循环层，可以捕捉时序数据中的长期依赖关系。循环神经网络适合于序列数据的建模，例如自然语言处理、音乐生成等。需要注意的是，三种神经网络结构并不是相互独立的，它们可以灵活地组合使用，例如可以在卷积神经网络中嵌入循环神经网络来处理视频数据等。在实际应用中需要根据具体的问题特点和数据情况来选择合适的神经网络结构。
 
-1. 逻辑回归与神经网络之间有什么联系？
-2. 全连接网络、卷积神经网络、循环神经网络分别适用于什么场景？
-3. 循环神经网络在反向传播时会比全连接网络慢吗？为什么？
+**循环神经网络在反向传播时会比全连接网络慢吗？为什么？**
+
+循环神经网络在反向传播时相比于全连接网络会更慢，原因主要有：**循环依赖**：循环神经网络存在时间上的依赖关系，即当前时刻的隐藏状态依赖于上一时刻的隐藏状态。这种循环依赖会导致反向传播时梯度的计算变得复杂，需要使用反向传播算法中的BPTT（$\text{Backpropagation Through Time}$ ）算法来进行计算，计算量较大，因此速度相对较慢；**长期依赖**：循环神经网络在处理长序列时，会出现梯度消失或梯度爆炸的问题，这是由于反向传播时梯度在时间上反复相乘或相加导致的。为了解决这个问题，需要采用一些技巧，如 $\text{LSTM}$ 和 $\text{GRU}$ 等。相比之下，全连接网络不存在循环依赖关系，因此反向传播时梯度的计算较为简单，计算量相对较小，速度相对较快。需要注意的是，循环神经网络在处理序列数据方面具有独特的优势，它可以处理变长的序列数据，可以捕捉到序列中的长期依赖关系，因此在序列建模等方面被广泛应用。
