@@ -40,6 +40,11 @@
          <p>教程设计与算法实战<br> 北京大学硕士 </p>
         </td>
         <td>
+         <a href="https://github.com/scchy"><img width="70" height="70" src="https://github.com/scchy.png?s=40" alt="pic"></a><br>
+         <a href="https://github.com/scchy">scchy</a>
+         <p>算法实战<br> </p>
+        </td>
+        <td>
             <a href="https://github.com/qiwang067"><img width="70" height="70" src="https://github.com/qiwang067.png?s=40" alt="pic"></a><br>
             <a href="https://github.com/qiwang067">Qi Wang</a> 
             <p>教程设计<br> 上海交通大学博士生<br> 中国科学院大学硕士</p>
