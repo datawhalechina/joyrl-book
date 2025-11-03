@@ -19,7 +19,7 @@
 <div align=center>
 <img width="400" src="figs/robot_maze.png"/>
 </div>
-<div align=center>图 1 路径之和</div>
+<div align=center>图 1 $\:$ 路径之和</div>
 
 使用动态规划的方法来解决这个问题的话，主要包含几个步骤：**确定状态，写出状态转移方程和寻找边界条件**。
 
@@ -52,7 +52,7 @@ $$
 
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 1 路径问题求解</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 1 $\:$ 路径问题求解</b> </figcaption>
 </div>
 
 ```python
@@ -71,7 +71,7 @@ def solve(m,n):
 <div align=center>
 <img width="400" src="figs/robot_maze_2.png"/>
 </div>
-<div align=center>图 2 路径之和解析</div>
+<div align=center>图 2 $\:$ 路径之和解析</div>
 
 在强化学习中，基于动态规划的算法主要有两种，一是**策略迭代**（$\text{policy iteration, PI}$），二是**价值迭代**（$\text{value iteration, VI}$）。其中策略迭代由两部分组成，分别是**策略评估**（$\text{policy evaluation}$）和**策略改进**（$\text{policy improvement}$）。
 
@@ -154,14 +154,14 @@ $$
 <div align=center>
 <img width="400" src="figs/pi.png"/>
 </div>
-<div align=center>图 3 策略迭代的收敛过程</div>
+<div align=center>图 3 $\:$ 策略迭代的收敛过程</div>
 
 算法流程的伪代码如图 4 所示。
 
 <div align=center>
 <img width="600" src="figs/pi_pseu.png"/>
 </div>
-<div align=center>图 4 策略迭代算法流程</div>
+<div align=center>图 4 $\:$ 策略迭代算法流程</div>
 
 ## 价值迭代
 
@@ -178,14 +178,14 @@ $$
 <div align=center>
 <img width="600" src="figs/vi_pseu.png"/>
 </div>
-<div align=center>图 5 价值迭代算法伪代码</div>
+<div align=center>图 5 $\:$ 价值迭代算法伪代码</div>
 
 首先将所有的状态价值初始化，然后不停地对每个状态迭代，直到收敛到最优价值$V^{*}$，并且根据最优价值推算出最优策略$\pi^{*}$。这样其实更像是一个动态规划本身的思路，而不是强化学习的问题。这种情况下，其实比策略迭代算法要慢得多，尽管两种方法都需要多次遍历。但是在策略迭代算法中考虑了中间每个时步可能遇到的最优策略并及时加以改进，这意味着就算策略在早期并不完美（也许需要改进），策略迭代仍能够更快地接近最优解。
 
 <div align=center>
 <img width="400" src="figs/pi_vs_vi.png"/>
 </div>
-<div align=center>图 6 策略迭代与价值迭代收敛过程的区别</div>
+<div align=center>图 6 $\:$ 策略迭代与价值迭代收敛过程的区别</div>
 
 举例来说，回顾一下策略迭代的收敛过程，如图 6 所示，我们知道策略迭代是不停地在 $V$ 和 $\pi$ 这两条线之间“跳变”直到收敛到$V^*$。这种“跳变”是几乎不需要花费时间的，只是一个 $\pi$ 与 $V$ 互相推算的过程，通过一个公式就能得到，也就是策略估计和策略改进之间的切换过程。而在各自的线上，比如价值函数这条线从 $V_1$ 到 $V_2$ 这个点是需要更多时间的，这其实就是一个策略估计的过程，需要遍历到所有状态，在策略这条线上同理。而实际上 $V_1$ 到 $V_2$ 中间也可能存在更多个点，比如 $V_{12}^{\prime},V_{12}^{\prime \prime},V_{12}^{\prime \prime \prime}$，每次在这些点之间移动是需要遍历所有的状态的，只是在策略迭代算法中借助了策略这条线跳过了中间的 $V_{12}^{\prime},V_{12}^{\prime \prime},V_{12}^{\prime \prime \prime}$ 这些点，而在价值迭代算法的时候会经过价值这条线上的所有点，直到最优，从这个角度来看策略迭代算法是要比价值迭代更快的。
 

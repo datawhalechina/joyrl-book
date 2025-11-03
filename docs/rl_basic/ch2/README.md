@@ -9,7 +9,7 @@
 
 <div align=center>
 <img width="500" src="figs/interaction_mdp.png"/>
-<figcaption style="font-size: 14px;">图 1 智能体与环境的交互过程</figcaption>
+<figcaption style="font-size: 14px;">图 1 $\:$ 智能体与环境的交互过程</figcaption>
 </div>
 
 这个过程不断重复，形成一条**轨迹**，如式 $\eqref{eq:1}$ 所示。
@@ -57,7 +57,7 @@ $$
 <div align=center>
 <img width="400" src="figs/fsm.png"/>
 </div>
-<div align=center>图 2 马尔可夫链</div>
+<div align=center>图 2 $\:$ 马尔可夫链</div>
 
 注意，图 2 中并没有包含动作和奖励等元素，因此严格来说它表示的是**马尔可夫链（$\text{Markov Chain}$）**，又叫做离散时间的马尔可夫过程（$\text{Markov Process}$），但它与马尔可夫决策过程有着密切的联系，都是基于马尔可夫性质构建的。
 

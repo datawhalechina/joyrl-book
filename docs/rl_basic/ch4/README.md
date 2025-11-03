@@ -15,7 +15,7 @@
 <div align=center>
 <img width="200" src="figs/simple_maze.png"/>
 </div>
-<div align=center>图 1 $2 \times 2$ 网格示例</div>
+<div align=center>图 1 $\:$ $2 \times 2$ 网格示例</div>
 
 回顾状态价值函数的定义，如式 $\eqref{eq:state_value}$ 所示。
 
@@ -73,7 +73,7 @@ $$
 综上所述，各状态的价值函数结果如表 1 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>表 1 各状态的价值函数</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>表 1 $\:$ 各状态的价值函数</b> </figcaption>
 </div>
 
 | 状态 | $s_1$ | $s_2$ | $s_3$ | $s_4$ |
@@ -114,7 +114,7 @@ $$
 用 `Python` 代码实现这个过程，如代码 1 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 1 使用蒙特卡洛方法估计 $\pi$ 的值</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 1 $\:$ 使用蒙特卡洛方法估计 $\pi$ 的值</b> </figcaption>
 </div>
 
 ```python
@@ -183,14 +183,14 @@ $$
 <div align=center>
 <img width="600" src="figs/fvmc_pseu.png"/>
 </div>
-<div align=center>图 2 首次访问蒙特卡洛算法伪代码</div>
+<div align=center>图 2 $\:$ 首次访问蒙特卡洛算法伪代码</div>
 
 假设我们已经采样得到了一条完整的轨迹 $\tau = \{S_0, A_0, R_1, S_1, A_1, R_2, \ldots, S_{T-1}, A_{T-1}, R_T, S_T\}$，其中 $S_T$ 是终止状态。对于轨迹中的每个状态 $S_t$，我们检查它是否是该状态在当前轨迹中的首次出现。如果是首次出现，我们计算从该时间步 $t$ 开始的回报 $G_t$，并将其添加到该状态的回报列表中，最后更新该状态的价值函数 $V(S_t)$ 为回报列表的平均值。
 
 回头看我们前面的示例，可以用 $\text{FVMC}$ 方法来实现状态价值函数的估计，如代码 2 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 2 首次访问蒙特卡洛方法估计状态价值函数</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 2 $\:$ 首次访问蒙特卡洛方法估计状态价值函数</b> </figcaption>
 </div>
 
 ```python
@@ -255,7 +255,7 @@ if __name__ == "__main__":
 运行结果如代码 3 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 3 首次访问蒙特卡洛方法估计状态价值函数结果</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 3 $\:$ 首次访问蒙特卡洛方法估计状态价值函数结果</b> </figcaption>
 </div>
 
 ```
@@ -275,7 +275,7 @@ First-Visit MC:
 在 $\text{EVMC}$ 方法中则不会忽略同一状态的多个回报，具体代码实现如代码 4 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 4 每次访问蒙特卡洛方法估计状态价值函数</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 4 $\:$ 每次访问蒙特卡洛方法估计状态价值函数</b> </figcaption>
 </div>
 
 ```python
@@ -340,7 +340,7 @@ if __name__ == "__main__":
 同样运行结果如代码 5 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 5 每次访问蒙特卡洛方法估计状态价值函数结果</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 5 $\:$ 每次访问蒙特卡洛方法估计状态价值函数结果</b> </figcaption>
 </div>
 
 ```
@@ -376,7 +376,7 @@ $$
 使用`Python` 代码实现蒙特卡洛动作价值估计来解决前面示例的问题，如代码 6 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 6 蒙特卡洛方法估计动作价值函数</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 6 $\:$ 蒙特卡洛方法估计动作价值函数</b> </figcaption>
 </div>
 
 ```python
@@ -437,7 +437,7 @@ for (s,a), v in Q.items():
 运行结果如代码 7 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 7 蒙特卡洛方法估计动作价值函数结果</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 7 $\:$ 蒙特卡洛方法估计动作价值函数结果</b> </figcaption>
 </div>
 
 ```python
@@ -482,14 +482,14 @@ $$
 <div align=center>
 <img width="500" src="figs/maze_33.png"/>
 </div>
-<div align=center>图 3 3x3 网格示例</div>
+<div align=center>图 3 $\:$ 3x3 网格示例</div>
 
 除了每走一步接收 $-1$ 的奖励之外，这次我们在网格中增加了一些障碍物，例如在位置 $s_4$ 处设置了一个深坑，智能体走到该位置时会受到一个额外的负奖励 $-3$，在位置 $s_5$ 处设置了一个水洼，智能体走到该位置时会受到一个额外的负奖励 $-0.5$。折扣因子 $\gamma=0.9$，目标是计算各个状态的价值函数 $V(s)$。
 
 用 `Python` 代码实现蒙特卡洛方法来估计状态价值函数，如代码 8 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 8 使用蒙特卡洛方法估计 3x3 网格状态价值函数</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 8 $\:$ 使用蒙特卡洛方法估计 3x3 网格状态价值函数</b> </figcaption>
 </div>
 
 ```python
@@ -592,7 +592,7 @@ plt.show()
 <div align=center>
 <img width="400" src="figs/maze_33_mc_state_values.png"/>
 </div>
-<div align=center>图 4 3x3 网格中的状态价值热力图</div>
+<div align=center>图 4 $\:$ 3x3 网格中的状态价值热力图</div>
 
 初学者可能会有疑问，为什么平地状态例如 $s_1$ 反而比有障碍物的状态 $s_4$ 和 $s_5$ 价值更低呢？直觉上，我们可能会认为障碍物的存在会降低对应位置的状态价值，但实际上注意状态价值的计算是基于**从该状态出发**的未来回报的期望，而不是仅仅考虑该状态本身的奖励。
 
@@ -603,7 +603,7 @@ plt.show()
 同样地，可以用蒙特卡洛方法来估计动作价值函数 $Q(s,a)$，代码实现如代码 9 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 9 使用蒙特卡洛方法估计 3x3 网格动作价值函数</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 9 $\:$ 使用蒙特卡洛方法估计 3x3 网格动作价值函数</b> </figcaption>
 </div>
 
 ```python
@@ -727,7 +727,7 @@ plt.show()
 <div align=center>
 <img width="800" src="figs/maze_33_mc_action_values.png"/>
 </div>
-<div align=center>图 5 3x3 网格中的动作价值热力图</div>
+<div align=center>图 5 $\:$ 3x3 网格中的动作价值热力图</div>
 
 可以发现，从状态 $s_1$ 出发，选择向右移动（动作 $a_1$）和向下移动（动作 $a_2$）的动作价值分别为 $Q(s_1,a_1) = -2.93$ 和 $Q(s_1,a_2) = -5.93$，这表明在随机策略下，选择向右移动的动作相对更优一些，因为对应的动作价值更高。
 
@@ -746,12 +746,12 @@ $$
 <div align=center>
 <img width="600" src="figs/mc_control_pseu.png"/>
 </div>
-<div align=center>图 6 蒙特卡洛控制算法伪代码</div>
+<div align=center>图 6 $\:$ 蒙特卡洛控制算法伪代码</div>
 
 在 $3 \times 3$ 网格的示例中，可以用蒙特卡洛控制方法来学习一个更优的策略，代码实现如代码 10 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 10 使用蒙特卡洛控制方法学习 3x3 网格最优策略</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 10 $\:$ 使用蒙特卡洛控制方法学习 3x3 网格最优策略</b> </figcaption>
 </div>
 
 ```python
@@ -942,7 +942,7 @@ plt.show()
 <div align=center>
 <img width="800" src="figs/maze_33_mc_control_policy.png"/>
 </div>
-<div align=center>图 7 3x3 网格中的蒙特卡洛控制最优策略与路径</div>
+<div align=center>图 7 $\:$ 3x3 网格中的蒙特卡洛控制最优策略与路径</div>
 
 左图展示了不同状态下的全局最优策略，右图用红色箭头高亮显示了从起始状态 $s_1$ 出发的最优路径，如式 $\eqref{eq:optimal_path}$ 所示。
 
