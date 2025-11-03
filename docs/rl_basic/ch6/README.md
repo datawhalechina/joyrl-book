@@ -36,13 +36,13 @@
       </tr>
     </table>
   </div>
-  <div>表 1 ：$\text{Q}$ 表格</div>
+  <div>表 1 $\:$ $\text{Q}$ 表格</div>
 </div>
 
 表格实际上是一种数学抽象形式，在程序实现上可以使用`Python`数组或者字典来表示，如代码 1 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 1 表格的程序实现示例</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 1 $\:$ 表格的程序实现示例</b> </figcaption>
 </div>
 
 ```python
@@ -87,7 +87,7 @@ $$
 除了线性函数，其他传统的函数近似方法还包括决策树、支持向量机等，这些方法在某些特定任务中也有一定的应用价值，具体总结如表 2 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>表 1 ：典型函数近似方法总结</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>表 2 $\:$ 典型函数近似方法总结</b> </figcaption>
 </div>
 
 |       方法类型       |                      核心思想                      | 表达能力 |           优缺点           |                  示例算法                  |
@@ -115,12 +115,30 @@ $$
 
 其中 $\alpha$ 是学习率，控制参数更新的步长，$\nabla_{\boldsymbol{\theta}} L(\boldsymbol{\theta})$ 是损失函数关于参数的梯度。
 
+注意，梯度下降的目标是最小化损失函数，有时可能需要最大化某个目标函数（例如累积奖励），此时可使用梯度上升（$\text{Gradient Ascent}$）方法，如式 $\eqref{eq:4_1}$ 所示。
+
+$$
+\begin{equation}\label{eq:4_1}
+\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} + \alpha \nabla_{\boldsymbol{\theta}} J(\boldsymbol{\theta})
+\end{equation}
+$$
+
+但在实际应用中，梯度上升可以通过优化负的损失函数来实现，即式 $\eqref{eq:4_2}$ 。
+
+$$
+\begin{equation}\label{eq:4_2}
+\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} - \alpha \nabla_{\boldsymbol{\theta}} (-J(\boldsymbol{\theta}))
+\end{equation}
+$$
+
+换句话说，梯度下降和梯度上升在数学上是很容易互相转换的，出于统一性和习惯性考虑，通常都会把问题转化为最小化损失函数的问题，然后使用梯度下降方法来进行参数优化。
+
 在标准的梯度下降基础上，一些改进的优化算法，如随机梯度下降（$\text{SGD}$）、动量法（$\text{Momentum}$）、自适应学习率方法（如 $\text{Adam}$）等，这些方法在实际应用中能够提高收敛速度和稳定性。
 
 除了梯度下降方法之外，还有其他优化方法，如牛顿法、拟牛顿法等，**这些方法通过利用二阶导数信息来加速收敛，但计算复杂度较高，通常在大规模强化学习中不常用**，具体总结如表 3 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>表 2 ：典型参数优化方法总结</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>表 2 $\:$ 典型参数优化方法总结</b> </figcaption>
 </div>
 
 |      方法类型       |                      核心思想                      |           优点           |           缺点           |              **常见算法**              |
@@ -134,6 +152,74 @@ $$
 | 贝叶斯线性回归 |      估计参数分布      |  不确定性估计  | 计算复杂           | $\text{Bayesian TD}$                  |
 
 
+在强化学习中，以状态价值为例，将这里的 $V(s)$ 用线性函数近似来替换原来的表格表示，如式 $\eqref{eq:6}$ 所示。
+
+$$
+\begin{equation}\label{eq:6}
+V_{\theta}(s) = \boldsymbol{\theta}^T \boldsymbol{\phi}(s)
+\end{equation}
+$$
+
+其中 $\boldsymbol{\phi}(s)$ 是状态 $s$ 的特征向量，$\boldsymbol{\theta}$ 是参数向量。由于是线性函数，因此对应的梯度非常简单，如式 $\eqref{eq:11}$ 所示。
+
+$$
+\begin{equation}\label{eq:6_1}
+\nabla_{\boldsymbol{\theta}} V_{\theta}(s) = \boldsymbol{\phi}(s)
+\end{equation}
+$$
+
+如何更新参数呢？可以通过最小化函数近似的状态价值与真实价值之间的均方误差来实现，如式 $\eqref{eq:2}$ 所示。
+
+$$
+\begin{equation}\label{eq:2}
+L(\boldsymbol{\theta}) = \frac{1}{2}\mathbb{E} \left[ \left( V^{\pi}(s) - V_{\theta}(s) \right)^2 \right]
+\end{equation}
+$$
+
+这里 $V^{\pi}(s)$ 是在策略 $\pi$ 下状态 $s$ 的真实价值，$V_{\theta}(s)$ 是函数近似的估计值，加上 $\frac{1}{2}$ 是为了在计算梯度时方便抵消平方项的系数 $2$。其中真实价值 $V^{\pi}(s)$ 通常是未知的，因此我们需要使用采样得到的目标值来替代它。
+
+具体来说，若使用蒙特卡洛估计，可以将目标值设为完整回合的累积奖励 $V^{\pi}(s_t) \approx G_t$，结合复合函数求导法则，得到损失函数的梯度为式 $\eqref{eq:3}$ 。
+
+
+$$
+\begin{equation}\label{eq:3}
+\nabla_{\boldsymbol{\theta}} L(\boldsymbol{\theta}) =\mathbb{E} \left[ \left( G_t - V_{\theta}(s_t) \right)(- \nabla_{\boldsymbol{\theta}} V_{\theta}(s_t) \right)]
+\end{equation}
+$$
+
+注意这里目标值 $G_t$ 不依赖于参数 $\boldsymbol{\theta}$，因此梯度只包含一个部分，对应的梯度下降更新公式为式 $\eqref{eq:8}$ 。
+
+$$
+\begin{equation}\label{eq:8}
+\begin{aligned}
+\boldsymbol{\theta} &\leftarrow \boldsymbol{\theta} - \alpha \left[ G_t - V_{\theta}(s_t) \right] (- \nabla_{\boldsymbol{\theta}} V_{\theta}(s_t))\\ 
+&= \boldsymbol{\theta} - \alpha \left[ V_{\theta}(s_t) - G_t \right] \nabla_{\boldsymbol{\theta}} V_{\theta}(s_t) \\ 
+&= \boldsymbol{\theta} - \alpha \left[ V_{\theta}(s_t) - G_t \right] \boldsymbol{\phi}(s_t)
+\end{aligned}
+\end{equation}
+$$
+
+若使用时序差分估计，可以将目标值设为单步奖励加上下一个状态的估计价值 $V^{\pi}(s_t) \approx R_{t+1} + \gamma V_{\theta}(s_{t+1})$，则梯度如式 $\eqref{eq:12}$ 所示。
+
+$$
+\begin{equation}\label{eq:12}
+\nabla_{\boldsymbol{\theta}} L(\boldsymbol{\theta}) = \mathbb{E} \left[ \left( R_{t+1} + \gamma V_{\theta}(s_{t+1}) - V_{\theta}(s_t) \right) ( \gamma\nabla_{\boldsymbol{\theta}} V_{\theta}(s_{t+1}) - \nabla_{\boldsymbol{\theta}} V_{\theta}(s_t) ) \right]
+\end{equation}
+$$
+
+注意，这里目标值 $R_{t+1} + \gamma V_{\theta}(s_{t+1})$ 也依赖于参数 $\boldsymbol{\theta}$，因此梯度包含了两个部分。但是由于实际应用中通常忽略目标值对参数的依赖，即半梯度更新，对应的梯度下降更新公式为式 $\eqref{eq:9}$ 。
+
+$$
+\begin{equation}\label{eq:9}
+\begin{aligned}
+\boldsymbol{\theta} &\leftarrow \boldsymbol{\theta} - \alpha \left[ V_{\theta}(s_t) - \left( R_{t+1} + \gamma V_{\theta}(s_{t+1}) \right) \right] \nabla_{\boldsymbol{\theta}} V_{\theta}(s_t) \\
+&= \boldsymbol{\theta} - \alpha \left[ V_{\theta}(s_t) - R_{t+1} + \gamma V_{\theta}(s_{t+1})  \right] \boldsymbol{\phi}(s_t)
+\end{aligned}
+\end{equation}
+$$
+
+半梯度更新 $\text{TD(0)}$ 方法虽然忽略了目标值对参数的依赖，但这样的做法已经被证明可以收敛到一个较好的解，且计算更为简单。此外如果直接使用完整梯度，反而会破坏时序差分的递推结果，从而导致不稳定。
+
 ## 梯度下降示例
 
 本节将继续以前面章节中的 $3\times3$ 网格世界为例，演示如何使用线性函数近似和梯度下降，并结合时序差分方法来估计状态价值函数 $V(s)$。
@@ -143,39 +229,14 @@ $$
 <div align=center>
 <img width="500" src="figs/maze_33.png"/>
 </div>
-<div align=center>图 1 3x3 网格示例</div>
+<div align=center>图 1 $\:$ $3\times 3$ 网格示例</div>
 
 除了每走一步接收 $-1$ 的奖励之外，这次我们在网格中增加了一些障碍物，例如在位置 $s_4$ 处设置了一个深坑，智能体走到该位置时会受到一个额外的负奖励 $-3$，在位置 $s_5$ 处设置了一个水洼，智能体走到该位置时会受到一个额外的负奖励 $-0.5$。折扣因子 $\gamma=0.9$，目标是计算各个状态的价值函数 $V(s)$。
-
-在时序车分方法中，使用自举的方式来更新状态价值函数的估计值，如式 $\eqref{eq:5}$ 所示。
-
-$$
-\begin{equation}\label{eq:5}
-V(s_t) \leftarrow V(s_t) + \alpha \left[ R_{t+1} + \gamma V(s_{t+1}) - V(s_t) \right]
-\end{equation}
-$$
-
-将这里的 $V(s)$ 用线性函数近似来替换原来的表格表示，如式 $\eqref{eq:6}$ 所示。
-
-$$
-\begin{equation}\label{eq:6}
-V_{\theta}(s) = \boldsymbol{\theta}^T \boldsymbol{\phi}(s)
-\end{equation}
-$$
-
-由于是线性函数，因此对应的梯度非常简单，如式 $\eqref{eq:11}$ 所示。
-
-$$
-\begin{equation}\label{eq:11}
-\nabla_{\boldsymbol{\theta}} V_{\theta}(s) = \boldsymbol{\phi}(s)
-\end{equation}
-$$
-
 
 在这个网格示例中，我们可以设计一个简单的特征映射 $\boldsymbol{\phi}(s)$，将状态 $s$ 映射为一个包含位置坐标和障碍物信息的特征向量。例如，状态 $s$ 的特征向量可以设计如表 4 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>表 3 ：状态特征映射示例</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>表 4 $\:$ 状态特征映射示例</b> </figcaption>
 </div>
 
 | 状态 $s$ | 行坐标 | 列坐标 | 行列乘积 | 行坐标平方 | 列坐标平方 | 是否深坑 | 是否水洼 |
@@ -202,35 +263,13 @@ V_{\theta}(s) = \theta_0 + \theta_1 \cdot \text{r} + \theta_2 \cdot \text{c} + \
 \end{equation}
 $$
 
-如何更新参数呢？依然可以用蒙特卡洛方法或时序差分方法来计算目标值，然后通过梯度下降来更新参数。对于蒙特卡洛更新，可以使用完整回合的累积奖励作为目标值 $G_t$，如式 $\eqref{eq:8}$ 所示。
 
-$$
-\begin{equation}\label{eq:8}
-\begin{aligned}
-\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} + \alpha \left[ G_t - V_{\theta}(s_t) \right] \nabla_{\boldsymbol{\theta}} V_{\theta}(s_t) = \boldsymbol{\theta} + \alpha \left[ G_t - V_{\theta}(s_t) \right] \boldsymbol{\phi}(s_t)
-\end{aligned}
-\end{equation}
-$$
+基于上述设置，我们可以实现一个简单的半梯度 $\text{TD(0)}$ 算法来估计状态价值函数 $V(s)$，具体如代码 2 所示。
 
-对于时序差分更新，可以使用单步奖励加上下一个状态的估计价值作为目标值，如式 $\eqref{eq:9}$ 所示。
+<div style="text-align: center;">
+    <figcaption style="font-size: 14px;"> <b>代码 2 $\:$ 使用线性函数近似和半梯度 TD(0) 估计状态价值函数</b> </figcaption>
+</div>  
 
-$$
-\begin{equation}\label{eq:9}
-\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} + \alpha \left[ R_{t+1} + \gamma V_{\theta}(s_{t+1}) - V_{\theta}(s_t) \right] \nabla_{\boldsymbol{\theta}} V_{\theta}(s_t) = \boldsymbol{\theta} + \alpha \left[ R_{t+1} + \gamma V_{\theta}(s_{t+1}) - V_{\theta}(s_t) \right] \boldsymbol{\phi}(s_t)
-\end{equation}
-$$
-
-注意，时序差分更新中实际上是一个半梯度更新，因为目标值 $R_{t+1} + \gamma V_{\theta}(s_{t+1})$ 也依赖于参数 $\boldsymbol{\theta}$，即原本的完整梯度应包含目标值对参数的导数，如式 $\eqref{eq:10}$ 所示。
-
-$$
-\begin{equation}\label{eq:10}
-\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} + \alpha \left[ R_{t+1} + \gamma V_{\theta}(s_{t+1}) - V_{\theta}(s_t) \right] \left( \nabla_{\boldsymbol{\theta}} V_{\theta}(s_t) - \gamma \nabla_{\boldsymbol{\theta}} V_{\theta}(s_{t+1}) \right)
-\end{equation}
-$$
-
-然而，实际应用中通常忽略目标值对参数的依赖，只使用半梯度更新。这样的做法已经被证明可以收敛到一个较好的解，且计算更为简单。此外如果直接使用完整梯度，反而会破坏时序差分的递推结果，从而导致不稳定。
-
-基于上述设置，我们可以实现一个简单的半梯度 $\text{TD(0)}$ 算法来估计状态价值函数 $V(s)$，具体代码如下面所示。
 
 ```python
 import numpy as np
@@ -303,9 +342,13 @@ print(pd.DataFrame(np.round(grid,3),
 print("\nweights:", np.round(w,3))
 ```
 
-运行上述代码后，可以得到结果如代码 2 所示。
+运行上述代码后，可以得到结果如代码 3 所示。
 
-```
+<div style="text-align: center;">
+    <figcaption style="font-size: 14px;"> <b>代码 3 $\:$ 线性函数近似估计的状态价值函数结果</b> </figcaption>
+</div>
+
+```python
        col1   col2   col3
 row1 -4.456 -2.148 -0.906
 row2 -2.030 -0.866  0.117
@@ -323,7 +366,7 @@ weights: [-4.456  5.501  5.679 -2.494 -1.921 -2.13   0.155 -0.364]
 随着深度学习的发展，神经网络成为了更强大的函数近似工具。神经网络通过多层非线性变换，能够捕捉复杂的模式和关系，从而更准确地估计价值函数，如式 $\eqref{eq:2}$ 所示。
 
 $$
-\begin{equation}\label{eq:2}
+\begin{equation}\label{eq:10}
 Q_{\boldsymbol{\theta}}(s,a) = \text{NN}(s,a; \boldsymbol{\theta})
 \end{equation}
 $$
@@ -337,7 +380,7 @@ $$
 因此，我们通常使用独热编码（$\text{One-Hot Encoding}$）来表示离散状态。独热编码将每个离散状态映射为一个高维向量，其中只有对应状态的位置为 $1$，其他位置为 $0$。例如，假设有四个离散状态 $s_1, s_2, s_3, s_4$，它们的独热编码表示如式 $\eqref{eq:3}$ 所示。
 
 $$
-\begin{equation}\label{eq:3}
+\begin{equation}\label{eq:11}
 \begin{aligned}
 s_1 & : [1, 0, 0, 0] \\
 s_2 & : [0, 1, 0, 0] \\
