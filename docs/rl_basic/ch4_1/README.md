@@ -58,14 +58,14 @@ $$
 <div align=center>
 <img width="500" src="figs/maze_33.png"/>
 </div>
-<div align=center>图 1 3x3 网格示例</div>
+<div align=center>图 1 $\:$ $3\times 3$ 网格示例</div>
 
 除了每走一步接收 $-1$ 的奖励之外，这次我们在网格中增加了一些障碍物，例如在位置 $s_4$ 处设置了一个深坑，智能体走到该位置时会受到一个额外的负奖励 $-3$，在位置 $s_5$ 处设置了一个水洼，智能体走到该位置时会受到一个额外的负奖励 $-0.5$。折扣因子 $\gamma=0.9$，目标是计算各个状态的价值函数 $V(s)$。
 
 用 `Python` 实现时序差分估计的代码并且对比蒙特卡洛估计的结果，如代码 1 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 1 时序差分估计与蒙特卡洛估计对比</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 1 $\:$ 时序差分估计与蒙特卡洛估计对比</b> </figcaption>
 </div>
 
 ```python
@@ -185,7 +185,7 @@ print(df_td0)
 运行代码后，得到结果如代码 2 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 2 时序差分估计与蒙特卡洛估计结果对比</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 2 $\:$ 时序差分估计与蒙特卡洛估计结果对比</b> </figcaption>
 </div>
 
 ```python
@@ -265,7 +265,7 @@ $$
 回顾动态规划、蒙特卡洛和时序差分这三种算法，它们都是强化学习中比较重要的价值估计方法，并且各自有不同的特点和适用场景，具体比较如表 1 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>表 1 动态规划、蒙特卡洛和时序差分比较</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>表 1 $\:$ 动态规划、蒙特卡洛和时序差分比较</b> </figcaption>
 </div>
 
 | 方法         | 依赖环境模型 | 更新时机           | 估计方式           | 优缺点                                     |
@@ -295,7 +295,7 @@ $$
 <div align=center>
 <img width="600" src="figs/sarsa_pseu.png"/>
 </div>
-<div align=center>图 2 Sarsa 算法流程</div>
+<div align=center>图 2 $\:$ $\text{Sarsa}$ 算法流程</div>
 
 可以看出，由于时序差分方法是在每个时间步进行更新的，因此 $\text{Sarsa}$ 算法无需等待回合结束，而是在每个时间步根据当前状态 $s_t$ 和动作 $a_t$，以及环境反馈的奖励 $r_{t}$ 和下一个状态 $s_{t+1}$，并更新动作价值函数 $Q(s_t, a_t)$。
 
@@ -332,7 +332,7 @@ $$
 <div align=center>
 <img width="600" src="figs/qlearning_pseu.png"/>
 </div>
-<div align=center>图 3 Q-learning 算法流程</div>
+<div align=center>图 3 $\:$ $\text{Q-learning}$ 算法流程</div>
 
 对比 $\text{Sarsa}$ 算法，可以发现 $\text{Q-learning}$ 使用了最优 $Q$ 值 $\max_{a'} Q(s_{t+1}, a')$ 来更新当前的 $Q(s_t, a_t)$，而非当前策略的 $Q$ 值。相比之下，$\text{Q-learning}$ 更加注重学习最优策略，而不依赖于当前的行为策略，这使得它在某些情况下能够更快地收敛到最优策略，但也可能导致在某些环境中不稳定，特别是在探索不足的情况下。而 $\text{Sarsa}$ 则更加稳健，因为它考虑了实际采取的动作，但可能收敛速度较慢。
 
@@ -359,7 +359,7 @@ $$
 <div align=center>
 <img width="600" src="figs/on_off_policy.png"/>
 </div>
-<div align=center>图 4 同策略与异策略对比示意图</div>
+<div align=center>图 4 $\:$ 同策略与异策略对比示意图</div>
 
 实际应用中，同策略方法通常更加稳健，因为它直接基于当前的行为策略进行学习，能够更好地适应环境的变化；而异策略方法则更具灵活性，能够利用不同的行为策略来探索环境，从而可能更快地找到最优策略，但也可能面临稳定性和收敛性的问题。
 
