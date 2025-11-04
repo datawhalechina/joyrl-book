@@ -4,7 +4,7 @@ $\text{DQN}$ 算法的核心思想是在 $\text{Q-learning}$ 算法的基础上�
 
 ## Q 网络
 
-在深度学习基础章节中，我们演示了如何使用神经网络来近似状态价值函数 $V(\boldsymbol{s})$ 并使用梯度下降和 $\text{TD}$ 误差来更新网络参数。类似地，我们也可以使用神经网络来近似动作价值函数 $Q(\boldsymbol{s},\boldsymbol{a})$，回顾 $\text{Q-learning}$ 算法的更新公式，如式 $eqref{eq:ql_update}$ 所示。
+在深度学习基础章节中，我们演示了如何使用神经网络来近似状态价值函数 $V(\boldsymbol{s})$ 并使用梯度下降和 $\text{TD}$ 误差来更新网络参数。类似地，我们也可以使用神经网络来近似动作价值函数 $Q(\boldsymbol{s},\boldsymbol{a})$，回顾 $\text{Q-learning}$ 算法的更新公式，如式 $\eqref{eq:ql_update}$ 所示。
 
 $$
 \begin{equation}\label{eq:ql_update}
@@ -12,7 +12,7 @@ Q(s_t,a_t) \leftarrow Q(s_t,a_t)+\alpha[r_t+\gamma\max _{a}Q^{\prime}(s_{t+1},a)
 \end{equation}
 $$
 
-其中 $y_t = r_t+\gamma\max _{a}Q^{\prime}(s_{t+1},a)$ 表示期望或目标的 $Q$ 值，$Q(s_t,a_t)$ 表示实际的 $Q$ 值，$\alpha$ 是学习率。引入神经网络近似 $Q$ 函数后，如式 $eqref{eq:dqn_update}$ 所示。
+其中 $y_t = r_t+\gamma\max _{a}Q^{\prime}(s_{t+1},a)$ 表示期望或目标的 $Q$ 值，$Q(s_t,a_t)$ 表示实际的 $Q$ 值，$\alpha$ 是学习率。引入神经网络近似 $Q$ 函数后，如式 $\eqref{eq:dqn_update}$ 所示。
 
 $$
 \begin{equation}\label{eq:dqn_update}
