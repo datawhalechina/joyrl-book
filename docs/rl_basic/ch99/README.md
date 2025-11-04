@@ -3,18 +3,18 @@
 
 |               章节                | 完成状态 |
 | :-------------------------------: | :--: |
-| [PyTorch 入门](./torch) | ⬜ |
-|     [Q learning 算法](./q-learning)     | ☑️ |
-|    [Sarsa 算法](./sarsa)    | ☑️ |
-|    [DQN 算法](./dqn)    | ☑️ |
-|    [Dueling DQN 算法](./dueling-dqn)    | | ⬜ |
-|    [Double DQN 算法](./double-dqn)    | ⬜ |
-|    [Noisy DQN 算法](./noisy-dqn)    | ⬜ |
-|    [PER DQN 算法](./per-dqn)    | ⬜ |
-|    [C51 算法](./c51)    | ⬜ |
-|    [Rainbow DQN 算法](./rainbow-dqn)    | ⬜ |
-|    [REINFORCE 算法](./reinforce)    | ⬜ |
-|    [A2C 算法](./a2c)    | ⬜ |
-|    [DDPG 算法](./ddpg)    | ⬜ |
-|    [TD3 算法](./td3)    | ⬜ |
-|    [TRPO 算法](./trpo)    | ⬜|
+| [PyTorch 入门](./torch.md) | ⬜ |
+|     [Q learning 算法](./q-learning.md)     | ☑️ |
+|    [Sarsa 算法](./sarsa.md)    | ☑️ |
+|    [DQN 算法](./dqn.md)    | ☑️ |
+|    [Dueling DQN 算法](./dueling-dqn.md)    | | ⬜ |
+|    [Double DQN 算法](./double-dqn.md)    | ☑️ |
+|    [Noisy DQN 算法](./noisy-dqn.md)    | ⬜ |
+|    [PER DQN 算法](./per-dqn.md)    | ⬜ |
+|    [C51 算法](./c51.md)    | ⬜ |
+|    [Rainbow DQN 算法](./rainbow-dqn.md)    | ⬜ |
+|    [REINFORCE 算法](./reinforce.md)    | ⬜ |
+|    [A2C 算法](./a2c.md)    | ⬜ |
+|    [DDPG 算法](./ddpg.md)    | ⬜ |
+|    [TD3 算法](./td3.md)    | ⬜ |
+|    [TRPO 算法](./trpo.md)    | ⬜|
