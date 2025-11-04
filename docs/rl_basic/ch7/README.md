@@ -89,19 +89,19 @@ $$
 
 注意到在式 $\eqref{eq:dqn_target}$ 中，目标值 $y_t$ 的参数 $\theta$ 与 实际值即当前网络 $Q_{\theta}$ 的参数是相同的。这意味着网络要学习的目标会在每次更新时发生变化，等价于我们在追逐一个不断移动的目标，这很容易造成训练的不稳定，甚至损失发散导致无法收敛（即训练失败）。
 
-为了解决这个问题，$\text{DQN}$ 算法引入了目标网络（ $\text{Target Network}$ ）的概念。具体来说，我们会维护一个与当前网络结构相同但参数不同的目标网络 $Q_{\bar{\theta}}$，并使用目标网络来计算目标 $Q$ 值，如式 $\eqref{eq:dqn_target_network}$ 所示。
+为了解决这个问题，$\text{DQN}$ 算法引入了目标网络（ $\text{Target Network}$ ）的概念。具体来说，我们会维护一个与当前网络结构相同但参数不同的目标网络 $Q_{\theta^-}$，并使用目标网络来计算目标 $Q$ 值，如式 $\eqref{eq:dqn_target_network}$ 所示。
 
 $$
 \begin{equation}\label{eq:dqn_target_network}
-y_t = \begin{cases}r_t & \text {对于终止状态} s_{t} \\ r_{t}+\gamma \max _{a^{\prime}} Q_{\bar{\theta}}(s_{t+1}, a^{\prime}) & \text {对于非终止状态} s_{t}\end{cases}
+y_t = \begin{cases}r_t & \text {对于终止状态} s_{t} \\ r_{t}+\gamma \max _{a^{\prime}} Q_{\theta^-}(s_{t+1}, a^{\prime}) & \text {对于非终止状态} s_{t}\end{cases}
 \end{equation}
 $$
 
-目标网络的参数 $\bar{\theta}$ 会定期地从当前网络的参数 $\theta$ 复制过来，如式 $\eqref{eq:target_update}$ 所示。
+目标网络的参数 $\theta^-$ 会定期地从当前网络的参数 $\theta$ 复制过来，如式 $\eqref{eq:target_update}$ 所示。
 
 $$
 \begin{equation}\label{eq:target_update}
-\bar{\theta} \leftarrow \theta \quad \text{Update every C steps}
+\theta^- \leftarrow \theta \quad \text{Update every C steps}
 \end{equation}
 $$
 
@@ -116,7 +116,7 @@ $$
 
 $$
 \begin{equation}\label{eq:soft_update}
-\bar{\theta} \leftarrow \tau \theta + (1 - \tau) \bar{\theta}
+\theta^- \leftarrow \tau \theta + (1 - \tau) \theta^-
 \end{equation}
 $$
 
