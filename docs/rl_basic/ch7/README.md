@@ -67,7 +67,7 @@ D \rightarrow \{(s_i,a_i,s_{i+1},r_{i+1})\}_{i=1}^{N}
 \end{equation}
 $$
 
-其中下标 $i$ 表示从经验回放池中随机抽取的样本，表示不再跟时间相关，$N$ 是小批量的样本数量。利用这些样本，我们可以计算对应的目标 $Q$ 值 $y_i$，并使用梯度下降的方法来更新网络参数 $\theta$，如式 $\eqref{eq:dqn_replay_loss}$ 所示。
+其中下标 $i$ 表示从经验回放池中随机抽取的样本，意味着不再跟时间相关，$N$ 是小批量的样本数量。利用这些样本，我们可以计算对应的目标 $Q$ 值 $y_i$，并使用梯度下降的方法来更新网络参数 $\theta$，如式 $\eqref{eq:dqn_replay_loss}$ 所示。
 
 $$
 \begin{equation}\label{eq:dqn_replay_loss}
