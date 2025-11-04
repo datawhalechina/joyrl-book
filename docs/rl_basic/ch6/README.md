@@ -397,11 +397,125 @@ $$
 \end{equation}
 $$
 
-其中 $n$ 是状态的总数。使用独热编码后，函数
+其中 $n$ 是状态的总数。使用独热编码后，函数近似的状态价值函数可以表示为式 $\eqref{eq:14}$ 。
 
-我们可以使用独热编码（$\text{One-Hot Encoding}$）来表示状态 $s$。独热编码将每个离散状态映射为一个高维向量，其中只有对应状态的位置为 $1$，其他位置为 $0$。
+$$
+\begin{equation}\label{eq:14}
+V_{\theta}(s_i) = \boldsymbol{\theta}^T \boldsymbol{\phi}(s_i) = \theta_i
+\end{equation}
+$$
 
+也就是说，使用独热编码时，线性函数近似实际上等价于表格方法，每个状态对应一个独立的参数 $\theta_i$，从而实现对每个状态价值的单独估计。
 
+基于独热编码，我们同样可以实现一个简单的半梯度 $\text{TD(0)}$ 算法来估计状态价值函数 $V(s)$，具体如代码 4 所示。
+
+<div style="text-align: center;">
+    <figcaption style="font-size: 14px;"> <b>代码 4 $\:$ 使用独热编码和半梯度 TD(0) 估计状态价值函数</b> </figcaption>
+</div>
+
+```python
+import numpy as np
+import random
+import pandas as pd
+
+# ---------- 环境 ----------
+gamma = 0.9
+states = [f"s{i}" for i in range(1, 10)]
+terminal = "s9"
+coords = {
+    "s1": (0,0), "s2": (0,1), "s3": (0,2),
+    "s4": (1,0), "s5": (1,1), "s6": (1,2),
+    "s7": (2,0), "s8": (2,1), "s9": (2,2),
+}
+
+def legal_actions(s):
+    r,c = coords[s]
+    acts=[]
+    if c<2: acts.append("right")
+    if r<2: acts.append("down")
+    return acts
+
+def step(s,a):
+    r,c = coords[s]
+    if a=="right": r2,c2 = r, c+1
+    else:          r2,c2 = r+1, c
+    s2 = next(k for k,v in coords.items() if v==(r2,c2))
+    reward = -1.0
+    if s2=="s4": reward -= 3.0     # 深坑
+    if s2=="s5": reward -= 0.5     # 水洼
+    if s2=="s9": reward += 1.0     # 终点净0
+    done = (s2==terminal)
+    return s2, reward, done
+
+def random_policy(s):
+    return random.choice(legal_actions(s))
+
+# ---------- One-hot 特征 ----------
+def phi(s):
+    vec = np.zeros(9)
+    vec[int(s[1:]) - 1] = 1.0
+    return vec
+
+d = 9                      # 参数维度
+theta = np.zeros(d)        # 线性权重
+alpha = 0.1
+episodes = 20000
+
+def v_hat(s):
+    return np.dot(theta, phi(s))
+
+# ---------- TD(0) 半梯度 ----------
+for ep in range(episodes):
+    s = "s1"
+    while s != terminal:
+        a = random_policy(s)
+        s2, r, done = step(s, a)
+        target = r + (0 if done else gamma * v_hat(s2))
+        delta = target - v_hat(s)
+        theta += alpha * delta * phi(s)   # 线性半梯度更新
+        s = s2
+
+# ---------- 输出 ----------
+V_est = {s: (0.0 if s==terminal else v_hat(s)) for s in states}
+grid = np.array([[V_est[f"s{r*3+c+1}"] for c in range(3)] for r in range(3)])
+df = pd.DataFrame(np.round(grid,3), index=["row1","row2","row3"], columns=["col1","col2","col3"])
+
+print("线性函数近似 (one-hot) + TD(0) 学到的状态价值：")
+print(df)
+
+print("\n参数向量 θ（对应每个状态的估计值）:")
+print(pd.Series(np.round(theta,3), index=states))
+```
+
+执行代码后，参考结果如代码 5 所示。
+
+<div style="text-align: center;">
+    <figcaption style="font-size: 14px;"> <b>代码 5 $\:$ 独热编码估计的状态价值函数结果</b> </figcaption>
+</div>
+
+```python
+线性函数近似 (one-hot) + TD(0) 学到的状态价值：
+       col1  col2  col3
+row1 -4.445 -2.09  -1.0
+row2 -2.128 -1.00   0.0
+row3 -1.000  0.00   0.0
+
+参数向量 θ（对应每个状态的估计值）:
+s1   -4.445
+s2   -2.090
+s3   -1.000
+s4   -2.128
+s5   -1.000
+s6    0.000
+s7   -1.000
+s8    0.000
+s9    0.000
+dtype: float64
+```
+
+可以看到，得到的结果跟之前的状态价值估计方法是接近的，说明独热编码作为一种通用的状态表示方法，能够有效地支持线性函数近似和梯度下降方法来估计状态价值函数。
+
+然而当状态空间变得更大或更复杂时，独热编码的维度也会随之增加，导致计算和存储开销变大，并且无法捕捉状态之间的相似性和结构信息。因此，在更复杂的环境中，需要不同的编码方式，例如嵌入式表示（$\text{embedding}$）等，然后再输入到函数近似模型或神经网络中进行处理，这样可以更有效地利用状态之间的关系和特征。
 
 ## 神经网络近似
 
@@ -415,26 +529,25 @@ Q_{\boldsymbol{\theta}}(s,a) = \text{NN}(s,a; \boldsymbol{\theta})
 \end{equation}
 $$
 
-神经网络的输入类型可以是一维向量（线性特征），也可以是二维矩阵（图像特征），甚至是更高维度的数据（如视频），输出则一般是单个值（如某个状态的价值）或者一维向量（某个状态下各个动作的价值）。
+神经网络一般包含三个主要部分：输入层、隐藏层和输出层，其中隐藏层可以有多层，每层包含多个神经元，通过激活函数实现非线性变换。如图 2 所示，假设我们使用一个简单的前馈神经网络来近似动作价值函数 $Q(s,a)$。输入层包含状态 $s$ （有时也包含动作 $a$ ）的特征表示，经过隐藏层的非线性变换，最终输出对应的动作价值估计。
 
-### 独热编码
+<div align=center>
+<img width="500" src="figs/nn_q_value.png"/>
+</div>
+<div align=center>图 2 $\:$ 使用神经网络近似动作价值函数 $Q(s,a)$</div>
 
-对于离散的状态输入，直接使用整数表示例如用 $1, 2, 3, \cdots$ 来分别表示状态 $s_1, s_2, s_3, \cdots$，可能会导致神经网络难以学习到有效的特征。因为这些状态之间并没有实际的数值关系，更多的是不同的类别或标签，直接使用整数表示可能会导致神经网络难以学习到有效的特征。
+对于线性输入，即一维特征向量，一般可以用全连接层（$\text{fully connected layer}$，简称 $\text{FC}$）将输入映射到隐藏层，然后通过激活函数（如 $\text{ReLU}$、$\text{Sigmoid}$ 等）引入非线性，最后再通过输出层得到价值估计。对应的图示可以简化为图 3 所示。
 
-因此，我们通常使用独热编码（$\text{One-Hot Encoding}$）来表示离散状态。独热编码将每个离散状态映射为一个高维向量，其中只有对应状态的位置为 $1$，其他位置为 $0$。例如，假设有四个离散状态 $s_1, s_2, s_3, s_4$，它们的独热编码表示如式 $\eqref{eq:3}$ 所示。
+<div align=center>
+<img width="300" src="figs/nn_fc.png"/>
+</div>
+<div align=center>图 3 $\:$ 神经网络全连接层示意图</div>
 
-$$
-\begin{equation}\label{eq:11}
-\begin{aligned}
-s_1 & : [1, 0, 0, 0] \\
-s_2 & : [0, 1, 0, 0] \\
-s_3 & : [0, 0, 1, 0] \\
-s_4 & : [0, 0, 0, 1] \\
-\end{aligned}
-\end{equation}
-$$
+再回到前面的 $3 \times 3$ 网格示例，我们可以使用神经网络来近似状态价值函数 $V(s)$，并结合半梯度 $\text{TD(0)}$ 方法进行训练。具体实现如代码 6 所示。
 
-使用独热编码后，神经网络可以更好地学习到不同状态之间的区别，从而提高价值函数的估计精度。此外，如果状态空间较大，独热编码会导致输入向量维度过高，这时可以考虑使用嵌入层（$\text{embedding layer}$）来降低维度，从而提高计算效率，具体内容将在后续展开讲解。
+<div style="text-align: center;">
+    <figcaption style="font-size: 14px;"> <b>代码 6 $\:$ 使用神经网络和半梯度 TD(0) 估计状态价值函数</b> </figcaption>
+</div>
 
 ```python
 """
@@ -571,34 +684,176 @@ with torch.no_grad():
 # plt.title("NN-approximated V(s)"); plt.colorbar(); plt.show()
 ```
 
+执行代码后，参考结果如代码 7 所示。
 
-## 更高级的神经网络
+<div style="text-align: center;">
+    <figcaption style="font-size: 14px;"> <b>代码 7 $\:$ 神经网络估计的状态价值函数结果</b> </figcaption>
+</div>
 
-通常来说，基于线性模型的神经网络已经足够适用于大部分的强化学习问题。但是对于一些更复杂更特殊的问题，我们可能需要更高级的神经网络模型来解决。这些高级的神经网络理论上能够取得更好的效果，但从实践上来看，这些模型在强化学习上的应用并不是很多，因为这些模型的训练过程往往比较复杂，需要调整的参数也比较多，而且这些模型的效果并不一定比基础的神经网络模型好很多。
+```python
+Estimated V_pi(s) by NN (rows=row1..row3):
+[[-4.223 -2.105 -1.029]
+ [-2.089 -1.019  0.01 ]
+ [-1.004  0.034  0.   ]]
+```
 
-因此，读者在解决实际的强化学习问题时还是尽量简化问题，并使用基础的神经网络模型来解决。在这里我们只是简要介绍一些常用的高级神经网络模型，感兴趣的读者可以自行深入了解。
+可以看到，神经网络成功地近似了状态价值函数 $V(s)$，并且结果与之前的方法相似，说明神经网络作为一种强大的函数近似工具，能够有效地支持强化学习中的价值函数估计任务。
 
-### 卷积神经网络
+我们再使用独热编码来表示状态输入，并使用相同的神经网络结构进行训练，具体实现如代码 8 所示。
 
-卷积神经网络（$\text{convolutional neural network，CNN}$）适用于处理具有网格结构的数据，如图像（$\text{2D}$网格像素点）或时间序列数据（$\text{1D}$网格）等，其中图像是用得最为广泛的。比如在很多的游戏场景中，其状态输入都是以图像的形式呈现的，并且图像能够包含更多的信息，这个时候我们就可以使用卷积神经网络来处理这些图像数据。在使用卷积神经网络的时候，我们需要注意以下几个主要特点：
+<div style="text-align: center;">
+    <figcaption style="font-size: 14px;"> <b>代码 8 $\:$ 使用独热编码和神经网络估计状态价值函数</b> </figcaption>
+</div>
 
-* 局部感受野：传统的线性神经网络每个节点都与前一层的所有节点相连接。但在CNN中，我们使用小的局部感受野（例如3x3或5x5的尺寸），它只与前一层的一个小区域内的节点相连接。这可以减少参数数量，并使得网络能够专注于捕捉局部特征。
-* 权重共享：在同一层的不同位置，卷积核的权重是共享的，这不仅大大减少了参数数量，还能帮助网络在图像的不同位置检测同样的特征。
-* 池化层：池化层常常被插入在连续的卷积层之间，用来减少特征图的尺寸、减少参数数量并提高网络的计算效率。最常见的池化操作是最大池化（ $\text{Max-Pooling}$ ），它将输入特征图划分为若干个小区域，并输出每个区域的最大值。
-* 归一化和 $\text{Dropout}$ ：为了优化网络的性能和防止过拟合，可以在网络中添加归一化层（如 $\text{Batch Normalization}$ ）和 $\text{Dropout}$ 。
+```python
+"""
+TD(0) 半梯度 + 神经网络 + one-hot 状态表示
+3×3 网格：right/down；深坑-3，水洼-0.5，每步-1，终点+1（净0）
+"""
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import numpy as np
+import random
 
-### 循环神经网络
+# ---------- 环境 ----------
+gamma = 0.9
+states = [f"s{i}" for i in range(1, 10)]
+terminal = "s9"
+coords = {
+    "s1": (0,0), "s2": (0,1), "s3": (0,2),
+    "s4": (1,0), "s5": (1,1), "s6": (1,2),
+    "s7": (2,0), "s8": (2,1), "s9": (2,2),
+}
 
-循环神经网络（$\text{recurrent neural network，RNN}$）适用于处理序列数据，也是最基础的一类时序网络。在强化学习中，循环神经网络常常被用来处理序列化的状态数据，例如在 $\text{Atari}$ 游戏中，我们可以将连续的四帧图像作为一个序列输入到循环神经网络中，这样一来就能够更好地捕捉到游戏中的动态信息。但是基础的 $\text{RNN}$ 结构很容易产生梯度消失或者梯度爆炸的问题，因此我们通常会使用一些改进的循环神经网络结构，例如 $\text{LSTM}$ 和 $\text{GRU}$ 等。$\text{LSTM}$ 主要是通过引入门机制（输入门、遗忘门和输出门）来解决梯度消失的问题，它能够在长序列中维护更长的依赖关系。而 $\text{GRU}$ 则是对 $\text{LSTM}$ 的简化，它只有两个门（更新门和重置门），并且将记忆单元和隐藏状态合并为一个状态向量，性能与 $\text{LSTM}$ 相当，但通常计算效率更高。
+def legal_actions(s):
+    r,c = coords[s]
+    acts = []
+    if c < 2: acts.append("right")
+    if r < 2: acts.append("down")
+    return acts
 
-还有一种特殊的结构，叫做 $\text{Transformer}$。虽然它也是为了处理序列数据而设计的，但是是一个完全不同的结构，不再依赖循环来处理序列，而是使用自注意机制 ($\text{self-attention mechanism}$) 来同时考虑序列中的所有元素。并且 $\text{Transformer}$ 的设计特别适合并行计算，使得训练速度更快。自从被提出以后，$\text{Transformer}$ 就被广泛应用于自然语言处理领域，例如 $\text{BERT}$ 以及现在特别流行的 $\text{GPT}$ 等模型。
+def step(s,a):
+    r,c = coords[s]
+    if a == "right": r2,c2 = r, c+1
+    else:            r2,c2 = r+1, c
+    s2 = next(k for k,v in coords.items() if v==(r2,c2))
+    reward = -1.0
+    if s2 == "s4": reward -= 3.0
+    if s2 == "s5": reward -= 0.5
+    if s2 == "s9": reward += 1.0  # 到终点净0
+    done = (s2 == terminal)
+    return s2, reward, done
 
-## 思考
+def random_policy(s):
+    return random.choice(legal_actions(s))
 
-**全连接网络、卷积神经网络、循环神经网络分别适用于什么场景？**
+# ---------- One-hot 状态编码 ----------
+def onehot(s):
+    idx = int(s[1:]) - 1  # s1->0, s2->1, ...
+    vec = np.zeros(9, dtype=np.float32)
+    vec[idx] = 1.0
+    return vec
 
-全连接网络是一种最基本的神经网络结构，每个神经元都与上一层的所有神经元相连。全连接网络适合于输入数据维度较低、数据量较小的场景，例如手写数字识别等。卷积神经网络是一种专门用于处理图像等二维数据的神经网络结构，其核心是卷积层和池化层。卷积神经网络适合于图像、语音等二维或多维数据的处理，可以有效地利用数据的局部特征，例如图像分类、目标检测等。循环神经网络是一种处理序列数据的神经网络结构，其核心是循环层，可以捕捉时序数据中的长期依赖关系。循环神经网络适合于序列数据的建模，例如自然语言处理、音乐生成等。需要注意的是，三种神经网络结构并不是相互独立的，它们可以灵活地组合使用，例如可以在卷积神经网络中嵌入循环神经网络来处理视频数据等。在实际应用中需要根据具体的问题特点和数据情况来选择合适的神经网络结构。
+# ---------- 神经网络 ----------
+class ValueNet(nn.Module):
+    def __init__(self, in_dim):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(in_dim, 32), nn.ReLU(),
+            nn.Linear(32, 1)
+        )
+    def forward(self, x):
+        return self.net(x).squeeze(-1)
 
-**循环神经网络在反向传播时会比全连接网络慢吗？为什么？**
+device = torch.device("cpu")
+net = ValueNet(9).to(device)
+opt = optim.Adam(net.parameters(), lr=1e-3)
 
-循环神经网络在反向传播时相比于全连接网络会更慢，原因主要有：**循环依赖**：循环神经网络存在时间上的依赖关系，即当前时刻的隐藏状态依赖于上一时刻的隐藏状态。这种循环依赖会导致反向传播时梯度的计算变得复杂，需要使用反向传播算法中的BPTT（$\text{Backpropagation Through Time}$ ）算法来进行计算，计算量较大，因此速度相对较慢；**长期依赖**：循环神经网络在处理长序列时，会出现梯度消失或梯度爆炸的问题，这是由于反向传播时梯度在时间上反复相乘或相加导致的。为了解决这个问题，需要采用一些技巧，如 $\text{LSTM}$ 和 $\text{GRU}$ 等。相比之下，全连接网络不存在循环依赖关系，因此反向传播时梯度的计算较为简单，计算量相对较小，速度相对较快。需要注意的是，循环神经网络在处理序列数据方面具有独特的优势，它可以处理变长的序列数据，可以捕捉到序列中的长期依赖关系，因此在序列建模等方面被广泛应用。
+# ---------- 训练 ----------
+episodes = 40000
+alpha = 0.1
+
+def tensorify(slist):
+    feats = np.stack([onehot(s) for s in slist], axis=0)
+    return torch.tensor(feats, dtype=torch.float32, device=device)
+
+for ep in range(episodes):
+    s = "s1"
+    while s != terminal:
+        a = random_policy(s)
+        s2, r, done = step(s, a)
+
+        with torch.no_grad():
+            v_next = 0.0 if done else net(tensorify([s2]))[0].item()
+        target = r + gamma * v_next
+        v_pred = net(tensorify([s]))
+        loss = (v_pred - target) ** 2
+
+        opt.zero_grad()
+        loss.backward()
+        opt.step()
+        s = s2
+
+# ---------- 结果可视化 ----------
+with torch.no_grad():
+    grid = np.zeros((3,3))
+    for r in range(3):
+        for c in range(3):
+            sid = f"s{r*3+c+1}"
+            grid[r,c] = 0.0 if sid==terminal else net(tensorify([sid]))[0].item()
+
+print("Estimated V_pi(s) by NN with onehot (rows=row1..row3):")
+print(np.round(grid, 3))
+
+# ---------- 热力图展示 ----------
+# import matplotlib.pyplot as plt
+# plt.imshow(grid, cmap='coolwarm', origin='upper')
+# for i in range(3):
+#     for j in range(3):
+#         plt.text(j,i,f"{grid[i,j]:.2f}",ha='center',va='center',color='black')
+# plt.title("Value Approximation with One-hot Encoding (TD(0))")
+# plt.colorbar(label="V(s)")
+# plt.tight_layout()
+# plt.show()
+```
+
+执行代码后，参考结果如代码 9 所示。
+
+<div style="text-align: center;">
+    <figcaption style="font-size: 14px;"> <b>代码 9 $\:$ 独热编码神经网络估计的状态价值函数结果</b> </figcaption>
+</div>
+
+```python
+Estimated V_pi(s) by NN with onehot (rows=row1..row3):
+[[-4.525e+00 -2.156e+00 -9.900e-01]
+ [-2.092e+00 -1.004e+00 -1.300e-02]
+ [-1.005e+00  2.000e-03  0.000e+00]]
+```
+
+可以看到，使用独热编码作为状态表示，神经网络同样能够有效地近似状态价值函数 $V(s)$，并且结果与之前的方法是相似的。
+
+到目前为止，结合前面章节内容，对于 $3 \times 3$ 网格示例，我们使用了多种方法来估计状态价值函数 $V(s)$，包括表格方法、线性函数近似（手工特征和独热编码）以及神经网络近似（手工特征和独热编码），并主要使用时序差分方法（$\text{TD(0)}$）进行训练迭代。这些方法的结果都较为接近，说明它们在这个简单环境中都能有效地估计价值函数。
+
+然而，随着环境复杂度的增加，例如状态空间变大、状态和动作的关系更复杂，简单的表格或者线性函数近似可能无法捕捉到足够的信息，而神经网络由于其强大的表达能力，往往能够更好地适应复杂环境中的价值函数估计任务。
+
+## 神经网络拓展
+
+前面我们介绍了使用基础的前馈神经网络来近似价值函数的方法，这种神经网络通常由若干个全连接层组成，并使用非线性激活函数来增强表达能力，也就是我们常说的多层感知机（$\text{multi-layer perceptron，MLP}$）或全连接网络（$\text{fully connected network}$）。这种神经网络结构适用于处理低维的、结构化的输入数据，例如前面示例中的手工设计特征或者独热编码等。
+
+然而，在实际应用中，针对不同类型的数据和任务，可能需要使用更复杂的神经网络结构来更好地捕捉数据的特征和模式。例如，卷积神经网络（$\text{convolutional neural network，CNN}$）适用于处理图像数据，能够有效地提取空间特征；循环神经网络（$\text{recurrent neural network，RNN}$）适用于处理序列数据，能够捕捉时间依赖关系，具体总结如表 1 所示。
+
+<div style="text-align: center;">
+    <figcaption style="font-size: 14px;"> <b>表 1 $\:$ 常用神经网络类型及其特点</b> </figcaption>
+</div>
+
+| 神经网络类型 | 适用场景 | 主要特点 |
+|--------------|----------|----------|
+| 全连接网络（MLP） | 低维结构化数据 | 多层全连接层，适用于一般函数近似 |
+| 卷积神经网络（CNN） | 图像、视频等网格数据 | 局部感受野、权重共享、池化层 |
+| 循环神经网络（RNN） | 序列数据（文本、时间序列） | 循环连接，捕捉时间依赖关系 |
+| LSTM / GRU | 长序列数据 | 门机制，解决梯度消失问题 |
+| Transformer | 序列数据（文本、时间序列） | 自注意力机制，适合并行计算 |
+| 图神经网络（GNN） | 图结构数据 | 节点和边的特征传播 |
+
+在强化学习中，选择合适的神经网络结构对于成功应用深度强化学习算法至关重要。此外，复杂的神经网络通常需要更多的数据和计算资源来进行训练，因此在设计神经网络时需要权衡模型复杂度和计算效率，以确保模型能够在合理的时间内收敛并达到良好的性能。
