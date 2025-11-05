@@ -29,45 +29,53 @@ $$
 
 在算法流程上，$\text{Double DQN}$ 与 $\text{DQN}$ 基本相同，只是在计算目标 $Q$ 值时采用了不同的方式，**完整的代码实现可参考实战部分的内容**。
 
+## Dueling DQN 算法
 
-## 8.2 Dueling DQN 算法
+在强化学习中的很多状态下，某些动作的选择对最终的回报影响并不大，或者说某些动作之间的回报差异并不显著，例如等红灯时由于无法前进，无论选择等待还是尝试向左或右转，最终的回报都不会有太大差别。基础的 $\text{DQN}$ 算法由于直接学习 $Q(s,a)$ 函数，可能无法有效地捕捉这种状态下动作之间的差异，从而影响学习效率和策略质量。
 
-在 $\text{Double DQN}$ 算法中我们是通过改进目标 $Q$ 值的计算来优化算法的，而在 $\text{Dueling DQN}$ 算法<sup>②</sup>中则是通过优化神经网络的结构来优化算法的。
+为了解决这个问题，$\text{Dueling DQN}$ 算法的核心思路是将 $Q$ 函数分解为两个独立的部分：状态价值函数 $V(s)$ 和优势函数 $A(s,a)$，即式 $\eqref{eq:dueling_dqn}$ 所示。
 
-> ② Wang, Z., Schaul, T., Hessel, M., van Hasselt, H., Lanctot, M. & de Freitas, N. (2015). Dueling Network Architectures for Deep Reinforcement Learning.s
+$$
+\begin{equation}\label{eq:dueling_dqn}
+Q(s,a) = V(s) + A(s,a)
+\end{equation}
+$$
 
+其中，$V(s)$ 表示在状态 $s$ 下的整体价值，而 $A(s,a)$ 则表示在状态 $s$ 下选择动作 $a$ 相对于其他动作的优势。通过这种分解，即使某些动作的选择对回报影响不大，网络仍然可以通过 $V(s)$ 来学习状态的整体价值，从而提高学习效率。
 
-回顾我们在 $\text{DQN}$ 算法所使用的最基础的网络结构，如图 $\text{8-1}$ 所示，它是一个全连接网络，包含一个输入层、一个隐藏层和输出层。输入层的维度为状态的维度，输出层的维度为动作的维度。
+具体如何实现呢？首先回顾一下 $\text{DQN}$ 算法中的 $Q$ 网络结构。如图 $\text{1}$ 所示，它通常是一个基础的多层感知机，接受状态作为输入，经过若干隐藏层后输出每个动作对应的 $Q$ 值，输出维度等于动作数。
 
 <div align=center>
 <img width="200" src="figs/dqn_network.png"/>
 </div>
-<div align=center>图 $\text{8-1}$ $\text{DQN}$ 网络结构</div>
+<div align=center>图 1 $\:$ $\text{DQN}$ 网络结构</div>
 
-而 $\text{Dueling DQN}$ 算法中则是在输出层之前分流（ $\text{dueling}$ ）出了两个层，如图 $\text{8-2}$ 所示，一个是优势层（$\text{advantage layer}$），用于估计每个动作带来的优势，输出维度为动作数。另外一个是价值层（$\text{value layer}$），用于估计每个状态的价值，输出维度为 $1$ 。
+在 $\text{Dueling DQN}$ 算法中，我们对网络结构进行了修改。如图 2 所示，在输出层之前，网络被分为两个分支：一个用于计算状态价值 $V(s)$，另一个用于计算优势函数 $A(s,a)$，并且网络的前几层依然是是共享的。这样，网络可以同时学习状态的整体价值和各个动作的优势，从而更好地捕捉状态下动作之间的差异。
 
 <div align=center>
-<img width="400" src="figs/dueling_network.png"/>
+<img width="300" src="figs/dueling_network.png"/>
 </div>
-<div align=center>图 $\text{8-2}$ $\text{Dueling DQN}$ 网络结构</div>
+<div align=center>图 2 $\:$ $\text{Dueling DQN}$ 网络结构</div>
 
-在 $\text{DQN}$ 算法中我们用 $Q_{\theta}(\boldsymbol{s},\boldsymbol{a})$ 表示 一个 $Q$ 网络，而在这里优势层可以表示为 $A_{\theta,\alpha}(\boldsymbol{s},\boldsymbol{a})$，这里 $\theta$ 表示共享隐藏层的参数，$\alpha$ 表示优势层自己这部分的参数，相应地价值层可以表示为 $V_{\theta,\beta}(\boldsymbol{s})$。这样 $\text{Dueling DQN}$ 算法中网络结构可表示为式 $\text{(8.5)}$ 。
+相应地，式 $\eqref{eq:dueling_dqn}$ 可以改写为式 $\eqref{eq:dueling_dqn_network}$ 。
 
 $$
-\tag{8.5}
+\begin{equation}\label{eq:dueling_dqn_network}
 Q_{\theta,\alpha,\beta}(\boldsymbol{s},\boldsymbol{a}) = A_{\theta,\alpha}(\boldsymbol{s},\boldsymbol{a}) + V_{\theta,\beta}(\boldsymbol{s})
+\end{equation}
 $$
 
-去掉这里的价值层即优势层就是普通的 $Q$ 网络了，另外我们会对优势层做一个中心化处理，即减掉均值，如式 $\text{(8.6)}$ 所示。
+其中，$A_{\theta,\alpha}(\boldsymbol{s},\boldsymbol{a})$ 表示优势层的输出，$V_{\theta,\beta}(\boldsymbol{s})$ 表示价值层的输出，$\theta$ 表示共享隐藏层的参数，$\alpha$ 和 $\beta$ 分别表示优势层和价值层的参数。
+
+此外，为了解决不可识别性（$\text{identifiability}$）问题，$\text{Dueling DQN}$ 通常会对优势函数进行中心化处理，即减去优势函数的均值，如式 $\eqref{eq:dueling_dqn_centered}$ 所示。
 
 $$
-\tag{8.6}
-Q_{\theta,\alpha,\beta}(\boldsymbol{s},\boldsymbol{a}) = (A_{\theta,\alpha}(\boldsymbol{s},\boldsymbol{a})-\frac{1}{\mathcal{A}} \sum_{a \in \mathcal{A}} A_{\theta,\alpha}\left(\boldsymbol{s}, a\right)) - + V_{\theta,\beta}(\boldsymbol{s})
+\begin{equation}\label{eq:dueling_dqn_centered}
+Q_{\theta,\alpha,\beta}(\boldsymbol{s},\boldsymbol{a}) = \left(A_{\theta,\alpha}(\boldsymbol{s},\boldsymbol{a}) - \frac{1}{\mathcal{A}} \sum_{a' \in \mathcal{A}} A_{\theta,\alpha}(\boldsymbol{s}, a')\right) + V_{\theta,\beta}(\boldsymbol{s})
+\end{equation}
 $$
 
-其实 $\text{Dueling DQN}$ 的网络结构跟我们后面要讲的 $\text{Actor-Critic}$ 算法是类似的，这里优势层相当于 $\text{Actor}$ ，价值层相当于 $\text{Critic}$ ，不同的是在  $\text{Actor-Critic}$ 算法中 $\text{Actor}$ 和 $\text{Critic}$ 是独立的两个网络，而在这里是合在一起的，在计算量以及拓展性方面都完全不同，具体我们会在后面的  $\text{Actor-Critic}$ 算法对应章节中展开。
-
-总的来讲，$\text{Dueling DQN}$ 算法在某些情况下相对于 $\text{DQN}$ 是有好处的，因为它分开评估每个状态的价值以及某个状态下采取某个动作的 $Q$ 值。当某个状态下采取一些动作对最终的回报都没有多大影响时，这个时候 $\text{Dueling DQN}$ 这种结构的优越性就体现出来了。或者说，它使得目标值更容易计算，因为通过使用两个单独的网络，我们可以隔离每个网络输出上的影响，并且只更新适当的子网络，这有助于降低方差并提高学习鲁棒性。
+同样地，在算法流程中，$\text{Dueling DQN}$ 与 $\text{DQN}$ 基本相同，只是在计算 $Q$ 值时采用了不同的网络结构，**完整的代码实现可参考实战部分的内容**。
 
 ## 8.3 Noisy DQN 算法
 
@@ -192,53 +200,6 @@ $\text{C51}$ 算法的主要缺点是：
 
 ## Rainbow DQN 算法
  
-
-
-## 实战：Dueling DQN 算法
-
-$\text{Dueling DQN}$ 算法主要是改了网络结构，其他地方跟 $\text{DQN}$ 是一模一样的，如代码清单 $\text{8-2}$ 所示。
-
-<div style="text-align: center;">
-    <figcaption> 代码清单 $\text{8-2}$ $\text{Dueling DQN}$ 网络结构 </figcaption>
-</div>
-
-```python
-class DuelingQNetwork(nn.Module):
-    def __init__(self, state_dim, action_dim,hidden_dim=128):
-        super(DuelingQNetwork, self).__init__()
-        # 隐藏层
-        self.hidden_layer = nn.Sequential(
-            nn.Linear(state_dim, hidden_dim),
-            nn.ReLU()
-        )
-        #  优势层
-        self.advantage_layer = nn.Sequential(
-            nn.Linear(hidden_dim, hidden_dim),
-            nn.ReLU(),
-            nn.Linear(hidden_dim, action_dim)
-        )
-        # 价值层
-        self.value_layer = nn.Sequential(
-            nn.Linear(hidden_dim, hidden_dim),
-            nn.ReLU(),
-            nn.Linear(hidden_dim, 1)
-        )
-        
-    def forward(self, state):
-        x = self.hidden_layer(state)
-        advantage = self.advantage_layer(x)
-        value     = self.value_layer(x)
-        return value + advantage - advantage.mean() # Q(s,a) = V(s) + A(s,a) - mean(A(s,a))
-```
-
-最后我们展示一下它在 $\text{CartPole}$ 环境下的训练结果，如图 $\text{8-6}$ 所示，完整的代码同样可以参考本书的代码仓库。
-
-<div align=center>
-<img width="400" src="figs/DuelingDQN_CartPole-v1_training_curve.png"/>
-</div>
-<div align=center>图 $\text{8-5}$ $\text{CartPole}$ 环境 $\text{Dueling DQN}$ 算法训练曲线</div>
-
-由于环境比较简单，暂时还看不出来 $\text{Dueling DQN}$ 算法的优势，但是在复杂的环境下，比如 $\text{Atari}$ 游戏中，$\text{Dueling DQN}$ 算法的效果就会比 $\text{DQN}$ 算法好很多，读者可以在 $\text{JoyRL}$ 仓库中找到更复杂环境下的训练结果便于更好地进行对比。
 
 ## 实战：Noisy DQN 算法
 
