@@ -77,17 +77,40 @@ $$
 
 同样地，在算法流程中，$\text{Dueling DQN}$ 与 $\text{DQN}$ 基本相同，只是在计算 $Q$ 值时采用了不同的网络结构，**完整的代码实现可参考实战部分的内容**。
 
-## 8.3 Noisy DQN 算法
+## Noisy DQN 算法
 
-$\text{Noisy DQN}$ 算法<sup>③</sup> 也是通过优化网络结构的方法来提升 $\text{DQN}$ 算法的性能，但与 $\text{Dueling DQN}$ 算法不同的是，它的目的并不是为了提高 $Q$ 值的估计，而是增强网络的探索能力。
+为了平衡探索与利用的问题，$\text{DQN}$ 算法通常采用 $\varepsilon-\text{greedy}$ 策略来增加探索能力，即以一定概率选择随机动作，如式 $\eqref{eq:epsilon_greedy}$ 所示。
 
-> ③ Fortunato M , Azar M G , Piot B ,et al.Noisy Networks for Exploration[J].  2017.DOI:10.48550/arXiv.1706.10295.
+$$
+\begin{equation}\label{eq:epsilon_greedy}
+a = \left\{\begin{array}{ll}
+\text{random action} & \text{with probability } \varepsilon \\
+\arg \max _{a} Q(s, a) & \text{with probability } 1-\varepsilon
+\end{array}\right.
+\end{equation}
+$$
 
-从 $\text{Q-learning}$ 算法开始，我们就讲到了探索-利用平衡的问题，常见的 $\varepsilon-\text{greedy}$ 策略是从智能体与环境的交互过程改善探索能力，以避免陷入局部最优解。而在深度强化学习中，由于引入了深度学习，深度学习本身也会因为网络模型限制或者梯度下降方法陷入局部最优解问题。也就是说，深度强化学习既要考虑与环境交互过程中的探索能力，也要考虑深度模型本身的探索能力，从而尽量避免陷入局部最优解的困境之中，这也是为什么经常有人会说强化学习比深度学习更难“炼丹”的原因之一。
+然而，这种方式一方面需要人为设定和退火（$\text{annealing}$） $\varepsilon$ 的值，另一方面所有状态都共用一个 $\varepsilon$ 值，而实际上不同状态下的探索需求可能是不同的。
 
-回归正题，$\text{Noisy DQN}$ 算法其实是在 $\text{DQN}$ 算法基础上在神经网络中引入了噪声层来提高网络性能的，即将随机性应用到神经网络中的参数或者说权重，增加了 $Q$ 网络对于状态和动作空间的探索能力，从而提高收敛速度和稳定性。在实践上也比较简单，就是通过添加随机性参数到神经网络的线性层，对应的 $Q$ 值则可以表示为 $Q_{\theta+\epsilon}$，注意不要把这里的 $\text{epsilon}$ 跟 $\varepsilon-greedy$ 策略中的 $\varepsilon$ 混淆了。虽然都叫做 $\epsilon$ ，但这里 $\epsilon$ 是由高斯分布生成的总体分类噪声参数。
+为了解决这些问题，$\text{Noisy DQN}$ 算法直接在网络结构中引入了噪声层，使得网络本身具备探索能力，从而无需单纯依赖 $\varepsilon-\text{greedy}$ 策略来增加探索性。
 
-其实在网络模型中增加噪声层是一种比较泛用的做法，而不只是用在 $\text{DQN}$ 算法中，具体做法读者可以参考后面的实战内容。
+具体来说，$\text{Noisy DQN}$ 的关键是使用带有噪声的线性层（$\text{Noisy Linear Layer}$）来替换传统的线性层，如式 $\eqref{eq:noisy_linear}$ 所示。
+
+$$
+\begin{equation}\label{eq:noisy_linear}
+y = (W + \Sigma_W \odot \epsilon_W) x + b + \Sigma_b \odot \epsilon_b
+\end{equation}
+$$
+
+其中，，$W$ 和 $b$ 分别是线性层可学习的权重和偏置，$\Sigma_W$ 和 $\Sigma_b$ 是对应的噪声标准差参数，也是可学习的，$\epsilon_W$ 和 $\epsilon_b$ 是从某个分布（通常是高斯分布）中采样的噪声，$\odot$ 表示逐元素乘法。因此，网络不再是一个确定性的函数，而是一个随机性的，如式 $\eqref{eq:noisy_q}$ 所示。
+
+$$
+\begin{equation}\label{eq:noisy_q}
+Q_{\theta+\epsilon}(s,a)
+\end{equation}
+$$
+
+同样在算法流程中，$\text{Noisy DQN}$ 与 $\text{DQN}$ 相同，只是在网络结构中引入了噪声层，**完整的代码实现可参考实战部分的内容**。
 
 ## 8.4 PER DQN 算法
 
@@ -200,121 +223,6 @@ $\text{C51}$ 算法的主要缺点是：
 
 ## Rainbow DQN 算法
  
-
-## 实战：Noisy DQN 算法
-
-$\text{Noisy DQN}$ 算法的核心思想是将 $\text{DQN}$ 算法中的线性层替换成带有噪声的线性层，如代码清单 $\text{8-3}$ 所示。
-
-<div style="text-align: center;">
-    <figcaption> 代码清单 $\text{8-3}$ 带有噪声的线性层网络 </figcaption>
-</div>
-
-```python
-class NoisyLinear(nn.Module):
-    '''在Noisy DQN中用NoisyLinear层替换普通的nn.Linear层
-    '''
-    def __init__(self, input_dim, output_dim, std_init=0.4):
-        super(NoisyLinear, self).__init__()
-        self.input_dim  = input_dim
-        self.output_dim = output_dim
-        self.std_init  = std_init
-        self.weight_mu    = nn.Parameter(torch.empty(output_dim, input_dim))
-        self.weight_sigma = nn.Parameter(torch.empty(output_dim, input_dim))
-        # 将一个 tensor 注册成 buffer，使得这个 tensor 不被当做模型参数进行优化。
-        self.register_buffer('weight_epsilon', torch.empty(output_dim, input_dim)) 
-        
-        self.bias_mu    = nn.Parameter(torch.empty(output_dim))
-        self.bias_sigma = nn.Parameter(torch.empty(output_dim))
-        self.register_buffer('bias_epsilon', torch.empty(output_dim))
-        
-        self.reset_parameters() # 初始化参数
-        self.reset_noise()  # 重置噪声
-    
-    def forward(self, x):
-        if self.training: 
-            weight = self.weight_mu + self.weight_sigma * self.weight_epsilon
-            bias   = self.bias_mu + self.bias_sigma * self.bias_epsilon
-        else:
-            weight = self.weight_mu
-            bias   = self.bias_mu
-        return F.linear(x, weight, bias)
-    
-    def reset_parameters(self):
-        mu_range = 1 / self.input_dim ** 0.5
-        self.weight_mu.data.uniform_(-mu_range, mu_range)
-        self.weight_sigma.data.fill_(self.std_init / self.input_dim ** 0.5)
-        self.bias_mu.data.uniform_(-mu_range, mu_range)
-        self.bias_sigma.data.fill_(self.std_init / self.output_dim ** 0.5)
-    
-    def reset_noise(self):
-        epsilon_in  = self._scale_noise(self.input_dim)
-        epsilon_out = self._scale_noise(self.output_dim)
-        self.weight_epsilon.copy_(epsilon_out.ger(epsilon_in))
-        self.bias_epsilon.copy_(self._scale_noise(self.output_dim))
-    
-    def _scale_noise(self, size):
-        x = torch.randn(size)
-        x = x.sign().mul(x.abs().sqrt())
-        return x
-```
-
-根据写好的 $\text{NoisyLinear}$ 层，我们可以在 $\text{DQN}$ 算法中将普通的线性层替换为 $\text{NoisyLinear}$ 层，如代码清单 $\text{8-4}$ 所示。
-
-<div style="text-align: center;">
-    <figcaption> 代码清单 $\text{8-4}$ 带噪声层的全连接网络 </figcaption>
-</div>
-
-```python
-class NoisyQNetwork(nn.Module):
-    def __init__(self, state_dim, action_dim, hidden_dim=128):
-        super(NoisyQNetwork, self).__init__()
-        self.fc1 =  nn.Linear(state_dim, hidden_dim)
-        self.noisy_fc2 = NoisyLinear(hidden_dim, hidden_dim)
-        self.noisy_fc3 = NoisyLinear(hidden_dim, action_dim)
-        
-    def forward(self, x):
-        x = F.relu(self.fc1(x))
-        x = F.relu(self.noisy_fc2(x))
-        x = self.noisy_fc3(x)
-        return x
-
-    def reset_noise(self):
-        self.noisy_fc2.reset_noise()
-        self.noisy_fc3.reset_noise()
-```
-
-注意在训练过程中，我们需要在每次更新后重置噪声，这样有助于提高训练的稳定性，更多细节请参考 $\text{JoyRL}$ 源码。另外，我们也可以直接利用 $\text{torchrl}$ 模块中中封装好的 $\text{NoisyLinear}$ 层来构建 $\text{Noisy Q}$ 网络，跟我们自己定义的功能是一样的，如代码清单 $\text{8-5}$ 所示。
-
-<div style="text-align: center;">
-    <figcaption> 代码清单 $\text{8-5}$ 使用 $\text{torchrl}$ 模块构造的 $\text{Noisy Q}$ 网络 </figcaption>
-</div>
-
-```python
-import torchrl
-class NoisyQNetwork(nn.Module):
-    def __init__(self, state_dim, action_dim, hidden_dim=128):
-        super(NoisyQNetwork, self).__init__()
-        self.fc1 =  nn.Linear(state_dim, hidden_dim)
-        self.noisy_fc2 = torchrl.NoisyLinear(hidden_dim, hidden_dim,std_init=0.1)
-        self.noisy_fc3 = torchrl.NoisyLinear(hidden_dim, action_dim,std_init=0.1)
-        
-    def forward(self, x):
-        x = F.relu(self.fc1(x))
-        x = F.relu(self.noisy_fc2(x))
-        x = self.noisy_fc3(x)
-        return x
-
-    def reset_noise(self):
-        self.noisy_fc2.reset_noise()
-        self.noisy_fc3.reset_noise()
-```
-
-同样我们展示一下它在 $\text{CartPole}$ 环境下的训练结果，如图 $\text{8-6}$ 所示。
-
-<div align=center>
-<img width="400" src="figs/NoisyDQN_CartPole-v1_training_curve.png"/>
-</div>
-<div align=center>图 $\text{8-6}$ $\text{CartPole}$ 环境 $\text{Noisy DQN}$ 算法训练曲线</div>
 
 ## 实战：PER DQN 算法
 

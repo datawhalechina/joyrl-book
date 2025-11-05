@@ -9,7 +9,7 @@
 |    [DQN 算法](./dqn.md)    | ☑️ |
 |    [Double DQN 算法](./double_dqn.md)    | ☑️ |
 |    [Dueling DQN 算法](./dueling_dqn.md)    | ☑️ |
-|    [Noisy DQN 算法](./noisy-dqn.md)    | ⬜ |
+|    [Noisy DQN 算法](./noisy_dqn.md)    | ☑️ |
 |    [PER DQN 算法](./per-dqn.md)    | ⬜ |
 |    [C51 算法](./c51.md)    | ⬜ |
 |    [Rainbow DQN 算法](./rainbow-dqn.md)    | ⬜ |
