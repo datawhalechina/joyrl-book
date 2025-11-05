@@ -26,6 +26,7 @@
     - [Double DQN 算法](/rl_basic/ch99/double_dqn.md)
     - [Dueling DQN 算法](/rl_basic/ch99/dueling_dqn.md)
     - [Noisy DQN 算法](/rl_basic/ch99/noisy_dqn.md)
+    - [PER DQN 算法](/rl_basic/ch99/per_dqn.md)
     - [TRPO 算法](/rl_basic/ch99/trpo.md)
   - [习题解答](/rl_basic/solution/)
 - [离线强化学习](/offline_rl/)
