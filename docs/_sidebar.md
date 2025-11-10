@@ -27,6 +27,7 @@
     - [Dueling DQN 算法](/rl_basic/ch99/dueling_dqn.md)
     - [Noisy DQN 算法](/rl_basic/ch99/noisy_dqn.md)
     - [PER DQN 算法](/rl_basic/ch99/per_dqn.md)
+    - [A2C 算法](/rl_basic/ch99/a2c.md)
     - [TRPO 算法](/rl_basic/ch99/trpo.md)
 - [离线强化学习](/offline_rl/)
 - [大模型与强化学习](/llm_rl/)
