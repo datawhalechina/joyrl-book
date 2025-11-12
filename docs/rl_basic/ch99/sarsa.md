@@ -2,7 +2,7 @@
 
 ## 算法流程
 
-如图 $\text{1}$ 所示，$\text{Sarsa}$ 算法流程跟 $\text{Q-learning}$ 算法基本相同，主要区别在于 $\text{Sarsa}$ 算法使用的是智能体实际执行的动作 $a'$ 来更新动作价值函数，而不是选择的最大动作值。
+如图 $\text{1}$ 所示，$\text{Sarsa}$ 算法流程跟 $\text{Q-learning}$ 算法基本相同，主要区别在于 $\text{Sarsa}$ 算法使用的是智能体实际执行的动作 $a'$ (即 $a_{t+1}$) 来更新动作价值函数，而不是选择的最大动作值。
 
 <div align=center>
 <img width="500" src="figs/sarsa_pseu.png"/>
