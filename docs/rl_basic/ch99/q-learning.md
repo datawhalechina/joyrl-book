@@ -269,7 +269,6 @@ def test(cfg: Config, env, policy: Policy):
 </div>
 
 ```python
-
 cfg = Config()
 set_seed(cfg.seed)
 env = create_env(cfg)
@@ -282,7 +281,7 @@ plot_rewards(train_res['rewards'], title=f"{cfg.algo_name} on {cfg.env_id} - Tra
 <div align=center>
 <img width="500" src="figs/qlearning_CliffWalking-v0_train_curve.png"/>
 </div>
-<div align=center>图 $\text{7}$ $\text{CliffWalking-v0}$ 环境 $\text{Q-learning}$ 算法训练曲线</div>
+<div align=center>图 $\text{7}$ $\:$ $\text{CliffWalking-v0}$ 环境 $\text{Q-learning}$ 算法训练曲线</div>
 
 ## 开始测试
 
