@@ -89,8 +89,8 @@ $$
 V_{\pi}(s) & =\mathbb{E}_{\pi}\left[G_t \mid S_t=s\right] \\
 & =\mathbb{E}_{\pi}\left[R_{t+1}+\gamma R_{t+2}+\gamma^2 R_{t+3}+\cdots \mid S_t=s\right] \\
 & =\mathbb{E}_{\pi}\left[R_{t+1} \mid s_t=s\right]+\gamma \mathbb{E}_{\pi}\left[R_{t+2}+\gamma R_{t+3}+\gamma^2 R_{t+4}+\cdots \mid S_t=s\right] \\
-& =\mathbb{E}_{\pi}\left[R_{t+1} \mid s_t=s\right]+\gamma \mathbb{E}_{\pi}\left[G_{t+1} \mid S_t=s\right] \\
-& =\mathbb{E}_{\pi}\left[R_{t+1}+\gamma V_{\pi}\left(S_{t+1}\right) \mid S_t=s\right] \\
+& =\mathbb{E}_{\pi}\left[R_{t+1} \mid s_t=s\right]+\gamma \mathbb{E}_{\pi}\left[G_{t+1} \mid S_t=s^{\prime}\right] \\
+& =\mathbb{E}_{\pi}\left[R_{t+1}+\gamma V_{\pi}\left(S_{t+1}\right) \mid S_t=s^{\prime}\right] \\
 & =\sum_{a \in A} \pi(a \mid s) \sum_{s^{\prime} \in S} P\left(S_{t+1}=s^{\prime} \mid S_{t}=s, A_{t}=a\right)\left[R(s, a)+\gamma V_{\pi}\left(s^{\prime}\right)\right] \\
 & =\sum_{a} \pi(a \mid s) \sum_{s^{\prime}} p\left(s^{\prime} \mid s, a\right)\left[r+\gamma V_{\pi}\left(s^{\prime}\right)\right] \:\text{简写}
 \end{aligned}
