@@ -13,9 +13,9 @@
 |    [时序差分方法](./ch4_1/)    | 时序差分估计、n步时序差分、Q-learning 算法、Sarsa 算法 | ☑️ | ☑️ |
 | [深度学习基础](./ch6/) | 函数近似、梯度下降、神经网络、独热编码 | ☑️ | ☑️ |
 | [ DQN 算法](./ch7/) | $\text{DQN}$、目标网络、经验回放 | ☑️ | ☑️ |
-| [ DQN 算法进阶](./ch8/) | Double DQN、Noisy DQN、Dueling DQN、PER DQN、C51、Rainbow DQN | ☑️ | ⬜ |
+| [ DQN 算法进阶](./ch8/) | Double DQN、Noisy DQN、Dueling DQN、PER DQN、C51、Rainbow DQN | ☑️ | ☑️ |
 | [策略梯度](./ch9/) | 随机性策略、$\text{REINFORCE}$ | ☑️ | ☑️ |
-| [ Actor-Critic 算法](./ch10/) | $\text{A2C}$、$\text{A3C}$ | ☑️ | ⬜ |
+| [ Actor-Critic 算法](./ch10/) | $\text{A2C}$、$\text{A3C}$ | ☑️ | ☑️ |
 | [ DDPG 算法](./ch11/) | $\text{DDPG}$、$\text{TD3}$ | ☑️ | ⬜ |
 | [ TRPO 算法](./ch11_1/) | $\text{TRPO}$ |  | ⬜ |
 | [ PPO 算法](./ch12/) | 重要性采样、$\text{PPO}$ | ☑️ | ⬜ |
