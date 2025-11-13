@@ -347,7 +347,19 @@ $$
 \end{equation}
 $$
 
-当 $\lambda = 0$ 时，GAE 退化为单步 $\text{TD}$ 误差，如式 $\eqref{10.7}$ 所示。
+并且广义优势还有一个递推形式，如式 $\eqref{10.6_2}$ 所示。
+
+$$
+\begin{equation}\label{10.6_2}
+\begin{aligned}
+A^{\mathrm{GAE}(\gamma, \lambda)}_t = \delta_t + \gamma \lambda A^{\mathrm{GAE}(\gamma, \lambda)}_{t+1}
+\end{aligned}
+\end{equation}
+$$
+
+注意为了方便，这里将 $A^{\mathrm{GAE}(\gamma, \lambda)}(s_t, a_t)$ 简写为 $A^{\mathrm{GAE}(\gamma, \lambda)}_t$ 。
+
+当 $\lambda = 0$ 时，根据递推公式，GAE 退化为单步 $\text{TD}$ 误差，如式 $\eqref{10.7}$ 所示。
 
 $$
 \begin{equation}\label{10.7}
