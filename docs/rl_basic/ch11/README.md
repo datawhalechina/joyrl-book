@@ -114,7 +114,7 @@ y=r+\gamma Q_{\theta^{\prime}}\left(s^{\prime}, \pi_{\phi^{\prime}}\left(s^{\pri
 \end{equation}
 $$
 
-其中 $N(0, \sigma)$ 表示均值为 $\text{0}$，方差为 $\sigma$ 的高斯噪声，$\epsilon$ 表示噪声，$\operatorname{clip}$ 表示裁剪函数，即将噪声裁剪到 $[-c, c]$ 的范围内，$c$ 是一个超参数，用于控制噪声的大小。可以看到，这里噪声更像是一种正则化的方式，使得值函数更新更加平滑，因此笔者称之为噪声正则。
+其中 $N(0, \sigma)$ 表示均值为 $\text{0}$，方差为 $\sigma$ 的高斯噪声，$\epsilon$ 表示噪声，$\operatorname{clip}$ 表示裁剪函数，即将噪声裁剪到 $[-c, c]$ 的范围内，$c$ 是一个超参数，用于控制噪声的大小。
 
 ## 思考
 
