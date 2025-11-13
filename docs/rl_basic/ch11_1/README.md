@@ -35,13 +35,13 @@ $\text{REINFORCE}$ 和 $\text{Actor-Critic}$ 等策略梯度方法虽然简单�
 2） 寻找近似目标函数(approximation): $L(\theta | \theta_{\text{old}})$;    
 3） 最大化近似的目标函数(Maximation): $\argmax_{\theta \in N(\theta_{\text{old}})} L(\theta | \theta_{\text{old}})$
 
-如图 3 简单展示了置信域算法的3个核心步骤
+
+图 3 简单展示了置信域算法的3个核心步骤
+
 <div align=center>
 <img width="600" src="figs/tr_algo.png"/>
 <figcaption style="font-size: 14px;">图 3 置信域算法图示</figcaption>
 </div>
-
-
 
 ### TRPO
 
