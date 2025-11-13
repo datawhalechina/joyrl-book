@@ -109,7 +109,7 @@
 	\end{algorithmic}
 \end{algorithm}
 \clearpage
-\section{首次访问蒙特卡洛预测算法}
+\section{首次访问蒙特卡洛算法}
 \begin{algorithm}[H] % [H]固定位置
     \floatname{algorithm}{{首次访问蒙特卡洛算法}} 
 	\renewcommand{\thealgorithm}{} % 去掉算法标号
@@ -121,10 +121,10 @@
 			\STATE 初始化回报 $G \leftarrow 0$
 			\FOR {时步 $t = T-1,,T-2,\cdots,0$}
 				\STATE $G \leftarrow \gamma G + R_{t+1}$
-				\REPEAT
+				\IF {状态 $s_t$ 首次出现，即不在历史状态$s_0,\cdots,s_{t-1}$中}
 					\STATE  将 $G$ 添加到 $\text{Returns}(s_t)$
 					\STATE $V\left(S_t\right) \leftarrow \operatorname{average}\left(\text{Returns}\left(S_t\right)\right)$
-				\UNTIL{$s_t$ 第二次出现，即与历史某个状态$s_0,\cdots,s_{t-1}$相同}
+				\ENDIF
 			\ENDFOR
 		\ENDFOR
 	\end{algorithmic}
@@ -143,11 +143,11 @@
 			\STATE 初始化回报 $G \leftarrow 0$
 			\FOR {时步 $t = T-1,,T-2,\cdots,0$}
 				\STATE $G \leftarrow \gamma G + R_{t+1}$
-				\REPEAT
+				\IF {状态 $s_t$ 首次出现，即不在历史状态$s_0,\cdots,s_{t-1}$中}
 					\STATE  将 $G$ 添加到 $\text{Returns}(s_t,a_t)$
 					\STATE $Q\left(S_t,A_t\right) \leftarrow \operatorname{average}\left(\text{Returns}\left(S_t,A_t\right)\right)$
 					\STATE 更新策略：$\pi(s_t) \leftarrow \arg \max _a Q(s_t,a)$
-				\UNTIL{$s_t$ 第二次出现，即与历史某个状态$s_0,\cdots,s_{t-1}$相同}
+				\ENDIF
 			\ENDFOR
 		\ENDFOR
 	\end{algorithmic}
