@@ -21,19 +21,23 @@ def merge_pdfs(pdf_list, output):
 BOOK_INFO = {
     'item': "rl_basic",
     'chapters': [
-        "ch1",
-        'ch2',
-        'ch3',
-        'ch4',
-        'ch4_1',
-        # 'ch5',
-        'ch6',
-        'ch7',
-        'ch8',
-        'ch9',
-        'ch10',
-        'ch11',
-        'ch12',
+        "ch1/README.pdf",
+        "ch2/README.pdf",
+        "ch3/README.pdf",
+        "ch4/README.pdf",
+        "ch4_1/README.pdf",
+        # "ch5/README.pdf",
+        "ch6/README.pdf",
+        "ch7/README.pdf",
+        "ch8/README.pdf",
+        "ch9/README.pdf",
+        "ch10/README.pdf",
+        "ch11/README.pdf",
+        "ch12/README.pdf",
+        "ch99/gym_intro_1.pdf",
+        "ch99/a2c.pdf",
+        "ch99/dqn.pdf",
+        "ch99/ddpg.pdf",
     ],
 }
 
@@ -42,12 +46,7 @@ if __name__ == "__main__":
     item_name = BOOK_INFO['item']
     root_dir = f"docs/{item_name}"
     output_pdf = f"{root_dir}/{item_name}.pdf"
-    chapter_pdfs = []
-    for chapter in BOOK_INFO['chapters']:
-        chapter_dir = f"{root_dir}/{chapter}"
-        chapter_pdf = glob(f"{chapter_dir}/*.pdf")
-        if chapter_pdf:
-            chapter_pdfs.extend(chapter_pdf)
+    chapter_pdfs = [f"{root_dir}/{chapter_pdf}" for chapter_pdf in BOOK_INFO['chapters'] if chapter_pdf.endswith('.pdf')]
     if chapter_pdfs:
         merge_pdfs(chapter_pdfs, output_pdf)
         print(f"Merged {len(chapter_pdfs)} PDFs into {output_pdf}")

@@ -7,17 +7,18 @@
 如图 $\text{1}$ 所示，$\text{DDPG}$ 算法的训练方式其实更像 $\text{DQN}$ 算法。注意在第 $15$ 步中 $\text{DDPG}$ 算法将当前网络参数复制到目标网络的方式是软更新，即每次一点点地将参数复制到目标网络中，与之对应的是 $\text{DQN}$ 算法中的硬更新。软更新的好处是更加平滑缓慢，可以避免因权重更新过于迅速而导致的震荡，同时降低训练发散的风险。
 
 <div align=center>
-<img width="500" src="figs/ddDDPG_pseupg_pseu.png"/>
+<img width="600" src="figs/DDPG_pseu.png"/>
 </div>
-<div align=center>图 $\text{1}$ $\:$ $\text{DDPG}$ 算法流程</div>
+<div align=center>图 1: DDPG 算法流程</div>
 
 ## 定义模型
 
 如代码 $\text{1}$ 所示，$\text{DDPG}$ 算法的模型结构跟 $\text{Actor-Critic}$ 算法几乎是一样的，只是由于$\text{DDPG}$ 算法的 $\text{Critic}$ 是 $Q$ 函数，因此也需要将动作作为输入。除了模型之外，目标网络和经验回放的定义方式跟  $\text{DQN}$ 算法一样，这里不做展开.
 
 <div style="text-align: center;">
-    <figcaption><b> 代码 $\text{1}$ $\:$ 实现 $\text{DDPG}$ 算法的 $\text{Actor}$ 和 $\text{Critic}$ </b></figcaption>
+    <figcaption><b> 代码 1: 实现 DDPG 算法的 $\text{Actor}$ 和 $\text{Critic}$ </b></figcaption>
 </div>
+
 
 ```Python
 import torch
@@ -64,8 +65,9 @@ class Critic(nn.Module):
 由于 $\text{DDPG}$ 算法输出的是确定性策略，因此不需要像其他策略梯度算法那样，通过借助高斯分布来采样动作的概率分布，直接输出 $\text{Actor}$ 的值即可，如代码 $\text{2}$ 所示。
 
 <div style="text-align: center;">
-    <figcaption><b> 代码 $\text{2}$ $\:$ $\text{DDPG}$ 算法的动作采样 </b></figcaption>
+    <figcaption><b> 代码 2: DDPG 算法的动作采样 </b></figcaption>
 </div>
+
 
 ```Python
 class Agent:
@@ -82,8 +84,9 @@ class Agent:
 如代码 $\text{3}$ 所示，$\text{DDPG}$ 算法的策略更新则更像 $\text{Actor-Critic}$ 算法。 
 
 <div style="text-align: center;">
-    <figcaption><b> 代码 $\text{3}$ $\:$ $\text{DDPG}$ 算法的策略更新 </b></figcaption>
+    <figcaption><b> 代码 3: DDPG 算法的策略更新 </b></figcaption>
 </div>
+
 
 ```Python
 class Agent:
@@ -127,11 +130,11 @@ class Agent:
 <div align=center>
 <img width="500" src="figs/DDPG_Pendulum_train_curve.png"/>
 </div>
-<div align=center>图 $\text{2}$ $\:$ $\text{Pendulum}$ 环境 $\text{DDPG}$ 算法训练曲线</div>
+<div align=center>图 2: Pendulum 环境 DDPG 算法训练曲线</div>
 
 这里我们使用了一个具有连续动作空间的环境 $\text{Pendulum}$ ，如图 $\text{3}$ 所示。在该环境中，钟摆以随机位置开始，我们的目标是将其向上摆动，使其保持直立。
 
 <div align=center>
 <img width="400" src="figs/env_Pendulum.png"/>
 </div>
-<div align=center>图 $\text{3}$ $\:$ $\text{Pendulum}$ 环境演示</div>
+<div align=center>图 3: Pendulum 环境演示</div>
