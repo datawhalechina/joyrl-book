@@ -48,14 +48,14 @@ $$
 <div align=center>
 <img width="200" src="figs/dqn_network.png"/>
 </div>
-<div align=center>图 1 $\:$ $\text{DQN}$ 网络结构</div>
+<div align=center>图 1: $\text{DQN}$ 网络结构</div>
 
 在 $\text{Dueling DQN}$ 算法中，我们对网络结构进行了修改。如图 2 所示，在输出层之前，网络被分为两个分支：一个用于计算状态价值 $V(s)$，另一个用于计算优势函数 $A(s,a)$，并且网络的前几层依然是是共享的。这样，网络可以同时学习状态的整体价值和各个动作的优势，从而更好地捕捉状态下动作之间的差异。
 
 <div align=center>
 <img width="300" src="figs/dueling_network.png"/>
 </div>
-<div align=center>图 2 $\:$ $\text{Dueling DQN}$ 网络结构</div>
+<div align=center>图 2: Dueling DQN 网络结构</div>
 
 相应地，式 $\eqref{eq:dueling_dqn}$ 可以改写为式 $\eqref{eq:dueling_dqn_network}$ 。
 
@@ -187,7 +187,7 @@ $$
 <div align=center>
 <img width="300" src="figs/sumtree.png"/>
 </div>
-<div align=center>图 3 $\:$ $\text{SumTree}$ 结构</div>
+<div align=center>图 3: SumTree 结构</div>
 
 每个叶子节点保存一个样本以及对应的优先级值，而每个非叶子节点保存其两个子节点的优先级之和。这样，在采样时，我们可以通过从根节点开始，根据采样值递归地选择左子节点或右子节点，直到到达叶子节点，从而高效地实现优先经验回放。
 

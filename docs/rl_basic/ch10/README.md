@@ -25,7 +25,7 @@ $$
 <div align=center>
 <img width="400" src="figs/actor_critic_architecture.png"/>
 </div>
-<div align=center>图 $\text{1}$ $\:$ $\text{Actor-Critic}$ 算法架构</div>
+<div align=center>图 1: Actor-Critic 算法架构</div>
 
 注意，$\text{Actor-Critic}$ 更多地是一种框架或架构，而不是具体的算法，不同算法的实现形式可能会有所不同，但都遵循 $\text{Actor-Critic}$ 的基本思想。
 
@@ -121,8 +121,9 @@ $$
 在讲 $\text{A3C}$ 算法之前，我们先来了解一下多进程训练的基本思想。在实战中，会使用`multiprocessing`模块或者`ray`等分布式计算框架来实现多进程训练，如代码 $\text{1}$ 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 $\text{1}$ $\:$ 使用 Ray 实现多进程计算 </b></figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 1: 使用 Ray 实现多进程计算 </b></figcaption>
 </div>
+
 
 ```python
 import time
@@ -180,8 +181,9 @@ if __name__ == "__main__":
 执行结果如代码 $\text{2}$ 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 $\text{2}$ $\:$ 多进程计算执行结果 </b></figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 2: 多进程计算执行结果 </b></figcaption>
 </div>
+
 
 ```python
 任务数量: 8
@@ -204,7 +206,7 @@ Ray 并行耗时: 2.69 秒
 <div align=center>
 <img width="600" src="figs/a3c_architecture.png"/>
 </div>
-<div align=center>图 $\text{2}$ $\:$ $\text{A3C}$ 算法架构</div>
+<div align=center>图 2: A3C 算法架构</div>
 
 与传统的单进程训练相比，$\text{A3C}$ 算法除了能够提高训练效率外，还具有以下优点：
 1. **增强探索能力**：多个智能体在不同的环境实例中进行探索，能够覆盖更广泛的状态空间，减少陷入局部最优的风险。
@@ -251,8 +253,9 @@ $$
 对应实现如代码 $\text{3}$ 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 $\text{3}$ $\:$ 计算蒙特卡洛优势估计的示例代码 </b></figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 3: 计算蒙特卡洛优势估计的示例代码 </b></figcaption>
 </div>
+
 
 ```python
 def monte_carlo_advantage_estimation(rewards, values, gamma):
@@ -290,8 +293,9 @@ $$
 对应实现如代码 $\text{4}$ 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 $\text{4}$ $\:$ 计算 n 步优势估计的示例代码 </b></figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 4: 计算 n 步优势估计的示例代码 </b></figcaption>
 </div>
+
 
 ```python
 def n_step_advantage_estimation(rewards, values, gamma, n):
@@ -382,8 +386,9 @@ $$
 通过调整 $\lambda$ 的值，我们可以在方差和偏差之间进行权衡，从而获得更稳定和准确的优势估计，实现如代码 $\text{5}$ 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 $\text{5}$ $\:$ 计算广义优势估计的示例代码 </b></figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 5: 计算广义优势估计的示例代码 </b></figcaption>
 </div>
+
 
 ```python
 import torch

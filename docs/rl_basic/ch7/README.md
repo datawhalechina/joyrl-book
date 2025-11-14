@@ -83,7 +83,7 @@ $$
 <div align=center>
 <img width="500" src="figs/replay.png"/>
 </div>
-<div align=center>图 1 $\:$ 经验回放示例</div>
+<div align=center>图 1: 经验回放示例</div>
 
 ## 目标网络
 
@@ -110,7 +110,7 @@ $$
 <div align=center>
 <img width="500" src="figs/target_q.png"/>
 </div>
-<div align=center>图 2 $\:$ 目标网络示例</div>
+<div align=center>图 2: 目标网络示例</div>
 
 另外，式 $\eqref{eq:target_update}$ 中的更新方式被称为硬更新（ $\text{Hard Update}$ ），即每隔 $C$ 步直接将当前网络的参数复制给目标网络。除此之外，还有一种软更新（ $\text{Soft Update}$ ）的方式，即每次更新时将目标网络的参数向当前网络的参数靠近一点，如式 $\eqref{eq:soft_update}$ 所示。
 
@@ -129,7 +129,7 @@ $\text{DQN}$ 算法的完整流程如图 3 所示，包括初始化网络和经�
 <div align=center>
 <img width="600" src="figs/dqn_pseu.png"/>
 </div>
-<div align=center>图 3 $\:$ $\text{DQN}$ 算法流程</div>
+<div align=center>图 3: DQN 算法流程</div>
 
 
 ## 思考

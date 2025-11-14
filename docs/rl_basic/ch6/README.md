@@ -11,38 +11,18 @@
 对于小规模的问题，例如前面章节中介绍的网格世界（$\text{Grid World}$）示例，我们可以使用表格形式来存储对应的状态或动作价值。如表 1 所示，我们可以使用一个二维表格来表示动作价值函数 $Q(s,a)$，其中行表示不同的动作 $a$，列表示不同的状态 $s$。表格中的每个元素 $Q(s,a)$ 存储了在状态 $s$ 下采取动作 $a$ 所获得的预期回报。
 
 <div style="text-align: center;">
-  <div style="display: table; margin: 0 auto;">
-    <table>
-      <tr>
-        <th> $\space$ </th>
-        <th>$s_1$</th>
-        <th>$s_2$</th>
-        <th>$s_3$</th>
-        <th>$s_4$</th>
-      </tr>
-      <tr>
-        <td>$a_1$</td>
-        <td>$\text{-1.9}$</td>
-        <td>$\text{-1.0}$</td>
-        <td>$\text{-1.0}$</td>
-        <td>$\text{0.0}$</td>
-      </tr>
-      <tr>
-        <td>$a_2$</td>
-        <td>$\text{-1.3}$</td>
-        <td>$\text{-0.9}$</td>
-        <td>$\text{-0.7}$</td>
-        <td>$\text{-0.5}$</td>
-      </tr>
-    </table>
-  </div>
-  <div>表 1 $\:$ $\text{Q}$ 表格</div>
+    <figcaption style="font-size: 14px;"> <b>表 1: Q 表格</b> </figcaption>
 </div>
+
+|       |     $s_1$     |     $s_2$     |     $s_3$     |     $s_4$     |
+| :---: | :-----------: | :-----------: | :-----------: | :-----------: |
+| $a_1$ | $\text{-1.9}$ | $\text{-1.0}$ | $\text{-1.0}$ | $\text{0.0}$  |
+| $a_2$ | $\text{-1.3}$ | $\text{-0.9}$ | $\text{-0.7}$ | $\text{-0.5}$ |
 
 表格实际上是一种数学抽象形式，在程序实现上可以使用`Python`数组或者字典来表示，如代码 1 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 1 $\:$ 表格的程序实现示例</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 1: 表格的程序实现示例</b> </figcaption>
 </div>
 
 ```python
@@ -87,7 +67,7 @@ $$
 除了线性函数，其他传统的函数近似方法还包括决策树、支持向量机等，这些方法在某些特定任务中也有一定的应用价值，具体总结如表 2 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>表 2 $\:$ 典型函数近似方法总结</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>表 2: 典型函数近似方法总结</b> </figcaption>
 </div>
 
 |       方法类型       |                      核心思想                      | 表达能力 |           优缺点           |                  示例算法                  |
@@ -138,7 +118,7 @@ $$
 除了梯度下降方法之外，还有其他优化方法，如牛顿法、拟牛顿法等，**这些方法通过利用二阶导数信息来加速收敛，但计算复杂度较高，通常在大规模强化学习中不常用**，具体总结如表 3 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>表 2 $\:$ 典型参数优化方法总结</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>表 2: 典型参数优化方法总结</b> </figcaption>
 </div>
 
 |      方法类型       |                      核心思想                      |           优点           |           缺点           |              **常见算法**              |
@@ -229,7 +209,7 @@ $$
 <div align=center>
 <img width="500" src="figs/maze_33.png"/>
 </div>
-<div align=center>图 1 $\:$ $3\times 3$ 网格示例</div>
+<div align=center>图 1: 3x3 网格示例</div>
 
 除了每走一步接收 $-1$ 的奖励之外，这次我们在网格中增加了一些障碍物，例如在位置 $s_4$ 处设置了一个深坑，智能体走到该位置时会受到一个额外的负奖励 $-3$，在位置 $s_5$ 处设置了一个水洼，智能体走到该位置时会受到一个额外的负奖励 $-0.5$。折扣因子 $\gamma=0.9$，目标是计算各个状态的价值函数 $V(s)$。
 
@@ -239,7 +219,7 @@ $$
 ，状态 $s$ 的特征向量可以设计如表 4 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>表 4 $\:$ 状态特征映射示例</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>表 4: 状态特征映射示例</b> </figcaption>
 </div>
 
 | 状态 $s$ | 行坐标 | 列坐标 | 行列乘积 | 行坐标平方 | 列坐标平方 | 是否深坑 | 是否水洼 |
@@ -270,7 +250,7 @@ $$
 基于上述设置，我们可以实现一个简单的半梯度 $\text{TD(0)}$ 算法来估计状态价值函数 $V(s)$，具体如代码 2 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 2 $\:$ 使用线性函数近似和半梯度 TD(0) 估计状态价值函数</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 2: 使用线性函数近似和半梯度 TD(0) 估计状态价值函数</b> </figcaption>
 </div>  
 
 
@@ -348,7 +328,7 @@ print("\nweights:", np.round(w,3))
 执行代码后，可以得到结果如代码 3 所示。**注意由于随机性的存在，每次运行结果会有些许差异，但整体趋势是一致的。这个现象在所有的迭代更新中都存在，尤其是在使用随机梯度下降方法时更为明显**。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 3 $\:$ 线性函数近似估计的状态价值函数结果</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 3: 线性函数近似估计的状态价值函数结果</b> </figcaption>
 </div>
 
 ```python
@@ -410,7 +390,7 @@ $$
 基于独热编码，我们同样可以实现一个简单的半梯度 $\text{TD(0)}$ 算法来估计状态价值函数 $V(s)$，具体如代码 4 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 4 $\:$ 使用独热编码和半梯度 TD(0) 估计状态价值函数</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 4: 使用独热编码和半梯度 TD(0) 估计状态价值函数</b> </figcaption>
 </div>
 
 ```python
@@ -490,7 +470,7 @@ print(pd.Series(np.round(theta,3), index=states))
 执行代码后，参考结果如代码 5 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 5 $\:$ 独热编码估计的状态价值函数结果</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 5: 独热编码估计的状态价值函数结果</b> </figcaption>
 </div>
 
 ```python
@@ -534,19 +514,19 @@ $$
 <div align=center>
 <img width="500" src="figs/nn_q_value.png"/>
 </div>
-<div align=center>图 2 $\:$ 使用神经网络近似动作价值函数 $Q(s,a)$</div>
+<div align=center>图 2: 使用神经网络近似动作价值函数 $Q(s,a)$</div>
 
 对于线性输入，即一维特征向量，一般可以用全连接层（$\text{fully connected layer}$，简称 $\text{FC}$）将输入映射到隐藏层，然后通过激活函数（如 $\text{ReLU}$、$\text{Sigmoid}$ 等）引入非线性，最后再通过输出层得到价值估计。对应的图示可以简化为图 3 所示。
 
 <div align=center>
 <img width="300" src="figs/nn_fc.png"/>
 </div>
-<div align=center>图 3 $\:$ 神经网络全连接层示意图</div>
+<div align=center>图 3: 神经网络全连接层示意图</div>
 
 再回到前面的 $3 \times 3$ 网格示例，我们可以使用神经网络来近似状态价值函数 $V(s)$，并结合半梯度 $\text{TD(0)}$ 方法进行训练。具体实现如代码 6 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 6 $\:$ 使用神经网络和半梯度 TD(0) 估计状态价值函数</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 6: 使用神经网络和半梯度 TD(0) 估计状态价值函数</b> </figcaption>
 </div>
 
 ```python
@@ -687,7 +667,7 @@ with torch.no_grad():
 执行代码后，参考结果如代码 7 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 7 $\:$ 神经网络估计的状态价值函数结果</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 7: 神经网络估计的状态价值函数结果</b> </figcaption>
 </div>
 
 ```python
@@ -702,7 +682,7 @@ Estimated V_pi(s) by NN (rows=row1..row3):
 我们再使用独热编码来表示状态输入，并使用相同的神经网络结构进行训练，具体实现如代码 8 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 8 $\:$ 使用独热编码和神经网络估计状态价值函数</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 8: 使用独热编码和神经网络估计状态价值函数</b> </figcaption>
 </div>
 
 ```python
@@ -821,7 +801,7 @@ print(np.round(grid, 3))
 执行代码后，参考结果如代码 9 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 9 $\:$ 独热编码神经网络估计的状态价值函数结果</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 9: 独热编码神经网络估计的状态价值函数结果</b> </figcaption>
 </div>
 
 ```python
@@ -844,7 +824,7 @@ Estimated V_pi(s) by NN with onehot (rows=row1..row3):
 然而，在实际应用中，针对不同类型的数据和任务，可能需要使用更复杂的神经网络结构来更好地捕捉数据的特征和模式。例如，卷积神经网络（$\text{convolutional neural network，CNN}$）适用于处理图像数据，能够有效地提取空间特征；循环神经网络（$\text{recurrent neural network，RNN}$）适用于处理序列数据，能够捕捉时间依赖关系，具体总结如表 1 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>表 1 $\:$ 常用神经网络类型及其特点</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>表 1: 常用神经网络类型及其特点</b> </figcaption>
 </div>
 
 | 神经网络类型 | 适用场景 | 主要特点 |

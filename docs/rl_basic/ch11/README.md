@@ -65,8 +65,9 @@ $\text{OU}$ 噪声是一种具有回归特性的随机过程，其与高斯噪�
 
 <div align=center>
 <img width="600" src="figs/DDPG_pseu.png"/>
-<figcaption style="font-size: 14px;">图 $\text{1}$ $\:$ DDPG 算法流程</figcaption>
+<figcaption style="font-size: 14px;">图 1: DDPG 算法流程</figcaption>
 </div>
+
 
 注意，跟 $\text{DQN}$ 算法中使用的硬更新不同，$\text{DDPG}$ 算法中目标网络的更新一般使用软更新（ $\text{Soft Update}$ ）的方式，这样可以使得目标网络的参数更加平滑地变化，从而提高训练的稳定性和收敛性。
 

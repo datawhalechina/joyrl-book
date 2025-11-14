@@ -23,6 +23,17 @@ BOOK_INFO = {
     'chapters': [
         "ch1",
         'ch2',
+        'ch3',
+        'ch4',
+        'ch4_1',
+        # 'ch5',
+        'ch6',
+        'ch7',
+        'ch8',
+        'ch9',
+        'ch10',
+        'ch11',
+        'ch12',
     ],
 }
 
