@@ -23,11 +23,11 @@
 
 注意，对于非强化学习基础的部分例如离线强化学习等，在本教程中只介绍一些经典的入门内容，以便帮助读者快速了解对应的方向和应用领域，想要深入研究的读者可进一步参考相关的资料和论文。
 
-|               内容方向              | 完成状态 |
-| :-------------------------------: | :--: |
-|       [强化学习基础](https://datawhalechina.github.io/joyrl-book/#/rl_basic/README)       | ☑️ |
-| [离线强化学习](https://datawhalechina.github.io/joyrl-book/#/offline_rl/README) |⬜|
-| [大模型与强化学习](https://datawhalechina.github.io/joyrl-book/#/llm_rl/README) |⬜|
+|               内容方向              | PDF | 完成状态 |
+| :-------------------------------: | :--: | ---- |
+|       [强化学习基础](https://datawhalechina.github.io/joyrl-book/#/rl_basic/README)       | [PDF](./rl_basic/rl_basic.pdf) | ☑️ |
+| [离线强化学习](https://datawhalechina.github.io/joyrl-book/#/offline_rl/README) ||⬜|
+| [大模型与强化学习](https://datawhalechina.github.io/joyrl-book/#/llm_rl/README) ||⬜|
 
 ## 主要贡献者
 
