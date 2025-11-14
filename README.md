@@ -25,7 +25,7 @@
 
 |               内容方向              | PDF | 完成状态 |
 | :-------------------------------: | :--: | ---- |
-|       [强化学习基础](https://datawhalechina.github.io/joyrl-book/#/rl_basic/README)       | [PDF](./rl_basic/rl_basic.pdf) | ☑️ |
+|       [强化学习基础](https://datawhalechina.github.io/joyrl-book/#/rl_basic/README)       | [PDF](./docs/rl_basic/rl_basic.pdf) | ☑️ |
 | [离线强化学习](https://datawhalechina.github.io/joyrl-book/#/offline_rl/README) ||⬜|
 | [大模型与强化学习](https://datawhalechina.github.io/joyrl-book/#/llm_rl/README) ||⬜|
 
