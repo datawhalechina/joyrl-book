@@ -65,8 +65,9 @@ $$
 用 `Python` 实现时序差分估计的代码并且对比蒙特卡洛估计的结果，如代码 1 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 1 $\:$ 时序差分估计与蒙特卡洛估计对比</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 1: 时序差分估计与蒙特卡洛估计对比</b> </figcaption>
 </div>
+
 
 ```python
 import random
