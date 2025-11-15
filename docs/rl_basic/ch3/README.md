@@ -157,7 +157,7 @@ $$
 算法流程的伪代码如图 4 所示。
 
 <div align=center>
-<img width="600" src="figs/pi_pseu.png"/>
+<img width="500" src="figs/pi_pseu.png"/>
 </div>
 <div align=center>图 4: 策略迭代算法流程</div>
 
@@ -174,7 +174,7 @@ $$
 价值迭代算法流程的伪代码如图 5 所示。
 
 <div align=center>
-<img width="600" src="figs/vi_pseu.png"/>
+<img width="500" src="figs/vi_pseu.png"/>
 </div>
 <div align=center>图 5: 价值迭代算法伪代码</div>
 

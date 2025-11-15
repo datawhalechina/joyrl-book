@@ -56,7 +56,9 @@ $$
 <div align=center>
 <img width="400" src="figs/fsm.png"/>
 </div>
-<div align=center>图 2: 马尔可夫链</div>
+<div style="text-align: center;">
+    <figcaption style="font-size: 14px;"> <b>图 2: 马尔可夫链</b> </figcaption>
+</div>
 
 注意，图 2 中并没有包含动作和奖励等元素，因此严格来说它表示的是**马尔可夫链（$\text{Markov Chain}$）**，又叫做离散时间的马尔可夫过程（$\text{Markov Process}$），但它与马尔可夫决策过程有着密切的联系，都是基于马尔可夫性质构建的。
 
@@ -81,9 +83,6 @@ $$
 | $S_t = s_1$ |      $0.2$      |      $0.4$      |      $0.4$      |
 | $S_t = s_2$ |      $0.2$      |      $0.5$      |      $0.6$      |
 | $S_t = s_3$ |      $0.1$      |      $0.3$      |      $0.6$      |
-
-
-
 
 
 在数学上也可以用矩阵来表示，如式 $\eqref{eq:5}$ 所示。
