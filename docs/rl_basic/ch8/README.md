@@ -48,7 +48,7 @@ $$
 <div align=center>
 <img width="200" src="figs/dqn_network.png"/>
 </div>
-<div align=center>图 1: $\text{DQN}$ 网络结构</div>
+<div align=center>图 1: DQN 网络结构</div>
 
 在 $\text{Dueling DQN}$ 算法中，我们对网络结构进行了修改。如图 2 所示，在输出层之前，网络被分为两个分支：一个用于计算状态价值 $V(s)$，另一个用于计算优势函数 $A(s,a)$，并且网络的前几层依然是是共享的。这样，网络可以同时学习状态的整体价值和各个动作的优势，从而更好地捕捉状态下动作之间的差异。
 

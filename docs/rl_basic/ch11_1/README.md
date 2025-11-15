@@ -10,14 +10,14 @@ $\text{REINFORCE}$ 和 $\text{Actor-Critic}$ 等策略梯度方法虽然简单�
 
 <div align=center>
 <img width="400" src="figs/unstable_update.png"/>
-<figcaption style="font-size: 14px;">图 1 策略梯度更新不稳定问题</figcaption>
+<figcaption style="font-size: 14px;">图 1: 策略梯度更新不稳定问题</figcaption>
 </div>
 
 为了避免这种情况，TRPO 引入了置信域的概念，如图 2 所示，置信域定义了一个允许策略更新的区域，限制了新旧策略之间的差异，从而确保每次更新后的策略不会偏离旧策略太远。
 
 <div align=center>
 <img width="400" src="figs/trust_region.png"/>
-<figcaption style="font-size: 14px;">图 2 置信域</figcaption>
+<figcaption style="font-size: 14px;">图 2: 置信域</figcaption>
 </div>
 
 换句话说，在更新策略时，保证新策略 $\pi_{\theta_{\text{new}}}$ 和旧策略 $\pi_{\theta_{\text{old}}}$ 之间的差异不会太大，“一步一个脚印” 地优化策略，从而提高训练的稳定性。

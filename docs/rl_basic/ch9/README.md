@@ -682,7 +682,7 @@ $$
 为帮助理解，我们使用`Numpy`模块实现一个 $\text{Softmax}$ 函数并从中采样动作，如代码 4 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 4 Softmax 函数 Numpy 实现</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 4: Softmax 函数 Numpy 实现</b> </figcaption>
 </div>
 
 ```python
@@ -717,7 +717,7 @@ print(f"log π(a|s): {log_prob:.3f}")
 运行结果如代码 5 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 5 Softmax 函数运行结果</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 5: Softmax 函数运行结果</b> </figcaption>
 </div>
 
 ```python
@@ -729,7 +729,7 @@ log π(a|s): -0.417
 接下来，我们使用`PyTorch`模块实现一个基于 $\text{Softmax}$ 函数的策略网络，并计算对应的梯度，如代码 6 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 6 Softmax 策略网络 PyTorch 实现</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 6: Softmax 策略网络 PyTorch 实现</b> </figcaption>
 </div>
 
 ```python
@@ -774,7 +774,7 @@ print(f"log π(a|s): {log_prob.item():.3f}")
 运行结果如代码 7 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 7 Softmax 策略网络运行结果</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 7: Softmax 策略网络运行结果</b> </figcaption>
 </div>
 
 ```python
@@ -895,7 +895,7 @@ $$
 为帮助理解，同样使用 `Numpy` 模块来实现高斯分布的采样和梯度求解，如代码 8 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 8 高斯分布 Numpy 实现</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 8: 高斯分布 Numpy 实现</b> </figcaption>
 </div>
 
 ```python
@@ -952,7 +952,7 @@ print("∂logπ/∂logσ:\n", np.round(dlogstd, 3))
 运行结果如代码 9 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 9 高斯分布运行结果</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 9: 高斯分布运行结果</b> </figcaption>
 </div>
 
 ```python
@@ -975,7 +975,7 @@ log π(a|s):
 接下来，我们使用 `PyTorch` 模块来实现一个基于高斯分布的策略网络，并计算对应的梯度，如代码 10 所示。
 
 <div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 10 高斯分布策略网络 PyTorch 实现</b> </figcaption>
+    <figcaption style="font-size: 14px;"> <b>代码 10: 高斯分布策略网络 PyTorch 实现</b> </figcaption>
 </div>
 
 ```python
@@ -1028,7 +1028,7 @@ $$
 
 <div align=center>
 <img width="800" src="figs/pseu.png"/>
-<figcaption style="font-size: 14px;">图 3 REINFORCE 算法流程</figcaption>
+<figcaption style="font-size: 14px;">图 3: REINFORCE 算法流程</figcaption>
 </div>
 
 
