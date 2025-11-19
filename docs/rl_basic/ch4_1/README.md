@@ -320,7 +320,7 @@ $$
 
 ## Q-learning 算法  
 
-$\text{Q-learning}$ 是一种基于时序差分的异策略（$\text{off-policy}$）控制算法，。与 $\text{Sarsa}$ 不同，$\text{Q-learning}$ 在更新过程中使用的是下一个状态 $s_{t+1}$ 的最优动作的估计值，而不是实际采取的动作 $a_{t+1}$，这使得 $\text{Q-learning}$ 能够学习到最优策略，而不依赖于当前的行为策略。具体的更新公式如式 $\eqref{eq:q_learning_update}$ 所示。
+$\text{Q-learning}$ 是一种基于时序差分的异策略（$\text{off-policy}$）控制算法。与 $\text{Sarsa}$ 不同，$\text{Q-learning}$ 在更新过程中使用的是下一个状态 $s_{t+1}$ 的最优动作的估计值，而不是实际采取的动作 $a_{t+1}$，这使得 $\text{Q-learning}$ 能够学习到最优策略，而不依赖于当前的行为策略。具体的更新公式如式 $\eqref{eq:q_learning_update}$ 所示。
 
 $$
 \begin{equation}\label{eq:q_learning_update}
@@ -376,7 +376,7 @@ $$
 
 **什么是 $Q$ 值的过估计？有什么缓解的方法？**
 
-值的过估计（$\text{overestimation of values}$）是指在强化学习中，由于采样数据的不充分或者算法本身的限制，导致学习到的状态或动作价值函数高估了它们的真实值。值的过估计会影响强化学习算法的性能和稳定性，因此需要采取相应的缓解措施。一些缓解值的过估计的方法有：双重 $Q$ 学习（$\text{Double Q-learning}$）：将一个Q函数的更新过程分为两步，分别用来更新行动值函数和目标值，从而避免了 $Q$ 函数的过估计；优先经验回放（ $\text{Prioritized Experience Replay}$ ）：在经验回放中，根据每条经验的 $\text{TD}$ 误差大小来选择回放的概率，使得 $\text{TD}$ 误差大的经验更有可能被回放，从而更好地修正价值函数；目标网络（ $\text{Target Network}$ ）：使用一个目标网络来计算目标值，目标网络的参数较稳定，不会随着每次更新而改变，从而减缓了价值函数的过估计问题；随机探索策略（ $\text{Exploration Strategy}$ ）：采用一些随机的探索策略，如 $\varepsilon-\text{greedy}$ 、高斯噪声等，可以使得智能体更多地探索未知的状态和动作，从而减少了价值函数的过估计问题。这些方法可以在不同的强化学习算法中使用，比如 $\text{DQN}$ 、$\text{DDQN}$ 、$\text{Dueling DQN}$ 等。选择合适的方法可以有效地缓解价值函数的过估计问题。
+$Q$ 值的过估计（$\text{overestimation of values}$）是指在强化学习中，由于采样数据的不充分或者算法本身的限制，导致学习到的状态或动作价值函数高估了它们的真实值。$Q$ 值的过估计会影响强化学习算法的性能和稳定性，因此需要采取相应的缓解措施。一些缓解值的过估计的方法有：双重 $Q$ 学习（$\text{Double Q-learning}$）：将一个Q函数的更新过程分为两步，分别用来更新行动值函数和目标值，从而避免了 $Q$ 函数的过估计；优先经验回放（ $\text{Prioritized Experience Replay}$ ）：在经验回放中，根据每条经验的 $\text{TD}$ 误差大小来选择回放的概率，使得 $\text{TD}$ 误差大的经验更有可能被回放，从而更好地修正价值函数；目标网络（ $\text{Target Network}$ ）：使用一个目标网络来计算目标值，目标网络的参数较稳定，不会随着每次更新而改变，从而减缓了价值函数的过估计问题；随机探索策略（ $\text{Exploration Strategy}$ ）：采用一些随机的探索策略，如 $\varepsilon-\text{greedy}$ 、高斯噪声等，可以使得智能体更多地探索未知的状态和动作，从而减少了价值函数的过估计问题。这些方法可以在不同的强化学习算法中使用，比如 $\text{DQN}$ 、$\text{DDQN}$ 、$\text{Dueling DQN}$ 等。选择合适的方法可以有效地缓解价值函数的过估计问题。
 
 **$\text{on-policy}$ 与 $\text{off-policy}$ 之间的区别是什么？**
 
