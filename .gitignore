@@ -20,4 +20,4 @@ pseudo_without_notes.synctex.gz
 pseudo_without_notes.synctex(busy)
 
 # local test python
-/docs/rl_basic/ch11_1/test_trpo.py
+test_*.py
