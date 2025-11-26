@@ -60,20 +60,76 @@ $$
 q_sa = self.critic(obs)
 loss = loss + self.cql_alpha * (
    torch.logsumexp(q_sa/self.cql_temperature, dim=1) 
-   - q_sa.gather(1, action.long().view(-1, 1))
-).mean()
+   - q_sa.gather(1, actions.long().view(-1, 1))/ self.cql_temperature
+).mean() * self.cql_temperature
 ```
 
 ## CQL算法实现
 
+--- 
+**Algorithm 1** Conservative Q-Learning
+--- 
+1. 初始化 Q 函数 $Q_\theta$，可选地初始化策略函数 $\pi_\phi$。  
+2. 对于步数 $t = 1,\dots ,N$ 执行：  
+   1. 用 $G_Q$ 梯度步训练 Q 函数，最小化式$\eqref{eq:CQL(\mathcal{H})}$ 的 CQL 目标  
+      &nbsp;&nbsp;&nbsp;&nbsp;$\theta_t \leftarrow \theta_{t-1} - \lambda_Q \nabla_\theta \mathcal{L}_{\text{CQL}(\mathcal{H})}(\theta)$  
+      （Q-learning 版本用算子 $\mathcal{B}^*$；actor-critic 版本用 $\mathcal{B}^{\pi_{\phi_t}}$）  
+   2. **（仅 actor-critic 版本）** 用 $G_\pi$ 梯度步改进策略 $\pi_\phi$，采用 SAC 式的熵正则化：  
+      &nbsp;&nbsp;&nbsp;&nbsp;$\phi_t \leftarrow \phi_{t-1} + \lambda_\pi \mathbb{E}_{s\sim\mathcal{D},a\sim\pi_\phi} \left[\nabla_\phi \left(Q_\theta(s,a)-\log\pi_\phi(a|s) \right)\right]$  
+3. 结束循环
+---
+
+具体实现详见[CQL-DQN-CartPole-v2 Notebook](../../notebooks/algos/CQL/CQL_CartPole-v1.ipynb)
+
 
 ## 训练及效果展示
 
-```python
+当正则化强度趋近于零时，Q 值虽持续攀升，但 episode return 并未同步增长，表明策略质量未获实质改善。在 CartPole-v1 上，将 CQL 保守系数 $\alpha$ 设为 1.0 左右即可稳定取得最优性能。
 
-```
+
+<div align=center>
+<img width="450" src="figs/CQL_alpha_reward.png"/>
+<figcaption style="font-size: 14px;">图 2 不同 α 下策略学习情况。</figcaption>
+</div>
+
+<div align=center>
+<img width="450" src="figs/CQL_q_value.png"/>
+<figcaption style="font-size: 14px;">图 3 不同 α 下q Value情况。</figcaption>
+</div>
+
+
 
 ## 附录
 
 ### 推导A
+
+把正则项选成 KL 散度
+$$R(\mu)=−D_{KL}\left(\mu(\cdot|s) \parallel \rho(\cdot|s)\right)=− \int \mu(a|s)log \frac{\mu(a|s)}{\rho(a|s)} da$$
+
+
+带正则的 policy-optimization 目标
+$$\max_{\mu \ge 0}  \mathbb{E}_{a \sim \mu }[Q(s,a)] − \tau D_{KL}(\mu \parallel \rho)$$
+
+
+- 约束 s.t.  $\int \mu(a|s)da = 1$
+
+把 KL 展开并写成 Lagrangian
+
+$$L(\mu, \lambda)=\int \mu(a|s)\left[Q(s,a)− \tau log \frac{\mu(a|s)}{\rho(a|s)} \right]da + \lambda(1− \int \mu(a|s)da)$$
+
+
+对 $\mu(a|s)$ 做函数求导（变分）  
+$$\frac{\delta L}{\delta \mu} = Q(s,a) − \tau (log \frac{\mu(a|s)}{\rho(a|s)} + 1)  - \lambda = 0$$
+- 线性项: $\frac{\delta}{\delta \mu(a)} \int \mu(a^\prime) f(a^\prime)da^\prime = f(a)$
+- 熵项: $\frac{\delta}{\delta \mu(a)} \int \mu(a^\prime) log \frac{\mu(a^\prime)}{\rho(a^\prime)}da^\prime = log \frac{\mu(a)}{\rho(a)} + 1$  
+
+
+解出  
+$$log \frac{\mu(a|s)}{\rho(a|s)} = \left(Q(s,a) - \lambda −\tau \right)/\tau$$
+$$\Rightarrow \mu(a|s) = \rho(a|s) \cdot e^{(Q(s,a) - \lambda −\tau)/\tau}=\rho(a|s) \cdot e^{Q(s,a)/\tau} \cdot e^{-\lambda/\tau - 1}$$ 
+
+所以可以得出
+
+$$\mu(a|s) \propto ρ(a|s) · e^{Q(s,a)}; \tau=1$$
+
 
