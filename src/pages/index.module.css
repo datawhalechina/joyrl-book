@@ -1,0 +1,132 @@
+.hero {
+  position: relative;
+  background: var(--joyrl-hero-gradient);
+  padding: 5rem 1.5rem 6rem;
+  overflow: hidden;
+  color: #ffffff;
+}
+
+.heroBgGrid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.18;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.5) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.heroGrid {
+  position: relative;
+  max-width: 1080px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.3rem 0.75rem;
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  margin-bottom: 1rem;
+}
+
+.heroTitle {
+  color: #ffffff;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 0.75rem;
+  line-height: 1.25;
+}
+
+.heroSub {
+  color: #e0f2fe;
+  font-size: 1rem;
+  margin: 0 0 1.5rem;
+  max-width: 36rem;
+}
+
+.ctas {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.btnPrimary {
+  display: inline-block;
+  padding: 0.7rem 1.4rem;
+  background: #ffffff;
+  color: #0284c7 !important;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-decoration: none !important;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
+  transition: transform 0.15s ease;
+}
+
+.btnPrimary:hover {
+  transform: translateY(-1px);
+}
+
+.btnSecondary {
+  display: inline-block;
+  padding: 0.7rem 1.4rem;
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  text-decoration: none !important;
+}
+
+.btnSecondary:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.heroRight {
+  display: flex;
+  justify-content: center;
+}
+
+.ctaSection {
+  padding: 4rem 1.5rem;
+  background: var(--ifm-background-surface-color);
+  text-align: center;
+}
+
+.ctaTitle {
+  margin: 0 0 0.5rem;
+  color: var(--ifm-heading-color);
+  font-size: 1.75rem;
+}
+
+.ctaSub {
+  margin: 0 0 1.5rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.ctaSection .btnPrimary {
+  background: var(--joyrl-hero-gradient);
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 3rem 1rem 4rem;
+  }
+  .heroGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .heroTitle {
+    font-size: 1.75rem;
+  }
+}

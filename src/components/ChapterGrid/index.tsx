@@ -36,7 +36,7 @@ const CHAPTERS: Chapter[] = [
     title: 'JoyRL 框架',
     icon: '⚙️',
     desc: 'API · 配置 · 自定义环境 · 训练脚本',
-    to: '/docs/joyrl_docs/main',
+    to: '/docs/joyrl_docs/',
     accent: '#fbbf24',
   },
 ];
