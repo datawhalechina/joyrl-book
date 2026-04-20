@@ -1,8 +1,7 @@
 import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
 
 const sidebars: SidebarsConfig = {
-  tutorialSidebar: [
-    {type: 'doc', id: 'README', label: '首页'},
+  rlBasicSidebar: [
     {
       type: 'category',
       label: '基础强化学习',
@@ -57,6 +56,8 @@ const sidebars: SidebarsConfig = {
         },
       ],
     },
+  ],
+  offlineRlSidebar: [
     {
       type: 'category',
       label: '离线强化学习',
@@ -64,12 +65,17 @@ const sidebars: SidebarsConfig = {
         type: 'doc',
         id: 'offline_rl/README',
       },
+      collapsible: false,
       items: [
         {type: 'doc', id: 'offline_rl/offlineRL', label: '离线强化学习综述'},
         {type: 'doc', id: 'offline_rl/CQL', label: 'CQL'},
       ],
     },
+  ],
+  llmRlSidebar: [
     {type: 'doc', id: 'llm_rl/README', label: '大模型与强化学习'},
+  ],
+  joyrlDocsSidebar: [
     {
       type: 'category',
       label: 'JoyRL 中文文档',
@@ -77,6 +83,7 @@ const sidebars: SidebarsConfig = {
         type: 'doc',
         id: 'joyrl_docs/main',
       },
+      collapsible: false,
       items: [
         {type: 'doc', id: 'joyrl_docs/basic_concept', label: '基本概念'},
         {type: 'doc', id: 'joyrl_docs/usage', label: '使用说明'},
