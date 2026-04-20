@@ -124,7 +124,6 @@ const config: Config = {
         height: 54,
       },
       items: [
-        {to: '/', position: 'left', label: '首页', activeBaseRegex: '^/$'},
         {type: 'doc', docId: 'rl_basic/README', position: 'left', label: '强化学习基础'},
         {type: 'doc', docId: 'offline_rl/README', position: 'left', label: '离线强化学习'},
         {type: 'doc', docId: 'llm_rl/README', position: 'left', label: '大模型与强化学习'},
