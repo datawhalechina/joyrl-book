@@ -47,7 +47,7 @@ body {
 
 .navbar {
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--ifm-toc-border-color);
+  border-bottom: 1px solid var(--joyrl-card-border);
 }
 
 .navbar__brand {
@@ -110,4 +110,17 @@ body {
 .theme-doc-markdown blockquote {
   border-left-color: var(--ifm-color-primary);
   background: color-mix(in srgb, var(--ifm-color-primary) 8%, transparent);
+}
+
+/* 文档正文链接 hover 虚线（呼应 GridWorld 奖励路径） */
+.markdown a:not(.card):not(.button):hover {
+  text-decoration: underline dashed;
+  text-underline-offset: 3px;
+}
+
+/* 代码块浅色容器背景统一天蓝 */
+[data-theme='light'] .prism-code {
+  background: #f0f9ff !important;
+  border: 1px solid var(--joyrl-card-border);
+  border-radius: 8px;
 }
