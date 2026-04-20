@@ -45,6 +45,20 @@ body {
   font-weight: 700;
 }
 
+.navbar__logo img {
+  display: block;
+  height: 2.4rem;
+  width: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
+}
+
+[data-theme='dark'] .navbar__logo img {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 8px 20px rgba(2, 6, 23, 0.32);
+}
+
 .footer {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }

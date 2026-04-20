@@ -15,7 +15,7 @@ const mathjaxConfig = {
 const config: Config = {
   title: 'JoyRL Book',
   tagline: '强化学习实践教程与 JoyRL 框架文档',
-  favicon: 'img/favicon.svg',
+  favicon: 'img/favicon-brand.png',
 
   future: {
     v4: true,
@@ -115,13 +115,13 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
     navbar: {
-      title: 'JoyRL Book',
       hideOnScroll: true,
       logo: {
         alt: 'JoyRL Book Logo',
-        src: 'img/logo.svg',
-        width: 32,
-        height: 32,
+        src: 'img/logo-wordmark.png',
+        srcDark: 'img/logo-wordmark.png',
+        width: 96,
+        height: 54,
       },
       items: [
         {type: 'doc', docId: 'README', position: 'left', label: '首页'},
