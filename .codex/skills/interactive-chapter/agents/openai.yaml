@@ -1,0 +1,4 @@
+interface:
+  display_name: "Interactive Chapter"
+  short_description: "Plan or port interactive chapter pages in JoyRL Book."
+  default_prompt: "Use $interactive-chapter to turn a JoyRL chapter into a standalone interactive page and wire it into this Docusaurus repo."
