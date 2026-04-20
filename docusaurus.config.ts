@@ -116,6 +116,7 @@ const config: Config = {
     },
     navbar: {
       hideOnScroll: true,
+      title: '首页',
       logo: {
         alt: 'JoyRL Book Logo',
         src: 'img/logo-wordmark.png',
