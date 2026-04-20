@@ -1,0 +1,86 @@
+.container {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  border-radius: 14px;
+  padding: 14px;
+  backdrop-filter: blur(4px);
+  width: 100%;
+  max-width: 420px;
+}
+
+.svg {
+  width: 100%;
+  display: block;
+}
+
+.grid rect {
+  fill: rgba(255, 255, 255, 0.06);
+  stroke: rgba(255, 255, 255, 0.5);
+  stroke-width: 1;
+}
+
+.reward {
+  fill: rgba(251, 191, 36, 0.7) !important;
+}
+
+.danger {
+  fill: rgba(239, 68, 68, 0.4) !important;
+}
+
+.goal {
+  fill: rgba(52, 211, 153, 0.55) !important;
+}
+
+.path {
+  stroke: #ffffff;
+  stroke-width: 2;
+  stroke-dasharray: 3 3;
+  fill: none;
+  opacity: 0.85;
+}
+
+.agent circle {
+  fill: #ffffff;
+}
+
+.agent text {
+  fill: #0284c7;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.agent {
+  transform: translate(25px, 115px);
+  animation: walkPath 4s linear infinite;
+}
+
+@keyframes walkPath {
+  0%   { transform: translate(25px, 115px); }
+  14%  { transform: translate(55px, 115px); }
+  28%  { transform: translate(55px, 85px); }
+  42%  { transform: translate(85px, 85px); }
+  57%  { transform: translate(85px, 55px); }
+  71%  { transform: translate(115px, 55px); }
+  85%  { transform: translate(115px, 25px); }
+  100% { transform: translate(175px, 25px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agent {
+    animation: none;
+    transform: translate(25px, 115px);
+  }
+}
+
+.formula {
+  fill: rgba(255, 255, 255, 0.9);
+  font-family: monospace;
+  font-size: 8px;
+}
+
+.caption {
+  text-align: center;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 6px 0 0;
+}
