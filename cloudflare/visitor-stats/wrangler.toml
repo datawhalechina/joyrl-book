@@ -3,7 +3,7 @@ main = "src/index.mjs"
 compatibility_date = "2026-04-20"
 
 [vars]
-ALLOWED_ORIGIN = "https://datawhalechina.github.io"
+ALLOWED_ORIGINS = "https://datawhalechina.github.io,http://localhost:3000"
 TIMEZONE = "Asia/Shanghai"
 SITE_ID = "joyrl-book"
 COUNTER_SHARDS = "64"

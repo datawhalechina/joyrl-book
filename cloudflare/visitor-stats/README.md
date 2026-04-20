@@ -88,3 +88,17 @@ curl "https://joyrl-visitor-stats.<your-subdomain>.workers.dev/stats"
 Cloudflare 官方文档指出，KV 对“同一个 key”的写入限制是 `1 次/秒`，并且并发写入到同一 key 可能互相覆盖。为避开这个限制，这个 Worker 使用了分片计数器（sharded counters），把写入分散到多个 key 上，再在读取时汇总。
 
 这套方案很适合文档站、社区站这类低到中等流量场景。如果以后流量明显变大，或者你想要更强一致的计数，可以升级到 Durable Objects 或 D1。
+
+## 本地站点访问
+
+当前 `wrangler.toml` 已经允许两个来源：
+
+- `https://datawhalechina.github.io`
+- `http://localhost:3000`
+
+所以本地运行 Docusaurus 时，可以这样把统计接口地址注入进来：
+
+```bash
+cd /Users/johnjim/Desktop/joyrl-book
+VISITOR_STATS_API_URL="https://joyrl-visitor-stats.joyrl-book.workers.dev" npm start
+```

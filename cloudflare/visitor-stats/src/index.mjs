@@ -3,16 +3,29 @@ const DAILY_COUNTER_TTL_SECONDS = 60 * 60 * 24 * 14;
 const BOT_USER_AGENT_PATTERN =
   /bot|crawler|spider|slurp|preview|headless|pingdom|curl|wget|python-requests|go-http-client/i;
 
+function getConfiguredOrigins(env) {
+  const rawOrigins = env.ALLOWED_ORIGINS || env.ALLOWED_ORIGIN || '';
+
+  return rawOrigins
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+}
+
 function getAllowedOrigin(request, env) {
-  const configuredOrigin = (env.ALLOWED_ORIGIN || '').trim();
+  const configuredOrigins = getConfiguredOrigins(env);
   const requestOrigin = request.headers.get('Origin');
 
-  if (!configuredOrigin) {
+  if (configuredOrigins.length === 0) {
     return requestOrigin || '*';
   }
 
-  if (!requestOrigin || requestOrigin === configuredOrigin) {
-    return configuredOrigin;
+  if (!requestOrigin) {
+    return configuredOrigins[0];
+  }
+
+  if (configuredOrigins.includes(requestOrigin)) {
+    return requestOrigin;
   }
 
   return null;
@@ -234,11 +247,12 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const allowedOrigin = getAllowedOrigin(request, env);
+    const configuredOrigins = getConfiguredOrigins(env);
 
     if (request.method === 'OPTIONS') {
       return new Response(null, {
         status: 204,
-        headers: buildCorsHeaders(allowedOrigin || env.ALLOWED_ORIGIN || '*'),
+        headers: buildCorsHeaders(allowedOrigin || configuredOrigins[0] || '*'),
       });
     }
 
@@ -253,7 +267,7 @@ export default {
       );
     }
 
-    const corsHeaders = buildCorsHeaders(allowedOrigin || env.ALLOWED_ORIGIN || '*');
+    const corsHeaders = buildCorsHeaders(allowedOrigin || configuredOrigins[0] || '*');
 
     if (url.pathname === '/track' && request.method === 'POST') {
       return handleTrack(request, env, corsHeaders);
