@@ -19,15 +19,28 @@
 
 地址：https://datawhalechina.github.io/joyrl-book/
 
+## 本地预览
+
+```bash
+npm install
+npm start
+```
+
+生产构建：
+
+```bash
+npm run build
+```
+
 ## 内容导航
 
 注意，对于非强化学习基础的部分例如离线强化学习等，在本教程中只介绍一些经典的入门内容，以便帮助读者快速了解对应的方向和应用领域，想要深入研究的读者可进一步参考相关的资料和论文。
 
 |               内容方向              | PDF | 完成状态 |
 | :-------------------------------: | :--: | ---- |
-|       [强化学习基础](https://datawhalechina.github.io/joyrl-book/#/rl_basic/README)       | [PDF](./docs/rl_basic/rl_basic.pdf) | ☑️ |
-| [离线强化学习](https://datawhalechina.github.io/joyrl-book/#/offline_rl/README) ||⬜|
-| [大模型与强化学习](https://datawhalechina.github.io/joyrl-book/#/llm_rl/README) ||⬜|
+|       [强化学习基础](https://datawhalechina.github.io/joyrl-book/rl_basic)       | [PDF](./docs/rl_basic/rl_basic.pdf) | ☑️ |
+| [离线强化学习](https://datawhalechina.github.io/joyrl-book/offline_rl) ||⬜|
+| [大模型与强化学习](https://datawhalechina.github.io/joyrl-book/llm_rl) ||⬜|
 
 ## 主要贡献者
 
@@ -35,24 +48,24 @@
   <tbody>
     <tr align="center" >
         <td>
-         <a href="https://github.com/JohnJim0816"><img width="70" height="70" src="https://github.com/JohnJim0816.png?s=40" alt="pic"></a><br>
+         <a href="https://github.com/JohnJim0816"><img width="70" height="70" src="https://github.com/JohnJim0816.png?s=40" alt="pic"></a><br />
          <a href="https://github.com/JohnJim0816">John Jim</a>
-         <p>教程设计与算法实战<br> 北京大学硕士 </p>
+         <p>教程设计与算法实战<br /> 北京大学硕士 </p>
         </td>
         <td>
-         <a href="https://github.com/scchy"><img width="70" height="70" src="https://github.com/scchy.png?s=40" alt="pic"></a><br>
+         <a href="https://github.com/scchy"><img width="70" height="70" src="https://github.com/scchy.png?s=40" alt="pic"></a><br />
          <a href="https://github.com/scchy">scchy</a>
-         <p>算法实战<br> </p>
+         <p>算法实战<br /> </p>
         </td>
         <td>
-            <a href="https://github.com/qiwang067"><img width="70" height="70" src="https://github.com/qiwang067.png?s=40" alt="pic"></a><br>
+            <a href="https://github.com/qiwang067"><img width="70" height="70" src="https://github.com/qiwang067.png?s=40" alt="pic"></a><br />
             <a href="https://github.com/qiwang067">Qi Wang</a> 
-            <p>教程设计<br> 上海交通大学博士生<br> 中国科学院大学硕士</p>
+            <p>教程设计<br /> 上海交通大学博士生<br /> 中国科学院大学硕士</p>
         </td>
         <td>
-            <a href="https://github.com/yyysjz1997"><img width="70" height="70" src="https://github.com/yyysjz1997.png?s=40" alt="pic"></a><br>
+            <a href="https://github.com/yyysjz1997"><img width="70" height="70" src="https://github.com/yyysjz1997.png?s=40" alt="pic"></a><br />
             <a href="https://github.com/yyysjz1997">Yiyuan Yang</a> 
-            <p>教程设计 <br> 牛津大学博士生<br> 清华大学硕士</p>
+            <p>教程设计 <br /> 牛津大学博士生<br /> 清华大学硕士</p>
         </td>
     </tr>
   </tbody>
@@ -65,4 +78,4 @@
 ## 关注我们
 
 扫描下方二维码关注公众号：Datawhale，回复关键词“强化学习”，即可加入“EasyRL & JoyRL 读者交流群”
-<div align=center><img src="https://raw.githubusercontent.com/datawhalechina/easy-rl/master/docs/res/qrcode.jpeg" width = "250" height = "270" alt="Datawhale是一个专注AI领域的开源组织，以“for the learner，和学习者一起成长”为愿景，构建对学习者最有价值的开源学习社区。关注我们，一起学习成长。"></div>
+<div align="center"><img src="https://raw.githubusercontent.com/datawhalechina/easy-rl/master/docs/res/qrcode.jpeg" width = "250" height = "270" alt="Datawhale是一个专注AI领域的开源组织，以“for the learner，和学习者一起成长”为愿景，构建对学习者最有价值的开源学习社区。关注我们，一起学习成长。"></div>

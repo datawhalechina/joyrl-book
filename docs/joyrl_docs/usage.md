@@ -99,9 +99,9 @@ env_cfg:
 
 配置好之后，用前面提到的任一种方式运行即可开始训练，训练过程中会在当前目录下生成一个`tasks`文件夹，里面包含了训练过程中的模型文件、日志文件等等，如下：
 
-<div align=center>
-<img width="500" src=".figs/tasks_dir.png"/>
-<div align=center>图 1 tasks文件夹构成</div>
+<div align="center">
+<img width="500" src="figs/tasks_dir.png"/>
+<div align="center">图 1 tasks文件夹构成</div>
 </div>
 
 其中`logs`文件夹下会保存终端输出的日志，`models`文件夹下会保存训练过程中的模型文件，`tb_logs`文件夹下会保存训练过程中的`tensorboard`文件，例如奖励曲线、损失曲线等等，`results`文件夹下会以`csv`的形式保存奖励、损失等，便于后续单独绘图分析。`videos`文件夹下会保存运行过程中的视频文件，主要在测试过程中使用。`config.yaml`则保存本次运行过程中的参数配置，便于复现训练结果。
@@ -173,9 +173,9 @@ class MLP(nn.Module):
 
 在上一小节配置网络中，会发现网络配置输入是`merge_layers`，这是因为`JoyRL`支持多头网络，即可以同时输入多个网络，然后将多个网络的输出进行合并。例如当状态输入同时包含图像和线性输入时，此时可以分别配置两个网络，然后将两个网络的输出进行合并，这就是多头网络的用法，如下图：
 
-<div align=center>
-<img width="500" src=".figs/branch_merge.png"/>
-<div align=center>图 2 branch和merge网络</div>
+<div align="center">
+<img width="500" src="figs/branch_merge.png"/>
+<div align="center">图 2 branch和merge网络</div>
 </div>
 
 其中`branch_layers`表示分支网络，`merge_layers`表示合并网络，`branch_layers`和`merge_layers`的配置方式与`merge_layers`相同，只是需要在每个网络的配置中加入`name`，如下：

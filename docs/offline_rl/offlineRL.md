@@ -7,17 +7,17 @@
 经典强化学习本质是在线闭环：不论是同策略（on-policy）算法还是异策略（off-policy）算法，皆需在环境中持续采样、即时更新。该“边交互边学习”范式与现代大规模深度学习“离线超大规模数据预训练”路线存在结构性错位。
 此外，RL 要求环境封闭、规则完全可描述且可重置，导致采样分布即性能上限；智能体的泛化边界被严格圈定在“可交互区域”，难以跨越未见状态空间。
 
-<div align=center>
+<div align="center">
 <img width="360" src="figs/on_off-policy.png"/>
-<figcaption style="font-size: 14px;">图 1 同策略-异策略RL算法流程图示</figcaption>
+<figcaption style={{fontSize: '14px'}}>图 1 同策略-异策略RL算法流程图示</figcaption>
 </div>
 
 
 于是人们自然发问：能否像监督学习那样，用海量历史数据先训一遍，即用数据驱动的方式进行RL训练，然后再上线？
 
-<div align=center>
+<div align="center">
 <img width="300" src="figs/offline-RL.png"/>
-<figcaption style="font-size: 14px;">图 2 离线强化学习算法流程图示</figcaption>
+<figcaption style={{fontSize: '14px'}}>图 2 离线强化学习算法流程图示</figcaption>
 </div>
  
 离线强化学习（offline RL）正是这一思路的产物：
@@ -39,9 +39,9 @@ $$\max_\pi \sum_0^T \mathbb{E}_{s_t \sim d^\pi, a_t\sim \pi(a|s)}[\gamma^t r(s_t
 在固定数据集$\mathcal{D}$和该目标，我们希望学习出“最优”策略$\pi$。但 $\mathcal{D}$ 就是策略的天花板：在自动驾驶场景，如果它只覆盖了“标准”城市场景，$\pi$永远无法在非标道路上安全行驶——未见状态-动作对永远学不出来。
 
 
-<div align=center>
+<div align="center">
 <img width="300" src="figs/offline-RL-stitching.png"/>
-<figcaption style="font-size: 14px;">图 3 离线强化学习“缝合策略“图示</figcaption>
+<figcaption style={{fontSize: '14px'}}>图 3 离线强化学习“缝合策略“图示</figcaption>
 </div>
 
 我们希望离线强化学习可以从混乱中获得秩序，超越数据集中的最佳策略，“
@@ -51,9 +51,9 @@ $$\max_\pi \sum_0^T \mathbb{E}_{s_t \sim d^\pi, a_t\sim \pi(a|s)}[\gamma^t r(s_t
 在线 RL 能当场试一把，错了立刻改；离线 RL 却可能把“没见过的左转”当成高价值捷径，一头撞墙才后知后觉（如图4）。
 
 
-<div align=center>
+<div align="center">
 <img width="300" src="figs/offline-RL_never-seen-state-action.png"/>
-<figcaption style="font-size: 14px;">图 4 离线强化学习-未见过Action错误估计图示</figcaption>
+<figcaption style={{fontSize: '14px'}}>图 4 离线强化学习-未见过Action错误估计图示</figcaption>
 </div>
 
 

@@ -45,9 +45,9 @@ $$
 
 为了计算轨迹产生的概率，我们可以先具体展开轨迹产生的路径。如图 1 所示，首先环境会从初始状态分布中采样出一个初始状态 $s_0$ ，对应的概率为 $\rho_0(s_0)$ 。然后智能体在状态 $s_0$ 下根据策略 $\pi_\theta(a|s)$ 采样出一个动作 $a_0$ ，对应的概率就是策略函数对应的值，即 $\pi_\theta(a_0|s_0)$ ，接着环境根据状态转移概率 $P(s^{\prime}|s, a)$ 采样出下一个状态 $s_1$ ，对应的概率为 $P(s_1|s_0, a_0)$ 。此时对应的轨迹序列为 $\tau = \{s_0, a_0, s_1\}$ ，根据条件概率可知，该轨迹产生的概率为 $\Pr(\tau) = \rho_0(s_0) \pi_\theta(a_0|s_0) P(s_1|s_0, a_0)$ 。 
 
-<div align=center>
+<div align="center">
 <img width="500" src="figs/traj_prob.png"/>
-<figcaption style="font-size: 14px;">图 1 轨迹概率的计算</figcaption>
+<figcaption style={{fontSize: '14px'}}>图 1 轨迹概率的计算</figcaption>
 </div>
 
 以此类推，可得完整轨迹的概率计算如式 $\eqref{eq:8}$ 所示。
@@ -215,7 +215,7 @@ $$
 
 在引入平稳分布概念之前，先来看一个例子。如图 2 所示，假设有一个简单的马尔可夫过程（ $\text{Markov Process}$ ） ，包含三个状态 $s_1, s_2, s_3$ ，每个状态之间的转移概率如图中所示。
 
-<div align=center>
+<div align="center">
 <img width="400" src="figs/markov_examp.png"/>
 <figcaption>图 2 马尔可夫过程示例</figcaption>
 </div>
@@ -268,8 +268,8 @@ $$
 
 那么经过多次状态转移或者说多次状态迭代后，状态分布会发生什么变化呢？我们可以通过编程来模拟一下，如代码 1 所示。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 1 状态分布迭代模拟</b> </figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> <b>代码 1 状态分布迭代模拟</b> </figcaption>
 </div>
 
 ```python
@@ -283,8 +283,8 @@ for i in range(1,10+1):
 
 运行结果如代码 2 所示。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 2 状态分布迭代结果1</b> </figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> <b>代码 2 状态分布迭代结果1</b> </figcaption>
 </div>
 
 ```python
@@ -302,8 +302,8 @@ for i in range(1,10+1):
 
 可以看出，经过多次迭代后，**状态分布逐渐趋于稳定，并最终收敛到一个固定的分布**，即 $\rho = [0.232, 0.516, 0.253]$ 。 把初始状态分布改成其他的任意值，例如 $\rho_0 = [0.9,0.05,0.05]$ ，再运行代码 1 ，结果如代码 3 所示，状态分布依然会收敛到同一个固定的分布 $\rho = [0.232, 0.516, 0.253]$ 。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;">  <b>代码 3 状态分布迭代结果1 </b> </figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}>  <b>代码 3 状态分布迭代结果1 </b> </figcaption>
 </div>
 
 ```python
@@ -681,8 +681,8 @@ $$
 
 为帮助理解，我们使用`Numpy`模块实现一个 $\text{Softmax}$ 函数并从中采样动作，如代码 4 所示。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 4: Softmax 函数 Numpy 实现</b> </figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> <b>代码 4: Softmax 函数 Numpy 实现</b> </figcaption>
 </div>
 
 ```python
@@ -716,8 +716,8 @@ print(f"log π(a|s): {log_prob:.3f}")
 
 运行结果如代码 5 所示。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 5: Softmax 函数运行结果</b> </figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> <b>代码 5: Softmax 函数运行结果</b> </figcaption>
 </div>
 
 ```python
@@ -728,8 +728,8 @@ log π(a|s): -0.417
 
 接下来，我们使用`PyTorch`模块实现一个基于 $\text{Softmax}$ 函数的策略网络，并计算对应的梯度，如代码 6 所示。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 6: Softmax 策略网络 PyTorch 实现</b> </figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> <b>代码 6: Softmax 策略网络 PyTorch 实现</b> </figcaption>
 </div>
 
 ```python
@@ -773,8 +773,8 @@ print(f"log π(a|s): {log_prob.item():.3f}")
 
 运行结果如代码 7 所示。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 7: Softmax 策略网络运行结果</b> </figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> <b>代码 7: Softmax 策略网络运行结果</b> </figcaption>
 </div>
 
 ```python
@@ -894,8 +894,8 @@ $$
 
 为帮助理解，同样使用 `Numpy` 模块来实现高斯分布的采样和梯度求解，如代码 8 所示。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 8: 高斯分布 Numpy 实现</b> </figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> <b>代码 8: 高斯分布 Numpy 实现</b> </figcaption>
 </div>
 
 ```python
@@ -951,8 +951,8 @@ print("∂logπ/∂logσ:\n", np.round(dlogstd, 3))
 
 运行结果如代码 9 所示。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 9: 高斯分布运行结果</b> </figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> <b>代码 9: 高斯分布运行结果</b> </figcaption>
 </div>
 
 ```python
@@ -974,8 +974,8 @@ log π(a|s):
 
 接下来，我们使用 `PyTorch` 模块来实现一个基于高斯分布的策略网络，并计算对应的梯度，如代码 10 所示。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 10: 高斯分布策略网络 PyTorch 实现</b> </figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> <b>代码 10: 高斯分布策略网络 PyTorch 实现</b> </figcaption>
 </div>
 
 ```python
@@ -1026,9 +1026,9 @@ $$
 
 在实际应用中，$\text{REINFORCE}$ 算法的流程如图 3 所示。首先，初始化策略参数 $\theta$ ，然后在每个迭代周期中，采样 $N$ 条轨迹 $\{\tau^{(i)}\}_{i=1}^{N}$ （这个过程称为 $\text{rollout}$，出于简便图中只展示了一条轨迹的采样 ），计算每条轨迹的回报 $G_t^{(i)}$ ，最后根据式 $\eqref{eq:41}$ 计算梯度并更新策略参数 $\theta$ 。
 
-<div align=center>
+<div align="center">
 <img width="800" src="figs/pseu.png"/>
-<figcaption style="font-size: 14px;">图 3: REINFORCE 算法流程</figcaption>
+<figcaption style={{fontSize: '14px'}}>图 3: REINFORCE 算法流程</figcaption>
 </div>
 
 

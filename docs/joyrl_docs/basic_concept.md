@@ -6,16 +6,16 @@
 
 在强化学习中，智能体（agent）在环境（environment）中与环境进行交互产生样本，并且不断更新自身的策略（policy），以获得最大化的奖励（reward），如下图：
 
-<div align=center>
+<div align="center">
 <img width="400" src="figs/interaction_mdp.png"/>
-<div align=center>图 1 智能体与环境交互的过程</div>
+<div align="center">图 1 智能体与环境交互的过程</div>
 </div>
 
 以`DQN`算法为例，如图2所示，智能体在与环境交互的过程中，会不断地产生样本，即`transition`，主要包括`state`、`action`、`reward`、`next_state`等等，然后将这些样本存入经验池（experience replay buffer）中，再从经验池中随机采样出一批样本，进行算法更新，更新完之后再产生一批样本，如此循环往复，直到达到终止条件。几乎所有强化学习算法都遵循这个思路，这就是强化学习的基本训练逻辑。
 
-<div align=center>
+<div align="center">
 <img width="500" src="figs/DQN_pseu.png"/>
-<div align=center>图 2 DQN算法训练伪代码</div>
+<div align="center">图 2 DQN算法训练伪代码</div>
 </div>
 
 目前主流的深度强化学习算法中，更新策略的过程主要是更新神经网络的参数，即模型，从这方面来看，其与深度学习是很相似的，因此很多深度学习中的问题在强化学习中也有可能遇到，例如过拟合、梯度爆炸与消失、陷入局部最优解等等。但是与深度学习不同的是，强化学习用来更新模型的样本是需要不断地通过与环境交互产生的，而不像深度学习那样是一次性准备好的。尽管有些离线强化学习正在研究如何尽量避免与环境交互，但是目前大部分强化学习算法仍然是在线的，这也是强化学习与深度学习的一个重要区别。
@@ -26,9 +26,9 @@
 
 前面提到，强化学习的训练过程主要包括交互采样和策略更新两个过程，因此`JoyRL`中这两个过程分别抽象成两个模块，即交互器（interactor）和学习器（learner）。如图3所示，交互器每次从学习器中获取更新的策略，然后与环境交互产生样本(experiences)。学习器则不断从交互器中获取样本，然后进行算法更新。其中，交互器在有些资料中也被称为`worker`，这里为了与`JoyRL`中的命名保持一致，统一称为交互器和学习器。
 
-<div align=center>
+<div align="center">
 <img width="600" src="figs/interactor_learner.png"/>
-<div align=center>图 3 交互器与学习器</div>
+<div align="center">图 3 交互器与学习器</div>
 </div>
 
 对比图1和图3，可以看到为了方便实际训练，`JoyRL`中将图1中的智能体拆分成了图3中的交互器和学习器。这是因为实际训练中，交互采样和策略更新是可以分开并行的，这样可以提高训练效率，拆分成两个模块之后，同时也方便用户自定义一些样本的处理方式。
@@ -39,9 +39,9 @@
 
 如图4所示，模型管理在不断给交互器提供更新的策略的同时，也会不断地从学习器中获取更新的模型，然后保存到本地。收集器则不断地从交互器中获取交互样本和策略样本，然后将交互样本存入经验回放中，将策略样本传回学习器，用来更新经验回放中的`priority`。这样，交互器和学习器就可以专注于自己的主要任务，而免于频繁地进行数据的收集和处理，从而提高训练效率。
 
-<div align=center>
+<div align="center">
 <img width="600" src="figs/collector.png"/>
-<div align=center>图 4 收集器与模型管理器</div>
+<div align="center">图 4 收集器与模型管理器</div>
 </div>
 
 ## 数据追踪器与记录器
@@ -50,9 +50,9 @@
 
 如图5所示，其中追踪器是所有模块共享的，因此没有在图中画出。记录器则主要从交互器和学习器中获取奖励和损失等信息，然后记录到本地文件中。
 
-<div align=center>
+<div align="center">
 <img width="600" src="figs/recorder.png"/>
-<div align=center>图 5 数据追踪器与记录器</div>
+<div align="center">图 5 数据追踪器与记录器</div>
 </div>
 
 ## 在线测试器
@@ -61,9 +61,9 @@
 
 如图 6 所示，在线测试器更像是一个独立的模块，它并不影响训练过程，因此在图中特别将其分离出来。
 
-<div align=center>
+<div align="center">
 <img width="600" src="figs/overall_framework.png"/>
-<div align=center>图 6 整体框架</div>
+<div align="center">图 6 整体框架</div>
 </div>
 
 到这里，`JoyRL`的整体框架就介绍完了，感兴趣的读者可以参考`JoyRL`的源码。

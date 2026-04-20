@@ -2,16 +2,16 @@
 
 在实战中，我们主要讲解 $SAC$ 算法的第二个版本，即自动调节温度因子的版本。该版本的如图 $\text{1}$ 所示，整个训练过程相对来说还是比较简洁的，只是需要额外定义一些网络，比如用来调节温度因子等。
 
-<div align=center>
-<img width="500" src=".figs/sac_pseu.png"/>
+<div align="center">
+<img width="500" src="figs/sac_pseu.png"/>
 </div>
-<div align=center>图 $\text{1}$ $\:$ $\text{SAC}$ 算法伪代码</div>
+<div align="center">图 $\text{1}$ $\:$ $\text{SAC}$ 算法伪代码</div>
 
 ## 定义模型
 
 首先我们定义 $\text{Actor}$ 和 $\text{Critic}$，即值网络和策略网络，跟 $\text{A2C}$ 算法其实是一样的，如代码清单 $\text{1}$ 所示。
 
-<div style="text-align: center;">
+<div style={{textAlign: 'center'}}>
     <figcaption> 代码清单 $\text{1}$ $\:$ $\text{Actor}$ 和 $\text{Critic}$ 网络 </figcaption>
 </div>
 
@@ -89,7 +89,7 @@ class PolicyNet(nn.Module):
 
 然后再额外定义一个 $\text{Soft Q}$ 网络，如代码清单 $\text{2}$ 所示。
 
-<div style="text-align: center;">
+<div style={{textAlign: 'center'}}>
     <figcaption> 代码清单 $\text{2}$ $\:$ $\text{Soft Q}$ 网络 </figcaption>
 </div>
 

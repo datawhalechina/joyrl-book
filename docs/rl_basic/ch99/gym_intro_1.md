@@ -4,9 +4,9 @@
 
 如图 1 所示，对于每个环境，$\text{Gymnasium}$ 简要介绍了其状态或观测（$\text{Observation Space}$）、动作空间（$\text{Action Space}$）以及奖励机制（$\text{Reward Mechanism}$）。这些信息对于理解环境的动态和设计合适的强化学习算法至关重要。
 
-<div align=center>
+<div align="center">
 <img width="800" src="figs/gym_intro_1.png"/>
-<figcaption style="font-size: 14px;">图 1 Gymnasium 环境说明
+<figcaption style={{fontSize: '14px'}}>图 1 Gymnasium 环境说明</figcaption>
 </div>
 
 在奖励说明中，通常会提到奖励临界值（$\text{Reward Threshold}$），这是一个预设的奖励水平，表示智能体在该环境中达到“成功”所需的最低奖励。例如，在某些环境中，达到特定的奖励临界值以上意味着智能体很有可能学会了完成任务的基本策略，具体还需可视化验证。
@@ -21,8 +21,8 @@
 
 通过这些方法，用户可以轻松地与环境交互，收集数据，如代码 1 所示。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 1 Gymnasium 环境交互示例</b> </figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> <b>代码 1 Gymnasium 环境交互示例</b> </figcaption>
 </div>
 
 ```python

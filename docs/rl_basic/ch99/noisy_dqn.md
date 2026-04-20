@@ -2,7 +2,7 @@
 
 $\text{Noisy DQN}$ 算法的核心思想是将 $\text{DQN}$ 算法中的线性层替换成带有噪声的线性层，如代码 1 所示。
 
-<div style="text-align: center;">
+<div style={{textAlign: 'center'}}>
     <figcaption> 代码清单 1 $\:$ 带有噪声的线性层网络 </figcaption>
 </div>
 
@@ -57,7 +57,7 @@ class NoisyLinear(nn.Module):
 
 根据写好的 $\text{NoisyLinear}$ 层，我们可以在 $\text{DQN}$ 算法中将普通的线性层替换为 $\text{NoisyLinear}$ 层，如代码 2  所示。
 
-<div style="text-align: center;">
+<div style={{textAlign: 'center'}}>
     <figcaption> 代码清单 2 $\:$ 带噪声层的全连接网络 </figcaption>
 </div>
 
@@ -82,7 +82,7 @@ class NoisyQNetwork(nn.Module):
 
 注意在训练过程中，我们需要在每次更新后重置噪声，这样有助于提高训练的稳定性，更多细节请参考 $\text{JoyRL}$ 源码。另外，我们也可以直接利用 $\text{torchrl}$ 模块中中封装好的 $\text{NoisyLinear}$ 层来构建 $\text{Noisy Q}$ 网络，跟我们自己定义的功能是一样的，如代码 3 所示。
 
-<div style="text-align: center;">
+<div style={{textAlign: 'center'}}>
     <figcaption> 代码清单 3 $\:$ 使用 $\text{torchrl}$ 模块构造的 $\text{Noisy Q}$ 网络 </figcaption>
 </div>
 
@@ -108,7 +108,7 @@ class NoisyQNetwork(nn.Module):
 
 同样我们展示一下它在 $\text{CartPole}$ 环境下的训练结果，如图 1 所示。
 
-<div align=center>
+<div align="center">
 <img width="400" src="figs/NoisyDQN_CartPole-v1_training_curve.png"/>
 </div>
-<div align=center>图 1 $\:$ $\text{CartPole}$ 环境 $\text{Noisy DQN}$ 算法训练曲线</div>
+<div align="center">图 1 $\:$ $\text{CartPole}$ 环境 $\text{Noisy DQN}$ 算法训练曲线</div>

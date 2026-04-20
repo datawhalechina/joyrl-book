@@ -1,0 +1,90 @@
+:root {
+  --ifm-color-primary: #0f766e;
+  --ifm-color-primary-dark: #0b665f;
+  --ifm-color-primary-darker: #095952;
+  --ifm-color-primary-darkest: #06463f;
+  --ifm-color-primary-light: #14867d;
+  --ifm-color-primary-lighter: #18978d;
+  --ifm-color-primary-lightest: #22b3a5;
+  --ifm-background-color: #f8fbfb;
+  --ifm-code-font-size: 94%;
+  --ifm-navbar-background-color: rgba(248, 251, 251, 0.9);
+  --ifm-footer-background-color: #0f172a;
+  --ifm-heading-color: #0f172a;
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #5eead4;
+  --ifm-color-primary-dark: #2dd4bf;
+  --ifm-color-primary-darker: #14b8a6;
+  --ifm-color-primary-darkest: #0f766e;
+  --ifm-color-primary-light: #7df3e0;
+  --ifm-color-primary-lighter: #9bf8e8;
+  --ifm-color-primary-lightest: #bdfdf1;
+  --ifm-background-color: #0b1120;
+  --ifm-heading-color: #ecfeff;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background:
+    radial-gradient(circle at top left, rgba(15, 118, 110, 0.08), transparent 28%),
+    radial-gradient(circle at top right, rgba(8, 145, 178, 0.08), transparent 24%),
+    var(--ifm-background-color);
+}
+
+.navbar {
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--ifm-toc-border-color);
+}
+
+.navbar__brand {
+  font-weight: 700;
+}
+
+.footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.theme-doc-markdown div[align='center'] {
+  margin: 1.5rem auto;
+  text-align: center;
+}
+
+.theme-doc-markdown img {
+  display: block;
+  margin: 1rem auto;
+  max-width: 100%;
+  border-radius: 12px;
+}
+
+.theme-doc-markdown p > a > img,
+.theme-doc-markdown li > a > img {
+  display: inline-block;
+  margin: 0 0.35rem 0.35rem 0;
+  vertical-align: middle;
+  border-radius: 0;
+}
+
+.theme-doc-markdown figcaption,
+.theme-doc-markdown div[align='center'] figcaption {
+  margin-top: 0.5rem;
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.theme-doc-markdown table {
+  display: table;
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.theme-doc-markdown blockquote {
+  border-left-color: var(--ifm-color-primary);
+  background: color-mix(in srgb, var(--ifm-color-primary) 8%, transparent);
+}

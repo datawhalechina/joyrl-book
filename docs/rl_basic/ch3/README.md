@@ -16,10 +16,10 @@
 
 为帮助理解动态规划的思想，这里以一个路径规划问题为例进行说明。如图 1 所示，在一个 $m \times n$ 的网格世界中，机器人以左上角为起点，右下角为终点，每次只能向右或向下移动一步，这里的问题是需要计算出从起点到终点的不同路径数量。
 
-<div align=center>
+<div align="center">
 <img width="400" src="figs/robot_maze.png"/>
 </div>
-<div align=center>图 1: 路径之和</div>
+<div align="center">图 1: 路径之和</div>
 
 使用动态规划的方法来解决这个问题的话，主要包含几个步骤：**确定状态，写出状态转移方程和寻找边界条件**。
 
@@ -51,8 +51,8 @@ $$
 实现如代码 1 所示。
 
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 1: 路径问题求解</b> </figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> <b>代码 1: 路径问题求解</b> </figcaption>
 </div>
 
 ```python
@@ -68,10 +68,10 @@ def solve(m,n):
 
 输入 $m=7,n=3$ 时，最终输出结果为 $28$ ，表示从起点到终点一共有 $28$ 种不同的路径，对应的解析流程如图 2 所示。
 
-<div align=center>
+<div align="center">
 <img width="400" src="figs/robot_maze_2.png"/>
 </div>
-<div align=center>图 2: 路径之和解析</div>
+<div align="center">图 2: 路径之和解析</div>
 
 在强化学习中，基于动态规划的算法主要有两种，一是**策略迭代**（$\text{policy iteration, PI}$），二是**价值迭代**（$\text{value iteration, VI}$）。其中策略迭代由两部分组成，分别是**策略评估**（$\text{policy evaluation}$）和**策略改进**（$\text{policy improvement}$）。
 
@@ -148,17 +148,17 @@ $$
 
 如图 3 所示，（a）描述了上面所说的策略评估和改进持续迭代的过程，（b）则描述了在交替迭代过程中策略$\pi$和状态价值函数$V$最后会同时收敛到最优。
 
-<div align=center>
+<div align="center">
 <img width="400" src="figs/pi.png"/>
 </div>
-<div align=center>图 3: 策略迭代的收敛过程</div>
+<div align="center">图 3: 策略迭代的收敛过程</div>
 
 策略迭代的算法流程如图 4 所示。
 
-<div align=center>
+<div align="center">
 <img width="500" src="figs/pi_pseu.png"/>
 </div>
-<div align=center>图 4: 策略迭代算法流程</div>
+<div align="center">图 4: 策略迭代算法流程</div>
 
 在这个过程中，每一步需要遍历所有状态和动作，因此计算复杂度较高。然而，由于策略迭代能够有效地利用当前策略的信息来改进策略，通常需要的迭代次数会更少些。策略迭代就好像一个喜欢深思熟虑的人，每次都会花充分的时间来评估当前的策略，想通了再迈步改进。
 
@@ -174,19 +174,19 @@ $$
 
 价值迭代的算法流程如图 5 所示。
 
-<div align=center>
+<div align="center">
 <img width="500" src="figs/vi_pseu.png"/>
 </div>
-<div align=center>图 5: 价值迭代算法伪代码</div>
+<div align="center">图 5: 价值迭代算法伪代码</div>
 
 在这个过程中，首先将所有的状态价值初始化，然后不停地对每个状态迭代，直到收敛到最优价值$V^{*}$，并且根据最优价值推算出最优策略$\pi^{*}$。价值迭代就好像一个行动迅速果断的人，每次都直接根据当前的情况做出最优决策，而不花太多时间去评估当前的策略。
 
 如图 6 所示，策略迭代是不停地在 $V$ 和 $\pi$ 这两条线之间“跳变”直到收敛到 $V^*$ ，而价值迭代则是直接沿着 $V$ 这条线不断逼近 $V^*$ 。由于价值迭代每次只更新状态价值函数，因此每次迭代的计算量较小，然而，由于它没有充分利用当前策略的信息，通常需要更多的迭代次数才能收敛到最优策略。
 
-<div align=center>
+<div align="center">
 <img width="400" src="figs/pi_vs_vi.png"/>
 </div>
-<div align=center>图 6: 策略迭代与价值迭代收敛过程的区别</div>
+<div align="center">图 6: 策略迭代与价值迭代收敛过程的区别</div>
 
 与策略迭代相比，价值迭代更像是一个急功近利的人，喜欢快速做出决策并迭代，而不是花时间去深思熟虑当前的策略再做改进。
 

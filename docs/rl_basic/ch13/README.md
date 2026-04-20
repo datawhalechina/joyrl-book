@@ -177,7 +177,7 @@ $$
 
 > ② Haarnoja T , Zhou A , Hartikainen K ,et al.Soft Actor-Critic Algorithms and Applications.2018[2023-08-02].DOI:10.48550/arXiv.1812.05905.
 
-我们先讲讲第一版，第一版的 $\text{SAC}$ 算法思想基本上是和 $\text{Soft Q-Learning} 是特别相似的，只是额外增加了两个 $V$ 值网络（即包含目标网络和当前网络）来估计价值。$V$ 网络的目标函数定义如式 $\eqref{eq:13.18}$ 所示。
+我们先讲讲第一版，第一版的 $\text{SAC}$ 算法思想基本上是和 $\text{Soft Q-Learning}$ 特别相似的，只是额外增加了两个 $V$ 值网络（即包含目标网络和当前网络）来估计价值。$V$ 网络的目标函数定义如式 $\eqref{eq:13.18}$ 所示。
 
 $$
 \begin{equation}\label{eq:13.18}

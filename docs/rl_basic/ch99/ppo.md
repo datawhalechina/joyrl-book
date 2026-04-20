@@ -4,16 +4,16 @@
 
 如图 $\text{1}$ 所示，与 $\text{off-policy}$ 算法不同，$\text{PPO}$ 算法每次会采样若干个时步的样本，然后利用这些样本更新策略，而不是存入经验回放中进行采样更新。
 
-<div align=center>
+<div align="center">
 <img width="500" src="figs/ppo_pseu.png"/>
 </div>
-<div align=center>图 $\text{1}$ $\:$ $\text{PPO}$ 算法伪代码</div>
+<div align="center">图 $\text{1}$ $\:$ $\text{PPO}$ 算法伪代码</div>
 
 ## 算法更新
 
 无论是连续动作空间还是离散动作空间，$\text{PPO}$ 算法的动作采样方式跟前面章节讲的 $\text{Actor-Critic}$ 算法是一样的，在本次实战中就不做展开，读者可在 $\text{JoyRL}$ 代码仓库上查看完整代码。我们主要看看更新策略的方式，如代码 $\text{1}$ 所示。
 
-<div style="text-align: center;">
+<div style={{textAlign: 'center'}}>
     <figcaption> 代码 $\text{1}$ $\text{PPO}$ 算法更新 </figcaption>
 </div>
 
@@ -61,9 +61,9 @@ def update(self):
 
 注意在更新时由于每次采样的轨迹往往包含的样本数较多，我们通过利用小批量随机下降将样本随机切分成若干个部分，然后一个批量一个批量地更新网络参数。最后我们展示算法在 $\text{CartPole}$ 上的训练效果，如图 $\text{2}$ 所示。此外，在更新 $\text{Actor}$ 参数时，我们增加了一个最大化策略熵的正则项，这部分原理我们会在接下来的一章讲到。
 
-<div align=center>
+<div align="center">
 <img width="500" src="figs/PPO_Cartpole_training_curve.png"/>
 </div>
-<div align=center>图 $\text{2}$ $\:$ $\text{CartPole}$ 环境 $\text{PPO}$ 算法训练曲线</div>
+<div align="center">图 $\text{2}$ $\:$ $\text{CartPole}$ 环境 $\text{PPO}$ 算法训练曲线</div>
 
 可以看到，与 $\text{A2C}$ 算法相比，$\text{PPO}$ 算法的收敛是要更加快速且稳定的。

@@ -22,10 +22,10 @@ $$
 
 如图 $\text{1}$ 所示，$\text{Actor}$ 与环境交互采样生成轨迹样本，同时 $\text{Critic}$ 网络则利用这些样本来估计当前状态或状态-动作对的价值。更新时，$\text{Critic}$ 网络通过时序差分方法来更新其参数，而 $\text{Actor}$ 则利用 $\text{Critic}$ 提供的价值估计来指导策略的更新。
 
-<div align=center>
+<div align="center">
 <img width="400" src="figs/actor_critic_architecture.png"/>
 </div>
-<div align=center>图 1: Actor-Critic 算法架构</div>
+<div align="center">图 1: Actor-Critic 算法架构</div>
 
 注意，$\text{Actor-Critic}$ 更多地是一种框架或架构，而不是具体的算法，不同算法的实现形式可能会有所不同，但都遵循 $\text{Actor-Critic}$ 的基本思想。
 
@@ -120,8 +120,8 @@ $$
 
 在讲 $\text{A3C}$ 算法之前，我们先来了解一下多进程训练的基本思想。在实战中，会使用`multiprocessing`模块或者`ray`等分布式计算框架来实现多进程训练，如代码 $\text{1}$ 所示。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 1: 使用 Ray 实现多进程计算 </b></figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> <b>代码 1: 使用 Ray 实现多进程计算 </b></figcaption>
 </div>
 
 
@@ -180,8 +180,8 @@ if __name__ == "__main__":
 
 执行结果如代码 $\text{2}$ 所示。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 2: 多进程计算执行结果 </b></figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> <b>代码 2: 多进程计算执行结果 </b></figcaption>
 </div>
 
 
@@ -203,10 +203,10 @@ Ray 并行耗时: 2.69 秒
 
 如图 $\text{2}$ 所示，每一个智能体（进程）都拥有一个独立的网络和环境以供交互，并且每个进程每隔一段时间都会将自己的参数同步到全局网络中，这样就能提高训练效率。
 
-<div align=center>
+<div align="center">
 <img width="600" src="figs/a3c_architecture.png"/>
 </div>
-<div align=center>图 2: A3C 算法架构</div>
+<div align="center">图 2: A3C 算法架构</div>
 
 与传统的单进程训练相比，$\text{A3C}$ 算法除了能够提高训练效率外，还具有以下优点：
 1. **增强探索能力**：多个智能体在不同的环境实例中进行探索，能够覆盖更广泛的状态空间，减少陷入局部最优的风险。
@@ -252,8 +252,8 @@ $$
 
 对应实现如代码 $\text{3}$ 所示。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 3: 计算蒙特卡洛优势估计的示例代码 </b></figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> <b>代码 3: 计算蒙特卡洛优势估计的示例代码 </b></figcaption>
 </div>
 
 
@@ -292,8 +292,8 @@ $$
 
 对应实现如代码 $\text{4}$ 所示。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 4: 计算 n 步优势估计的示例代码 </b></figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> <b>代码 4: 计算 n 步优势估计的示例代码 </b></figcaption>
 </div>
 
 
@@ -385,8 +385,8 @@ $$
 
 通过调整 $\lambda$ 的值，我们可以在方差和偏差之间进行权衡，从而获得更稳定和准确的优势估计，实现如代码 $\text{5}$ 所示。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 5: 计算广义优势估计的示例代码 </b></figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> <b>代码 5: 计算广义优势估计的示例代码 </b></figcaption>
 </div>
 
 

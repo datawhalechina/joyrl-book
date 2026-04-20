@@ -6,17 +6,17 @@
 
 首先我们回顾一下 $\text{Q-learning}$ 算法的流程或伪代码，如图 $\text{1}$ 所示。
 
-<div align=center>
+<div align="center">
 <img width="600" src="figs/qlearning_pseu.png"/>
 </div>
-<div align=center>图 $\text{1}$ $\:$ $\text{Q-learning}$ 算法流程</div>
+<div align="center">图 $\text{1}$ $\:$ $\text{Q-learning}$ 算法流程</div>
 
 ## 定义超参数
 
 为了便于调整和实验，我们把所有的超参数都定义在一个`Python`类中，如代码 $\text{1}$ 所示。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 $\text{1}$ $\:$ 定义超参数</b></figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> <b>代码 $\text{1}$ $\:$ 定义超参数</b></figcaption>
 </div>
 
 ```python
@@ -52,8 +52,8 @@ class Config:
 
 在 $\text{Q-learning}$ 算法中，模型即动作价值函数 $Q(s, a)$ 是用表格来表示的，可以用一个二维数组或者字典来实现。对于其他部分包括更新策略等，可以参照算法流程中的公式来依次实现，如代码 $\text{2}$ 所示。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> 代码 $\text{2}$ $\:$ 定义 $\text{Q-learning}$ 策略类</figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> 代码 $\text{2}$ $\:$ 定义 $\text{Q-learning}$ 策略类</figcaption>
 </div>
 
 ```python
@@ -111,8 +111,8 @@ class Policy(object):
 
 为了保证实验的可复现性，通常需要固定随机种子。因此，我们定义一个工具函数 `set_seed` 来设置所有相关模块的随机种子。另外，为了更好地观察训练过程中的变化情况，我们定义了一些绘图函数来可视化训练结果。如代码 $\text{3}$ 所示。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> 代码 $\text{3}$ $\:$ 定义工具函数</figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> 代码 $\text{3}$ $\:$ 定义工具函数</figcaption>
 </div>
 
 ```python
@@ -168,15 +168,15 @@ def plot_rewards(rewards, ylabel = "rewards", title="learning curve"):
 
 如图 $\text{2}$ 所示，整个环境中共有 $\text{48}$ 个网格，其中黄色网格（标号为 $\text{36}$ ）为起点，绿色网格（标号为 $\text{47}$ ）为终点，红色的网格表示悬崖，智能体的目标是以最短的路径从起点到终点，并且避开悬崖。由于这个环境比较简单，我们一眼就能看出来最优的策略应当是从起点向上沿着 $\text{24}$ 号网格直线走到 $\text{35}$ 号网格最后到达终点，后面我们看看强化学习智能体能不能学出来。
 
-<div align=center>
+<div align="center">
 <img width="500" src="figs/env_CliffWalking-v0.png"/>
 </div>
-<div align=center>图 $\text{2}$ $\:$ $\text{CliffWalking-v0}$ 环境示意图</div>
+<div align="center">图 $\text{2}$ $\:$ $\text{CliffWalking-v0}$ 环境示意图</div>
 
 由于我们使用的是 `gymnasium` 库，接口相对比较统一，因此定义环境较为简单，如代码 $\text{4}$ 所示。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> 代码 $\text{4}$ $\:$ 定义环境</figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> 代码 $\text{4}$ $\:$ 定义环境</figcaption>
 </div>
 
 ```python
@@ -198,8 +198,8 @@ def create_env(cfg: Config):
 
 我们按照 $\text{Q-learning}$ 算法的流程来实现训练与测试过程。在训练过程中，智能体通过与环境交互来收集经验数据，并根据这些数据来更新动作价值函数 $Q(s, a)$。在测试过程中，智能体使用训练好的动作价值函数来选择最优动作，从而评估其性能。如代码 $\text{5}$ 所示。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> 代码 $\text{5}$ $\:$ 定义训练与测试函数</figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> 代码 $\text{5}$ $\:$ 定义训练与测试函数</figcaption>
 </div>
 
 ```python
@@ -264,8 +264,8 @@ def test(cfg: Config, env, policy: Policy):
 
 定义好以上各个部分后，可以开始训练 $\text{Q-learning}$ 智能体了。训练过程中，我们会记录每一轮的奖励和步数，并在训练结束后进行可视化展示。如代码 $\text{6}$ 所示。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> 代码 $\text{6}$ $\:$ 开始训练</figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> 代码 $\text{6}$ $\:$ 开始训练</figcaption>
 </div>
 
 ```python
@@ -278,17 +278,17 @@ plot_rewards(train_res['rewards'], title=f"{cfg.algo_name} on {cfg.env_id} - Tra
 ```
 得到的训练曲线如图 $\text{7}$ 所示，曲线横坐标表示回合数（$\text{episode}$），纵坐标表示每回合获得的总奖励，可以看出曲线其实从大约 $\text{50}$ 个回合的时候就开始收敛了，也就是我们的智能体学到了一个最优策略。
 
-<div align=center>
+<div align="center">
 <img width="500" src="figs/qlearning_CliffWalking-v0_train_curve.png"/>
 </div>
-<div align=center>图 $\text{7}$ $\:$ $\text{CliffWalking-v0}$ 环境 $\text{Q-learning}$ 算法训练曲线</div>
+<div align="center">图 $\text{7}$ $\:$ $\text{CliffWalking-v0}$ 环境 $\text{Q-learning}$ 算法训练曲线</div>
 
 ## 开始测试
 
 训练完成后，为了评估智能体的性能，我们进行测试。在测试过程中，智能体使用训练好的动作价值函数来选择最优动作，即不包含探索机制。我们同样会与环境交互，并记录每一轮的奖励和步数，最后进行可视化展示。在复杂环境中，奖励的波动可能较大，而且有时曲线收敛后可能不也不一定代表策略最优（例如奖励设置不当的情况），因此需要渲染环境来直观观察智能体的行为表现。如代码 $\text{7}$ 所示.
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> 代码 $\text{7}$ $\:$ 开始测试</figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> 代码 $\text{7}$ $\:$ 开始测试</figcaption>
 </div>
 
 ```python
@@ -302,7 +302,7 @@ plot_rewards(test_res['rewards'], title=f"{cfg.algo_name} on {cfg.env_id} - Test
 得到的测试曲线如图 $\text{8}$ 所示，可以看出智能体在测试过程中每回合都能获得接近 $-13$ 的奖励，说明智能体学到了一个较优的策略。
 
 
-<div align=center>
+<div align="center">
 <img width="500" src="figs/qlearning_CliffWalking-v0_test_curve.png"/>
 </div>
-<div align=center>图 $\text{8}$ $\:$ $\text{CliffWalking-v0}$ 环境 $\text{Q-learning}$ 算法训练曲线</div>
+<div align="center">图 $\text{8}$ $\:$ $\text{CliffWalking-v0}$ 环境 $\text{Q-learning}$ 算法训练曲线</div>

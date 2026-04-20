@@ -2,7 +2,7 @@
 
 如代码 $\text{1}$ 所示，$\text{TD3}$ 算法只是在策略更新上与 $\text{DDPG}$ 算法有所差异，其它地方基本相同。
 
-<div style="text-align: center;">
+<div style={{textAlign: 'center'}}>
     <figcaption><b> 代码 $\text{1}$ $\:$ $\text{TD3}$ 算法的策略更新 </b></figcaption>
 </div>
 
@@ -52,7 +52,7 @@ def update(self):
 
 同样我们展示一下训练效果，在合适的参数设置下它会比 $\text{DDPG}$ 算法收敛的更快，如图 $\text{1}$ 所示。
 
-<div align=center>
+<div align="center">
 <img width="500" src="figs/TD3_Pendulum_training_curve.png"/>
 </div>
-<div align=center>图 $\text{1}$ $\:$ $\text{Pendulum}$ 环境 $\text{TD3}$ 算法训练曲线</div>
+<div align="center">图 $\text{1}$ $\:$ $\text{Pendulum}$ 环境 $\text{TD3}$ 算法训练曲线</div>

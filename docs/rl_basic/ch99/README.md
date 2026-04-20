@@ -11,10 +11,12 @@
 |    [Dueling DQN 算法](./dueling_dqn.md)    | ☑️ |
 |    [Noisy DQN 算法](./noisy_dqn.md)    | ☑️ |
 |    [PER DQN 算法](./per_dqn.md)    | ☑️ |
-|    [C51 算法](./c51.md)    | ⬜ |
-|    [Rainbow DQN 算法](./rainbow-dqn.md)    | ⬜ |
-|    [REINFORCE 算法](./reinforce.md)    | ⬜ |
+|    C51 算法    | ⬜ |
+|    Rainbow DQN 算法    | ⬜ |
+|    REINFORCE 算法    | ⬜ |
 |    [A2C 算法](./a2c.md)    | ⬜ |
 |    [DDPG 算法](./ddpg.md)    | ⬜ |
 |    [TD3 算法](./td3.md)    | ⬜ |
 |    [TRPO 算法](./trpo.md)    | ⬜|
+|    [PPO 算法](./ppo.md)    | ⬜ |
+|    [SAC 算法](./sac.md)    | ⬜ |

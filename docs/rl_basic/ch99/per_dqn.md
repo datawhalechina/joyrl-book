@@ -5,16 +5,16 @@
 $\text{PER DQN}$ 算法的核心看起来简单，就是把普通的经验回放改进成了优先级经验回放，但是实现起来却比较复杂，因为我们需要实现一个 $\text{SumTree}$ 结构，并且在模型更新的时候也需要一些额外的操作，因此我们先从伪代码开始，如图 $\text{8-7}$ 所示。
 
 
-<div align=center>
+<div align="center">
 <img width="500" src="figs/per_dqn_pseu.png"/>
 </div>
-<div align=center>图 $\text{8-7}$ $\text{PER DQN}$ 伪代码</div>
+<div align="center">图 $\text{8-7}$ $\text{PER DQN}$ 伪代码</div>
 
 ### SumTree 结构
 
 如代码清单 $\text{8-6}$ 所示，我们可以先实现 $\text{SumTree}$ 结构。
 
-<div style="text-align: center;">
+<div style={{textAlign: 'center'}}>
     <figcaption> 代码清单 $\text{8-6}$ $\text{SumTree}$ 结构 </figcaption>
 </div>
 
@@ -84,7 +84,7 @@ class SumTree:
 
 基于 $\text{SumTree}$ 结构，并结合优先级采样和重要性采样的技巧，如代码清单 $\text{8-7}$ 所示。
 
-<div style="text-align: center;">
+<div style={{textAlign: 'center'}}>
     <figcaption> 代码清单 $\text{8-7}$ 优先级经验回放结构 </figcaption>
 </div>
 
@@ -138,7 +138,7 @@ class ReplayBuffer:
 
 我们可以看到，优先级经验回放的核心是 SumTree，它可以在 $O(\log N)$ 的时间复杂度内完成添加、更新和采样操作。在实践中，我们可以将经验回放的容量设置为 $10^6$，并将 $\alpha$ 设置为 $0.6$，$\epsilon$ 设置为 $0.01$，$\beta$ 设置为 $0.4$，$\beta_{\text{step}}$ 设置为 $0.0001$。 当然我们也可以利用 Python 队列的方式实现优先级经验回放，形式上会更加简洁，并且在采样的时候减少了 for 循环的操作，会更加高效，如代码清单 $\text{8-8}$ 所示。
 
-<div style="text-align: center;">
+<div style={{textAlign: 'center'}}>
     <figcaption> 代码清单 $\text{8-8}$ 基于队列实现优先级经验回放 </figcaption>
 </div>
 
@@ -177,7 +177,7 @@ class PrioritizedReplayBufferQue:
 ```
 最后，我们可以将优先级经验回放和 $\text{DQN}$ 结合起来，实现一个带有优先级的 $\text{DQN}$ 算法，并展示它在 $\text{CartPole}$ 环境下的训练结果，如图 $\text{8-8}$ 所示。
 
-<div align=center>
+<div align="center">
 <img width="400" src="figs/PERDQN_CartPole-v1_training_curve.png"/>
 </div>
-<div align=center>图 $\text{8-8}$ $\text{CartPole}$ 环境 $\text{PER DQN}$ 算法训练曲线</div>
+<div align="center">图 $\text{8-8}$ $\text{CartPole}$ 环境 $\text{PER DQN}$ 算法训练曲线</div>

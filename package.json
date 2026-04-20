@@ -1,0 +1,40 @@
+{
+  "name": "joyrl-book",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "sync-assets": "node scripts/sync-static-assets.mjs",
+    "prestart": "npm run sync-assets",
+    "start": "docusaurus start",
+    "prebuild": "npm run sync-assets",
+    "build": "docusaurus build",
+    "serve": "docusaurus serve",
+    "clear": "docusaurus clear",
+    "deploy": "docusaurus deploy",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@docusaurus/core": "3.10.0",
+    "@docusaurus/faster": "3.10.0",
+    "@docusaurus/preset-classic": "3.10.0",
+    "@docusaurus/theme-mermaid": "3.10.0",
+    "@easyops-cn/docusaurus-search-local": "^0.54.1",
+    "hast-util-to-text": "^4.0.2",
+    "hastscript": "^9.0.1",
+    "mathjax-full": "^3.2.2",
+    "prism-react-renderer": "^2.4.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "remark-math": "^6.0.0",
+    "unist-util-visit-parents": "^6.0.1"
+  },
+  "devDependencies": {
+    "@docusaurus/module-type-aliases": "3.10.0",
+    "@docusaurus/tsconfig": "3.10.0",
+    "@docusaurus/types": "3.10.0",
+    "typescript": "~5.6.2"
+  },
+  "engines": {
+    "node": ">=20.0"
+  }
+}

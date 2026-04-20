@@ -2,7 +2,7 @@
 
 $\text{Dueling DQN}$ 算法主要是改了网络结构，其他地方跟 $\text{DQN}$ 是一模一样的，如代码清单 1 所示。
 
-<div style="text-align: center;">
+<div style={{textAlign: 'center'}}>
     <figcaption> 代码清单 1 $\:$ $\text{Dueling DQN}$ 网络结构 </figcaption>
 </div>
 
@@ -37,9 +37,9 @@ class DuelingQNetwork(nn.Module):
 
 最后我们展示一下它在 $\text{CartPole}$ 环境下的训练结果，如图 1 所示，完整的代码同样可以参考本书的代码仓库。
 
-<div align=center>
+<div align="center">
 <img width="400" src="figs/DuelingDQN_CartPole-v1_training_curve.png"/>
 </div>
-<div align=center>图 1 $\:$ $\text{CartPole}$ 环境 $\text{Dueling DQN}$ 算法训练曲线</div>
+<div align="center">图 1 $\:$ $\text{CartPole}$ 环境 $\text{Dueling DQN}$ 算法训练曲线</div>
 
 由于环境比较简单，暂时还看不出来 $\text{Dueling DQN}$ 算法的优势，但是在复杂的环境下，比如 $\text{Atari}$ 游戏中，$\text{Dueling DQN}$ 算法的效果就会比 $\text{DQN}$ 算法好很多，读者可以在 $\text{JoyRL}$ 仓库中找到更复杂环境下的训练结果便于更好地进行对比。

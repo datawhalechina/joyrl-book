@@ -4,17 +4,17 @@
 
 如图 $\text{1}$ 所示，$\text{Sarsa}$ 算法流程跟 $\text{Q-learning}$ 算法基本相同，主要区别在于 $\text{Sarsa}$ 算法使用的是智能体实际执行的动作 $a'$ (即 $a_{t+1}$) 来更新动作价值函数，而不是选择的最大动作值。
 
-<div align=center>
+<div align="center">
 <img width="500" src="figs/sarsa_pseu.png"/>
 </div>
-<div align=center>图 $\text{1}$ $\:$ $\text{Sarsa}$ 算法流程 </div>
+<div align="center">图 $\text{1}$ $\:$ $\text{Sarsa}$ 算法流程 </div>
 
 ## 定义超参数
 
 为了便于调整和实验，我们把所有的超参数都定义在一个`Python`类中，如代码 $\text{1}$ 所示。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 $\text{1}$ $\:$ 定义超参数</b></figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> <b>代码 $\text{1}$ $\:$ 定义超参数</b></figcaption>
 </div>
 
 ```python
@@ -43,8 +43,8 @@ class Config:
 
 在 $\text{Sarsa}$ 算法中，我们同样使用 $\epsilon$-贪婪策略来选择动作。具体实现与 $\text{Q-learning}$ 算法中的实现相同，如代码 $\text{2}$ 所示。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 $\text{2}$ $\:$ 定义策略</b></figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> <b>代码 $\text{2}$ $\:$ 定义策略</b></figcaption>
 </div>
 
 ```python
@@ -102,8 +102,8 @@ class Policy(object):
 
 为了保证实验的可复现性，通常需要固定随机种子。因此，我们定义一个工具函数 `set_seed` 来设置所有相关模块的随机种子。另外，为了更好地观察训练过程中的变化情况，我们定义了一些绘图函数来可视化训练结果，如代码 $\text{3}$ 所示。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 $\text{3}$ $\:$ 定义工具函数</b></figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> <b>代码 $\text{3}$ $\:$ 定义工具函数</b></figcaption>
 </div>
 
 ```python
@@ -158,8 +158,8 @@ def plot_rewards(rewards, ylabel = "rewards", title="learning curve"):
 
 同 $\text{Q-learning}$ 算法一样，我们使用 `OpenAI Gym` 提供的 `CliffWalking-v0` 环境来测试 $\text{Sarsa}$ 算法的性能表现，如代码 $\text{4}$ 所示。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 $\text{4}$ $\:$ 定义环境</b></figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> <b>代码 $\text{4}$ $\:$ 定义环境</b></figcaption>
 </div>
 
 ```python
@@ -183,8 +183,8 @@ def create_env(cfg: Config):
 
 我们定义了 `train` 和 `test` 函数来分别进行训练和测试。在训练过程中，智能体根据当前策略选择动作，并根据环境反馈更新动作价值函数。在测试过程中，智能体使用贪婪策略选择动作，以评估学习到的策略的性能，如代码 $\text{5}$ 所示。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 $\text{5}$ $\:$ 定义训练与测试</b></figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> <b>代码 $\text{5}$ $\:$ 定义训练与测试</b></figcaption>
 </div>
 
 ```python
@@ -253,8 +253,8 @@ def test(cfg: Config, env, policy: Policy):
 
 定义好以上各个部分后，我们就可以开始训练智能体了。训练过程中，我们会记录每个回合的总奖励和步数，以便后续分析和可视化，如代码 $\text{6}$ 所示。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 $\text{6}$ $\:$ 开始训练</b></figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> <b>代码 $\text{6}$ $\:$ 开始训练</b></figcaption>
 </div>
 
 ```python
@@ -269,18 +269,18 @@ plot_rewards(train_res['rewards'], title=f"{cfg.algo_name} on {cfg.env_id} - Tra
 
 得到的训练曲线如图 $\text{2}$ 所示。
 
-<div align=center>
+<div align="center">
 <img width="600" src="figs/sarsa_CliffWalking-v0_train_curve.png"/>
 </div>
-<div align=center>图 $\text{2}$ $\:$ $\text{Sarsa}$ 算法在 $\text{CliffWalking-v0}$ 环境中的训练曲线</div>
+<div align="center">图 $\text{2}$ $\:$ $\text{Sarsa}$ 算法在 $\text{CliffWalking-v0}$ 环境中的训练曲线</div>
 
 
 ## 开始测试
 
 训练完成后，我们可以使用测试函数来评估智能体的性能表现，如代码 $\text{7}$ 所示。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 $\text{7}$ $\:$ 开始测试</b></figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> <b>代码 $\text{7}$ $\:$ 开始测试</b></figcaption>
 </div>
 
 ```python
@@ -293,15 +293,15 @@ plot_rewards(test_res['rewards'], title=f"{cfg.algo_name} on {cfg.env_id} - Test
 
 得到的测试曲线如图 $\text{3}$ 所示。
 
-<div align=center>
+<div align="center">
 <img width="600" src="figs/sarsa_CliffWalking-v0_test_curve.png"/>
 </div>
-<div align=center>图 $\text{3}$ $\:$ $\text{Sarsa}$ 算法在 $\text{CliffWalking-v0}$ 环境中的测试曲线</div>
+<div align="center">图 $\text{3}$ $\:$ $\text{Sarsa}$ 算法在 $\text{CliffWalking-v0}$ 环境中的测试曲线</div>
 
 对比 $\text{Q-learning}$ 算法的实战结果可以发现，$\text{Sarsa}$ 算法在该环境中表现得更为保守，避免了掉入悬崖的风险，但收敛速度稍慢一些，最终的总奖励也略低一些。打印的动作序列如代码 $\text{8}$ 所示，显示智能体选择更为保守的路径。
 
-<div style="text-align: center;">
-    <figcaption style="font-size: 14px;"> <b>代码 $\text{8}$ $\:$ 测试时打印的动作序列</b></figcaption>
+<div style={{textAlign: 'center'}}>
+    <figcaption style={{fontSize: '14px'}}> <b>代码 $\text{8}$ $\:$ 测试时打印的动作序列</b></figcaption>
 </div>
 
 ```python

@@ -10,9 +10,9 @@
 
 Kumar 等人（2019）用 SAC 在 HalfCheetah-v2 上做了经典演示：
 
-<div align=center>
+<div align="center">
 <img width="450" src="figs/CQL_overestimateQ_pic.png"/>
-<figcaption style="font-size: 14px;">图 1 增加样本数并未普遍抑制“反学习”现象图示。</figcaption>
+<figcaption style={{fontSize: '14px'}}>图 1 增加样本数并未普遍抑制“反学习”现象图示。</figcaption>
 </div>
  
 左图中横轴是 Q 网络梯度步数，纵轴是贪婪策略的实际回报。回报先上升，随后随训练持续而急剧下降，形似过拟合，却随样本倍增而依旧出现——说明问题并非传统过拟合，而是 OOD 误差在目标 Q 中持续发酵，最终把整个价值函数拖垮（见右图）。
@@ -87,14 +87,14 @@ loss = loss + self.cql_alpha * (
 当正则化强度趋近于零时，Q 值虽持续攀升，但 episode return 并未同步增长，表明策略质量未获实质改善。在 CartPole-v1 上，将 CQL 保守系数 $\alpha$ 设为 1.0 左右即可稳定取得最优性能。
 
 
-<div align=center>
+<div align="center">
 <img width="450" src="figs/CQL_alpha_reward.png"/>
-<figcaption style="font-size: 14px;">图 2 不同 α 下策略学习情况。</figcaption>
+<figcaption style={{fontSize: '14px'}}>图 2 不同 α 下策略学习情况。</figcaption>
 </div>
 
-<div align=center>
+<div align="center">
 <img width="450" src="figs/CQL_q_value.png"/>
-<figcaption style="font-size: 14px;">图 3 不同 α 下q Value情况。</figcaption>
+<figcaption style={{fontSize: '14px'}}>图 3 不同 α 下q Value情况。</figcaption>
 </div>
 
 
