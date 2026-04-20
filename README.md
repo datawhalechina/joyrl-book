@@ -38,9 +38,9 @@ npm run build
 
 |               内容方向              | PDF | 完成状态 |
 | :-------------------------------: | :--: | ---- |
-|       [强化学习基础](https://datawhalechina.github.io/joyrl-book/rl_basic)       | [PDF](./docs/rl_basic/rl_basic.pdf) | ☑️ |
-| [离线强化学习](https://datawhalechina.github.io/joyrl-book/offline_rl) ||⬜|
-| [大模型与强化学习](https://datawhalechina.github.io/joyrl-book/llm_rl) ||⬜|
+|       [强化学习基础](https://datawhalechina.github.io/joyrl-book/docs/rl_basic)       | [PDF](./docs/rl_basic/rl_basic.pdf) | ☑️ |
+| [离线强化学习](https://datawhalechina.github.io/joyrl-book/docs/offline_rl) ||⬜|
+| [大模型与强化学习](https://datawhalechina.github.io/joyrl-book/docs/llm_rl) ||⬜|
 
 ## 主要贡献者
 
