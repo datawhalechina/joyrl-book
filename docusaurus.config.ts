@@ -54,7 +54,7 @@ const config: Config = {
       {
         docs: {
           path: 'docs',
-          routeBasePath: '/',
+          routeBasePath: '/docs',
           sidebarPath: './sidebars.ts',
           exclude: ['**/_sidebar.md', '**/docsify.md', '**/index.html'],
           showLastUpdateAuthor: true,
@@ -138,10 +138,10 @@ const config: Config = {
         {
           title: '文档',
           items: [
-            {label: '首页', to: '/'},
-            {label: '强化学习基础', to: '/rl_basic'},
-            {label: '离线强化学习', to: '/offline_rl'},
-            {label: 'JoyRL 文档', to: '/joyrl_docs'},
+            {label: '文档首页', to: '/docs/'},
+            {label: '强化学习基础', to: '/docs/rl_basic'},
+            {label: '离线强化学习', to: '/docs/offline_rl'},
+            {label: 'JoyRL 文档', to: '/docs/joyrl_docs'},
           ],
         },
         {

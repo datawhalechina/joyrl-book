@@ -18,8 +18,8 @@ export const READING_MODE_QUERY_VALUE = 'read';
 
 export const INTERACTIVE_DOC_MAP: Record<string, InteractiveDocEntry> = {
   'rl_basic/ch7/README': {
-    interactiveHref: '/rl_basic/ch7/playground',
-    readingHref: '/rl_basic/ch7/',
+    interactiveHref: '/docs/rl_basic/ch7/playground',
+    readingHref: '/docs/rl_basic/ch7/',
     title: 'DQN 训练机制沙盘',
   },
 };
@@ -85,7 +85,7 @@ export function getDocReadingHref(docId: string): string {
   const normalizedPath = docId.endsWith('/README')
     ? docId.slice(0, -'README'.length)
     : docId;
-  return `/${normalizedPath}`;
+  return `/docs/${normalizedPath}`;
 }
 
 export function getPreferredDocHref(docId: string): string {
