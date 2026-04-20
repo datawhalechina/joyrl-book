@@ -6,6 +6,7 @@ import rehypeMathjax from './src/rehype-mathjax-twopass.mjs';
 
 const repoUrl = 'https://github.com/datawhalechina/joyrl-book';
 const gaTrackingId = process.env.GA_TRACKING_ID;
+const visitorStatsApiUrl = process.env.VISITOR_STATS_API_URL ?? '';
 const mathjaxConfig = {
   tex: {
     tags: 'ams',
@@ -28,6 +29,9 @@ const config: Config = {
 
   organizationName: 'datawhalechina',
   projectName: 'joyrl-book',
+  customFields: {
+    visitorStatsApiUrl,
+  },
 
   onBrokenLinks: 'warn',
   markdown: {
@@ -124,7 +128,7 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
     navbar: {
-      hideOnScroll: true,
+      hideOnScroll: false,
       title: '首页',
       logo: {
         alt: 'JoyRL Book Logo',

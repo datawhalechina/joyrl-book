@@ -1,0 +1,12 @@
+name = "joyrl-visitor-stats"
+main = "src/index.mjs"
+compatibility_date = "2026-04-21"
+
+[vars]
+ALLOWED_ORIGIN = "https://datawhalechina.github.io"
+TIMEZONE = "Asia/Shanghai"
+SITE_ID = "joyrl-book"
+COUNTER_SHARDS = "64"
+
+[[kv_namespaces]]
+binding = "VISITOR_STATS"

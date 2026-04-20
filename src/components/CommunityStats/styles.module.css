@@ -22,15 +22,24 @@
 }
 
 .grid {
-  max-width: 720px;
+  max-width: 880px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
 }
 
 .stat {
-  padding: 0.5rem;
+  padding: 1rem 0.75rem;
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(186, 230, 253, 0.15);
+}
+
+.statAccent {
+  background: rgba(125, 211, 252, 0.12);
+  border-color: rgba(186, 230, 253, 0.35);
+  box-shadow: 0 14px 32px rgba(2, 6, 23, 0.18);
 }
 
 .num {
@@ -46,8 +55,20 @@
   margin-top: 0.25rem;
 }
 
+.helper {
+  margin-top: 0.35rem;
+  font-size: 0.75rem;
+  color: #bae6fd;
+}
+
 @media (max-width: 768px) {
   .grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .grid {
+    grid-template-columns: 1fr;
   }
 }
