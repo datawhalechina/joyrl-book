@@ -1,0 +1,4 @@
+interface:
+  display_name: "提交助手"
+  short_description: "按 emoji + conventional commit 规范暂存并提交当前改动"
+  default_prompt: "Use $commit to inspect the current git changes, stage the relevant files, and create a concise Chinese commit in the repo's emoji-prefixed conventional format."
