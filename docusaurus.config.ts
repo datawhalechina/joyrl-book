@@ -5,6 +5,7 @@ import remarkMath from 'remark-math';
 import rehypeMathjax from './src/rehype-mathjax-twopass.mjs';
 
 const repoUrl = 'https://github.com/datawhalechina/joyrl-book';
+const gaTrackingId = process.env.GA_TRACKING_ID;
 const mathjaxConfig = {
   tex: {
     tags: 'ams',
@@ -72,6 +73,14 @@ const config: Config = {
           priority: 0.5,
           filename: 'sitemap.xml',
         },
+        ...(gaTrackingId
+          ? {
+              gtag: {
+                trackingID: gaTrackingId,
+                anonymizeIP: true,
+              },
+            }
+          : {}),
       } satisfies Preset.Options,
     ],
   ],

@@ -35,6 +35,8 @@ jobs:
         run: npm ci
 
       - name: Build site
+        env:
+          GA_TRACKING_ID: ${{ vars.GA_TRACKING_ID }}
         run: npm run build
 
       - name: Upload Pages artifact
