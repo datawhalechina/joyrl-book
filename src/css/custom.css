@@ -1,28 +1,37 @@
 :root {
-  --ifm-color-primary: #0f766e;
-  --ifm-color-primary-dark: #0b665f;
-  --ifm-color-primary-darker: #095952;
-  --ifm-color-primary-darkest: #06463f;
-  --ifm-color-primary-light: #14867d;
-  --ifm-color-primary-lighter: #18978d;
-  --ifm-color-primary-lightest: #22b3a5;
-  --ifm-background-color: #f8fbfb;
+  --ifm-color-primary: #0284c7;
+  --ifm-color-primary-dark: #0369a1;
+  --ifm-color-primary-darker: #075985;
+  --ifm-color-primary-darkest: #0c4a6e;
+  --ifm-color-primary-light: #38bdf8;
+  --ifm-color-primary-lighter: #7dd3fc;
+  --ifm-color-primary-lightest: #bae6fd;
+  --ifm-background-color: #f0f9ff;
+  --ifm-background-surface-color: #ffffff;
   --ifm-code-font-size: 94%;
-  --ifm-navbar-background-color: rgba(248, 251, 251, 0.9);
-  --ifm-footer-background-color: #0f172a;
-  --ifm-heading-color: #0f172a;
+  --ifm-navbar-background-color: rgba(240, 249, 255, 0.85);
+  --ifm-footer-background-color: #082f49;
+  --ifm-heading-color: #0c4a6e;
+  --joyrl-reward-yellow: #fbbf24;
+  --joyrl-goal-green: #34d399;
+  --joyrl-danger-red: #f87171;
+  --joyrl-card-border: #bae6fd;
+  --joyrl-hero-gradient: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 60%, #0284c7 100%);
 }
 
 [data-theme='dark'] {
-  --ifm-color-primary: #5eead4;
-  --ifm-color-primary-dark: #2dd4bf;
-  --ifm-color-primary-darker: #14b8a6;
-  --ifm-color-primary-darkest: #0f766e;
-  --ifm-color-primary-light: #7df3e0;
-  --ifm-color-primary-lighter: #9bf8e8;
-  --ifm-color-primary-lightest: #bdfdf1;
-  --ifm-background-color: #0b1120;
-  --ifm-heading-color: #ecfeff;
+  --ifm-color-primary: #38bdf8;
+  --ifm-color-primary-dark: #0ea5e9;
+  --ifm-color-primary-darker: #0284c7;
+  --ifm-color-primary-darkest: #0369a1;
+  --ifm-color-primary-light: #7dd3fc;
+  --ifm-color-primary-lighter: #bae6fd;
+  --ifm-color-primary-lightest: #e0f2fe;
+  --ifm-background-color: #082f49;
+  --ifm-background-surface-color: #0c4a6e;
+  --ifm-navbar-background-color: rgba(8, 47, 73, 0.85);
+  --ifm-heading-color: #e0f2fe;
+  --joyrl-card-border: #0369a1;
 }
 
 html {
@@ -31,8 +40,8 @@ html {
 
 body {
   background:
-    radial-gradient(circle at top left, rgba(15, 118, 110, 0.08), transparent 28%),
-    radial-gradient(circle at top right, rgba(8, 145, 178, 0.08), transparent 24%),
+    radial-gradient(circle at top left, rgba(56, 189, 248, 0.08), transparent 28%),
+    radial-gradient(circle at top right, rgba(14, 165, 233, 0.08), transparent 24%),
     var(--ifm-background-color);
 }
 
