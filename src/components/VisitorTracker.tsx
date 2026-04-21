@@ -52,25 +52,12 @@ export default function VisitorTracker(): React.ReactElement | null {
     });
 
     const sendVisit = async (): Promise<void> => {
-      if (navigator.sendBeacon) {
-        try {
-          const beaconBody = new Blob([payload], {type: 'application/json'});
-          if (navigator.sendBeacon(trackUrl, beaconBody)) {
-            return;
-          }
-        } catch {
-          // Fall back to fetch when sendBeacon is unavailable or rejects the payload.
-        }
-      }
-
       try {
         await fetch(trackUrl, {
           method: 'POST',
           mode: 'cors',
+          credentials: 'omit',
           keepalive: true,
-          headers: {
-            'content-type': 'application/json',
-          },
           body: payload,
         });
       } catch {

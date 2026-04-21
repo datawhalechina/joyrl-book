@@ -34,8 +34,9 @@ function getAllowedOrigin(request, env) {
 function buildCorsHeaders(allowedOrigin) {
   return {
     'Access-Control-Allow-Origin': allowedOrigin || 'null',
+    'Access-Control-Allow-Credentials': 'true',
     'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Headers': 'Content-Type, Accept',
     'Access-Control-Max-Age': '86400',
     Vary: 'Origin',
   };
