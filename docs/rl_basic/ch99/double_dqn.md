@@ -18,7 +18,7 @@ next_target_q_value_batch = next_target_value_batch.gather(1, torch.max(next_q_v
 最后与 $\text{DQN}$ 算法相同，可以得到 $\text{Double DQN}$ 算法在 $\text{CartPole}$ 环境下的训练结果，如图 $\text{8-5}$ 所示，完整的代码可以参考本书的代码仓库。
 
 <div align="center">
-<img width="400" src="figs/DoubleDQN_CartPole-v1_training_curve.png"/>
+<img width="400" src={require("./figs/DoubleDQN_CartPole-v1_training_curve.png").default}/>
 </div>
 <div align="center">图 1 $\:$ $\text{CartPole}$ 环境 $\text{Double DQN}$ 算法训练曲线</div>
 

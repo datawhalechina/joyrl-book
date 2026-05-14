@@ -17,7 +17,7 @@
 为帮助理解动态规划的思想，这里以一个路径规划问题为例进行说明。如图 1 所示，在一个 $m \times n$ 的网格世界中，机器人以左上角为起点，右下角为终点，每次只能向右或向下移动一步，这里的问题是需要计算出从起点到终点的不同路径数量。
 
 <div align="center">
-<img width="400" src="figs/robot_maze.png"/>
+<img width="400" src={require("./figs/robot_maze.png").default}/>
 </div>
 <div align="center">图 1: 路径之和</div>
 
@@ -69,7 +69,7 @@ def solve(m,n):
 输入 $m=7,n=3$ 时，最终输出结果为 $28$ ，表示从起点到终点一共有 $28$ 种不同的路径，对应的解析流程如图 2 所示。
 
 <div align="center">
-<img width="400" src="figs/robot_maze_2.png"/>
+<img width="400" src={require("./figs/robot_maze_2.png").default}/>
 </div>
 <div align="center">图 2: 路径之和解析</div>
 
@@ -149,14 +149,14 @@ $$
 如图 3 所示，（a）描述了上面所说的策略评估和改进持续迭代的过程，（b）则描述了在交替迭代过程中策略$\pi$和状态价值函数$V$最后会同时收敛到最优。
 
 <div align="center">
-<img width="400" src="figs/pi.png"/>
+<img width="400" src={require("./figs/pi.png").default}/>
 </div>
 <div align="center">图 3: 策略迭代的收敛过程</div>
 
 策略迭代的算法流程如图 4 所示。
 
 <div align="center">
-<img width="500" src="figs/pi_pseu.png"/>
+<img width="500" src={require("./figs/pi_pseu.png").default}/>
 </div>
 <div align="center">图 4: 策略迭代算法流程</div>
 
@@ -175,7 +175,7 @@ $$
 价值迭代的算法流程如图 5 所示。
 
 <div align="center">
-<img width="500" src="figs/vi_pseu.png"/>
+<img width="500" src={require("./figs/vi_pseu.png").default}/>
 </div>
 <div align="center">图 5: 价值迭代算法伪代码</div>
 
@@ -184,7 +184,7 @@ $$
 如图 6 所示，策略迭代是不停地在 $V$ 和 $\pi$ 这两条线之间“跳变”直到收敛到 $V^*$ ，而价值迭代则是直接沿着 $V$ 这条线不断逼近 $V^*$ 。由于价值迭代每次只更新状态价值函数，因此每次迭代的计算量较小，然而，由于它没有充分利用当前策略的信息，通常需要更多的迭代次数才能收敛到最优策略。
 
 <div align="center">
-<img width="400" src="figs/pi_vs_vi.png"/>
+<img width="400" src={require("./figs/pi_vs_vi.png").default}/>
 </div>
 <div align="center">图 6: 策略迭代与价值迭代收敛过程的区别</div>
 

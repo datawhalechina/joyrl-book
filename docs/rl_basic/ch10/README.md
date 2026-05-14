@@ -23,7 +23,7 @@ $$
 如图 $\text{1}$ 所示，$\text{Actor}$ 与环境交互采样生成轨迹样本，同时 $\text{Critic}$ 网络则利用这些样本来估计当前状态或状态-动作对的价值。更新时，$\text{Critic}$ 网络通过时序差分方法来更新其参数，而 $\text{Actor}$ 则利用 $\text{Critic}$ 提供的价值估计来指导策略的更新。
 
 <div align="center">
-<img width="400" src="figs/actor_critic_architecture.png"/>
+<img width="400" src={require("./figs/actor_critic_architecture.png").default}/>
 </div>
 <div align="center">图 1: Actor-Critic 算法架构</div>
 
@@ -204,7 +204,7 @@ Ray 并行耗时: 2.69 秒
 如图 $\text{2}$ 所示，每一个智能体（进程）都拥有一个独立的网络和环境以供交互，并且每个进程每隔一段时间都会将自己的参数同步到全局网络中，这样就能提高训练效率。
 
 <div align="center">
-<img width="600" src="figs/a3c_architecture.png"/>
+<img width="600" src={require("./figs/a3c_architecture.png").default}/>
 </div>
 <div align="center">图 2: A3C 算法架构</div>
 

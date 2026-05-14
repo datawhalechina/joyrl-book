@@ -5,7 +5,7 @@
 如图 $\text{1}$ 所示，$\text{Sarsa}$ 算法流程跟 $\text{Q-learning}$ 算法基本相同，主要区别在于 $\text{Sarsa}$ 算法使用的是智能体实际执行的动作 $a'$ (即 $a_{t+1}$) 来更新动作价值函数，而不是选择的最大动作值。
 
 <div align="center">
-<img width="500" src="figs/sarsa_pseu.png"/>
+<img width="500" src={require("./figs/sarsa_pseu.png").default}/>
 </div>
 <div align="center">图 $\text{1}$ $\:$ $\text{Sarsa}$ 算法流程 </div>
 
@@ -270,7 +270,7 @@ plot_rewards(train_res['rewards'], title=f"{cfg.algo_name} on {cfg.env_id} - Tra
 得到的训练曲线如图 $\text{2}$ 所示。
 
 <div align="center">
-<img width="600" src="figs/sarsa_CliffWalking-v0_train_curve.png"/>
+<img width="600" src={require("./figs/sarsa_CliffWalking-v0_train_curve.png").default}/>
 </div>
 <div align="center">图 $\text{2}$ $\:$ $\text{Sarsa}$ 算法在 $\text{CliffWalking-v0}$ 环境中的训练曲线</div>
 
@@ -294,7 +294,7 @@ plot_rewards(test_res['rewards'], title=f"{cfg.algo_name} on {cfg.env_id} - Test
 得到的测试曲线如图 $\text{3}$ 所示。
 
 <div align="center">
-<img width="600" src="figs/sarsa_CliffWalking-v0_test_curve.png"/>
+<img width="600" src={require("./figs/sarsa_CliffWalking-v0_test_curve.png").default}/>
 </div>
 <div align="center">图 $\text{3}$ $\:$ $\text{Sarsa}$ 算法在 $\text{CliffWalking-v0}$ 环境中的测试曲线</div>
 

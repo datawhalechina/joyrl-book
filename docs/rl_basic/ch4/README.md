@@ -13,7 +13,7 @@
 如图 1 所示，考虑智能体在 $2 \times 2$ 的网格中使用随机策略进行移动，以左上角为起点，右下角为终点，规定每次只能向右或向下移动，动作分别用 $a_1$ 和 $a_2$ 表示。用智能体的位置不同的状态，即$s_1,s_2,s_3,s_4$，初始状态为$S_0=s_1$。设置每走一步接收到的奖励为 $-1$， 折扣因子 $\gamma=0.9$，目标是计算各个状态的价值函数 $V(s)$。
 
 <div align="center">
-<img width="200" src="figs/simple_maze.png"/>
+<img width="200" src={require("./figs/simple_maze.png").default}/>
 </div>
 <div align="center">图 1: 2x2 网格示例</div>
 
@@ -181,7 +181,7 @@ $$
 我们先来看首次访问蒙特卡洛（$\text{FVMC}$）方法的具体实现，算法流程如图 2 所示。
 
 <div align="center">
-<img width="600" src="figs/fvmc_pseu.png"/>
+<img width="600" src={require("./figs/fvmc_pseu.png").default}/>
 </div>
 <div align="center">图 2: 首次访问蒙特卡洛算法伪代码</div>
 
@@ -480,7 +480,7 @@ $$
 
 
 <div align="center">
-<img width="500" src="figs/maze_33.png"/>
+<img width="500" src={require("./figs/maze_33.png").default}/>
 </div>
 <div align="center">图 3: 3x3 网格示例</div>
 
@@ -590,7 +590,7 @@ plt.show()
 执行代码后，除了打印出各状态的价值函数结果外，还会生成一个热力图来直观展示各状态的价值分布情况，如图 4 所示。
 
 <div align="center">
-<img width="400" src="figs/maze_33_mc_state_values.png"/>
+<img width="400" src={require("./figs/maze_33_mc_state_values.png").default}/>
 </div>
 <div align="center">图 4: 3x3 网格中的状态价值热力图</div>
 
@@ -725,7 +725,7 @@ plt.show()
 执行代码后，可以得到各状态-动作对的动作价值函数结果，并生成两个热力图来直观展示各状态在不同动作下的价值分布情况，如图 5 所示。
 
 <div align="center">
-<img width="800" src="figs/maze_33_mc_action_values.png"/>
+<img width="800" src={require("./figs/maze_33_mc_action_values.png").default}/>
 </div>
 <div align="center">图 5: 3x3 网格中的动作价值热力图</div>
 
@@ -744,7 +744,7 @@ $$
 这种利用蒙特卡洛方法交替进行策略评估和策略改进的过程，称为**蒙特卡洛控制**（$\text{Monte Carlo Control}$），算法流程如图 6 所示。
 
 <div align="center">
-<img width="600" src="figs/mc_control_pseu.png"/>
+<img width="600" src={require("./figs/mc_control_pseu.png").default}/>
 </div>
 <div align="center">图 6: 蒙特卡洛控制算法伪代码</div>
 
@@ -940,7 +940,7 @@ plt.show()
 执行代码后，可以得到最优策略 $\pi(s)$ 以及从起始状态 $s_1$ 出发的最优路径，并生成对比图来展示全局最优策略和从 $s_1$ 出发的最优路径，如图 7 所示。
 
 <div align="center">
-<img width="800" src="figs/maze_33_mc_control_policy.png"/>
+<img width="800" src={require("./figs/maze_33_mc_control_policy.png").default}/>
 </div>
 <div align="center">图 7: 3x3 网格中的蒙特卡洛控制最优策略与路径</div>
 

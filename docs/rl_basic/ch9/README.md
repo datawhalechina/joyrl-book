@@ -46,7 +46,7 @@ $$
 为了计算轨迹产生的概率，我们可以先具体展开轨迹产生的路径。如图 1 所示，首先环境会从初始状态分布中采样出一个初始状态 $s_0$ ，对应的概率为 $\rho_0(s_0)$ 。然后智能体在状态 $s_0$ 下根据策略 $\pi_\theta(a|s)$ 采样出一个动作 $a_0$ ，对应的概率就是策略函数对应的值，即 $\pi_\theta(a_0|s_0)$ ，接着环境根据状态转移概率 $P(s^{\prime}|s, a)$ 采样出下一个状态 $s_1$ ，对应的概率为 $P(s_1|s_0, a_0)$ 。此时对应的轨迹序列为 $\tau = \{s_0, a_0, s_1\}$ ，根据条件概率可知，该轨迹产生的概率为 $\Pr(\tau) = \rho_0(s_0) \pi_\theta(a_0|s_0) P(s_1|s_0, a_0)$ 。 
 
 <div align="center">
-<img width="500" src="figs/traj_prob.png"/>
+<img width="500" src={require("./figs/traj_prob.png").default}/>
 <figcaption style={{fontSize: '14px'}}>图 1 轨迹概率的计算</figcaption>
 </div>
 
@@ -216,7 +216,7 @@ $$
 在引入平稳分布概念之前，先来看一个例子。如图 2 所示，假设有一个简单的马尔可夫过程（ $\text{Markov Process}$ ） ，包含三个状态 $s_1, s_2, s_3$ ，每个状态之间的转移概率如图中所示。
 
 <div align="center">
-<img width="400" src="figs/markov_examp.png"/>
+<img width="400" src={require("./figs/markov_examp.png").default}/>
 <figcaption>图 2 马尔可夫过程示例</figcaption>
 </div>
 
@@ -1027,7 +1027,7 @@ $$
 在实际应用中，$\text{REINFORCE}$ 算法的流程如图 3 所示。首先，初始化策略参数 $\theta$ ，然后在每个迭代周期中，采样 $N$ 条轨迹 $\{\tau^{(i)}\}_{i=1}^{N}$ （这个过程称为 $\text{rollout}$，出于简便图中只展示了一条轨迹的采样 ），计算每条轨迹的回报 $G_t^{(i)}$ ，最后根据式 $\eqref{eq:41}$ 计算梯度并更新策略参数 $\theta$ 。
 
 <div align="center">
-<img width="800" src="figs/pseu.png"/>
+<img width="800" src={require("./figs/pseu.png").default}/>
 <figcaption style={{fontSize: '14px'}}>图 3: REINFORCE 算法流程</figcaption>
 </div>
 

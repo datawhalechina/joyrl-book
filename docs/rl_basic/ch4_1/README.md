@@ -56,7 +56,7 @@ $$
 回顾蒙特卡洛方法中讲到的 $3\times3$ 网格世界的例子，如图 1 所示。考虑智能体在 $3 \times 3$ 的网格中使用随机策略进行移动，以左上角为起点，右下角为终点，同样规定每次只能向右或向下移动，动作分别用 $a_1$ 和 $a_2$ 表示。用智能体的位置不同的状态，即$s_1,s_2,\ldots,s_9$，初始状态为$S_0=s_1$，终止状态为$s_9$。
 
 <div align="center">
-<img width="500" src="figs/maze_33.png"/>
+<img width="500" src={require("./figs/maze_33.png").default}/>
 </div>
 <div align="center">图 1: 3x3 网格示例</div>
 
@@ -294,7 +294,7 @@ $$
 参考蒙特卡洛控制算法的流程，结合时序差分估计动作价值的方式，$\text{Sarsa}$ 算法的具体流程如图 2 所示，**完整的代码实现可参考实战部分的内容**。
 
 <div align="center">
-<img width="600" src="figs/sarsa_pseu.png"/>
+<img width="600" src={require("./figs/sarsa_pseu.png").default}/>
 </div>
 <div align="center">图 2: Sarsa 算法流程</div>
 
@@ -331,7 +331,7 @@ $$
 类似的，算法流程如图 3 所示，**完整的代码实现可参考实战部分的内容**。
 
 <div align="center">
-<img width="600" src="figs/qlearning_pseu.png"/>
+<img width="600" src={require("./figs/qlearning_pseu.png").default}/>
 </div>
 <div align="center">图 3: Q-learning 算法流程</div>
 
@@ -358,7 +358,7 @@ $$
 以学习开车为例，如图 4 所示，同策略中，驾驶者按照当前学到的驾驶技巧进行驾驶，同时也在学习和改进这些技巧；而在异策略中，驾驶者心里一直想着最优的驾驶方式，但实际驾驶时可能会因为交通状况、路况等因素而采取不同的驾驶策略。换句话说，同策略就是在“学自己”，而异策略则是在“看别人学或学理想中的自己”。
 
 <div align="center">
-<img width="600" src="figs/on_off_policy.png"/>
+<img width="600" src={require("./figs/on_off_policy.png").default}/>
 </div>
 <div align="center">图 4: 同策略与异策略对比示意图</div>
 

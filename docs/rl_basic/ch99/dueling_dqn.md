@@ -38,7 +38,7 @@ class DuelingQNetwork(nn.Module):
 最后我们展示一下它在 $\text{CartPole}$ 环境下的训练结果，如图 1 所示，完整的代码同样可以参考本书的代码仓库。
 
 <div align="center">
-<img width="400" src="figs/DuelingDQN_CartPole-v1_training_curve.png"/>
+<img width="400" src={require("./figs/DuelingDQN_CartPole-v1_training_curve.png").default}/>
 </div>
 <div align="center">图 1 $\:$ $\text{CartPole}$ 环境 $\text{Dueling DQN}$ 算法训练曲线</div>
 

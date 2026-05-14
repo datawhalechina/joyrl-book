@@ -11,7 +11,7 @@
 Kumar 等人（2019）用 SAC 在 HalfCheetah-v2 上做了经典演示：
 
 <div align="center">
-<img width="450" src="figs/CQL_overestimateQ_pic.png"/>
+<img width="450" src={require("./figs/CQL_overestimateQ_pic.png").default}/>
 <figcaption style={{fontSize: '14px'}}>图 1 增加样本数并未普遍抑制“反学习”现象图示。</figcaption>
 </div>
  
@@ -88,12 +88,12 @@ loss = loss + self.cql_alpha * (
 
 
 <div align="center">
-<img width="450" src="figs/CQL_alpha_reward.png"/>
+<img width="450" src={require("./figs/CQL_alpha_reward.png").default}/>
 <figcaption style={{fontSize: '14px'}}>图 2 不同 α 下策略学习情况。</figcaption>
 </div>
 
 <div align="center">
-<img width="450" src="figs/CQL_q_value.png"/>
+<img width="450" src={require("./figs/CQL_q_value.png").default}/>
 <figcaption style={{fontSize: '14px'}}>图 3 不同 α 下q Value情况。</figcaption>
 </div>
 

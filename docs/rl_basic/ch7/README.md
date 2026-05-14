@@ -81,7 +81,7 @@ $$
 如图 1 所示，不同于 $\text{Q-learning}$ 算法每次用最新的样本直接喂入神经网络去更新网络模型，$\text{DQN}$ 算法会把每次与环境交互得到的样本都存储在一个经验回放中，然后每次从经验池中随机抽取一批样本来训练网络。
 
 <div align="center">
-<img width="500" src="figs/replay.png"/>
+<img width="500" src={require("./figs/replay.png").default}/>
 </div>
 <div align="center">图 1: 经验回放示例</div>
 
@@ -108,7 +108,7 @@ $$
 其中 $C$ 是一个超参数，表示每隔多少步更新一次目标网络的参数。这样一来，目标网络的参数在会在一定时间内保持不变，从而使得目标 $Q$ 值相对稳定，避免了追逐不断移动的目标的问题，提高了训练的稳定性和收敛性，如图 2 所示。
 
 <div align="center">
-<img width="500" src="figs/target_q.png"/>
+<img width="500" src={require("./figs/target_q.png").default}/>
 </div>
 <div align="center">图 2: 目标网络示例</div>
 
@@ -127,7 +127,7 @@ $$
 $\text{DQN}$ 算法的完整流程如图 3 所示，包括初始化网络和经验回放池、与环境交互采样、存储样本到经验回放池、从经验回放池中随机采样小批量样本、计算目标 $Q$ 值和损失函数、更新网络参数以及定期更新目标网络参数等步骤，**完整的代码实现可参考实战部分的内容**。
 
 <div align="center">
-<img width="600" src="figs/dqn_pseu.png"/>
+<img width="600" src={require("./figs/dqn_pseu.png").default}/>
 </div>
 <div align="center">图 3: DQN 算法流程</div>
 

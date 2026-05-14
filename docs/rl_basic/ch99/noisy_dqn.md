@@ -109,6 +109,6 @@ class NoisyQNetwork(nn.Module):
 同样我们展示一下它在 $\text{CartPole}$ 环境下的训练结果，如图 1 所示。
 
 <div align="center">
-<img width="400" src="figs/NoisyDQN_CartPole-v1_training_curve.png"/>
+<img width="400" src={require("./figs/NoisyDQN_CartPole-v1_training_curve.png").default}/>
 </div>
 <div align="center">图 1 $\:$ $\text{CartPole}$ 环境 $\text{Noisy DQN}$ 算法训练曲线</div>

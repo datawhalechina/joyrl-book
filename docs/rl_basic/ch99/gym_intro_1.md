@@ -5,7 +5,7 @@
 如图 1 所示，对于每个环境，$\text{Gymnasium}$ 简要介绍了其状态或观测（$\text{Observation Space}$）、动作空间（$\text{Action Space}$）以及奖励机制（$\text{Reward Mechanism}$）。这些信息对于理解环境的动态和设计合适的强化学习算法至关重要。
 
 <div align="center">
-<img width="800" src="figs/gym_intro_1.png"/>
+<img width="800" src={require("./figs/gym_intro_1.png").default}/>
 <figcaption style={{fontSize: '14px'}}>图 1 Gymnasium 环境说明</figcaption>
 </div>
 

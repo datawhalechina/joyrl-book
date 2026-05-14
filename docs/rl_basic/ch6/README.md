@@ -207,7 +207,7 @@ $$
 先回顾一下网格世界的环境设置，如图 1 所示。考虑智能体在 $3 \times 3$ 的网格中使用随机策略进行移动，以左上角为起点，右下角为终点，同样规定每次只能向右或向下移动，动作分别用 $a_1$ 和 $a_2$ 表示。用智能体的位置不同的状态，即$s_1,s_2,\ldots,s_9$，初始状态为$S_0=s_1$，终止状态为$s_9$。
 
 <div align="center">
-<img width="500" src="figs/maze_33.png"/>
+<img width="500" src={require("./figs/maze_33.png").default}/>
 </div>
 <div align="center">图 1: 3x3 网格示例</div>
 
@@ -512,14 +512,14 @@ $$
 神经网络一般包含三个主要部分：输入层、隐藏层和输出层，其中隐藏层可以有多层，每层包含多个神经元，通过激活函数实现非线性变换。如图 2 所示，假设我们使用一个简单的前馈神经网络来近似动作价值函数 $Q(s,a)$。输入层包含状态 $s$ （有时也包含动作 $a$ ）的特征表示，经过隐藏层的非线性变换，最终输出对应的动作价值估计。
 
 <div align="center">
-<img width="500" src="figs/nn_q_value.png"/>
+<img width="500" src={require("./figs/nn_q_value.png").default}/>
 </div>
 <div align="center">图 2: 使用神经网络近似动作价值函数 $Q(s,a)$</div>
 
 对于线性输入，即一维特征向量，一般可以用全连接层（$\text{fully connected layer}$，简称 $\text{FC}$）将输入映射到隐藏层，然后通过激活函数（如 $\text{ReLU}$、$\text{Sigmoid}$ 等）引入非线性，最后再通过输出层得到价值估计。对应的图示可以简化为图 3 所示。
 
 <div align="center">
-<img width="300" src="figs/nn_fc.png"/>
+<img width="300" src={require("./figs/nn_fc.png").default}/>
 </div>
 <div align="center">图 3: 神经网络全连接层示意图</div>
 

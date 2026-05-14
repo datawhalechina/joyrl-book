@@ -6,7 +6,7 @@ $\text{PER DQN}$ 算法的核心看起来简单，就是把普通的经验回放
 
 
 <div align="center">
-<img width="500" src="figs/per_dqn_pseu.png"/>
+<img width="500" src={require("./figs/per_dqn_pseu.png").default}/>
 </div>
 <div align="center">图 $\text{8-7}$ $\text{PER DQN}$ 伪代码</div>
 
@@ -178,6 +178,6 @@ class PrioritizedReplayBufferQue:
 最后，我们可以将优先级经验回放和 $\text{DQN}$ 结合起来，实现一个带有优先级的 $\text{DQN}$ 算法，并展示它在 $\text{CartPole}$ 环境下的训练结果，如图 $\text{8-8}$ 所示。
 
 <div align="center">
-<img width="400" src="figs/PERDQN_CartPole-v1_training_curve.png"/>
+<img width="400" src={require("./figs/PERDQN_CartPole-v1_training_curve.png").default}/>
 </div>
 <div align="center">图 $\text{8-8}$ $\text{CartPole}$ 环境 $\text{PER DQN}$ 算法训练曲线</div>

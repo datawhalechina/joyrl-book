@@ -7,7 +7,7 @@
 首先我们回顾一下 $\text{Q-learning}$ 算法的流程或伪代码，如图 $\text{1}$ 所示。
 
 <div align="center">
-<img width="600" src="figs/qlearning_pseu.png"/>
+<img width="600" src={require("./figs/qlearning_pseu.png").default}/>
 </div>
 <div align="center">图 $\text{1}$ $\:$ $\text{Q-learning}$ 算法流程</div>
 
@@ -169,7 +169,7 @@ def plot_rewards(rewards, ylabel = "rewards", title="learning curve"):
 如图 $\text{2}$ 所示，整个环境中共有 $\text{48}$ 个网格，其中黄色网格（标号为 $\text{36}$ ）为起点，绿色网格（标号为 $\text{47}$ ）为终点，红色的网格表示悬崖，智能体的目标是以最短的路径从起点到终点，并且避开悬崖。由于这个环境比较简单，我们一眼就能看出来最优的策略应当是从起点向上沿着 $\text{24}$ 号网格直线走到 $\text{35}$ 号网格最后到达终点，后面我们看看强化学习智能体能不能学出来。
 
 <div align="center">
-<img width="500" src="figs/env_CliffWalking-v0.png"/>
+<img width="500" src={require("./figs/env_CliffWalking-v0.png").default}/>
 </div>
 <div align="center">图 $\text{2}$ $\:$ $\text{CliffWalking-v0}$ 环境示意图</div>
 
@@ -279,7 +279,7 @@ plot_rewards(train_res['rewards'], title=f"{cfg.algo_name} on {cfg.env_id} - Tra
 得到的训练曲线如图 $\text{7}$ 所示，曲线横坐标表示回合数（$\text{episode}$），纵坐标表示每回合获得的总奖励，可以看出曲线其实从大约 $\text{50}$ 个回合的时候就开始收敛了，也就是我们的智能体学到了一个最优策略。
 
 <div align="center">
-<img width="500" src="figs/qlearning_CliffWalking-v0_train_curve.png"/>
+<img width="500" src={require("./figs/qlearning_CliffWalking-v0_train_curve.png").default}/>
 </div>
 <div align="center">图 $\text{7}$ $\:$ $\text{CliffWalking-v0}$ 环境 $\text{Q-learning}$ 算法训练曲线</div>
 
@@ -303,6 +303,6 @@ plot_rewards(test_res['rewards'], title=f"{cfg.algo_name} on {cfg.env_id} - Test
 
 
 <div align="center">
-<img width="500" src="figs/qlearning_CliffWalking-v0_test_curve.png"/>
+<img width="500" src={require("./figs/qlearning_CliffWalking-v0_test_curve.png").default}/>
 </div>
 <div align="center">图 $\text{8}$ $\:$ $\text{CliffWalking-v0}$ 环境 $\text{Q-learning}$ 算法训练曲线</div>

@@ -7,7 +7,7 @@
 如图 $\text{1}$ 所示，$\text{DDPG}$ 算法的训练方式其实更像 $\text{DQN}$ 算法。注意在第 $15$ 步中 $\text{DDPG}$ 算法将当前网络参数复制到目标网络的方式是软更新，即每次一点点地将参数复制到目标网络中，与之对应的是 $\text{DQN}$ 算法中的硬更新。软更新的好处是更加平滑缓慢，可以避免因权重更新过于迅速而导致的震荡，同时降低训练发散的风险。
 
 <div align="center">
-<img width="600" src="figs/DDPG_pseu.png"/>
+<img width="600" src={require("./figs/DDPG_pseu.png").default}/>
 </div>
 <div align="center">图 1: DDPG 算法流程</div>
 
@@ -128,13 +128,13 @@ class Agent:
 核心代码到这里全部实现了，我们展示一下训练效果，如图 $\text{2}$ 所示。
 
 <div align="center">
-<img width="500" src="figs/DDPG_Pendulum_train_curve.png"/>
+<img width="500" src={require("./figs/DDPG_Pendulum_train_curve.png").default}/>
 </div>
 <div align="center">图 2: Pendulum 环境 DDPG 算法训练曲线</div>
 
 这里我们使用了一个具有连续动作空间的环境 $\text{Pendulum}$ ，如图 $\text{3}$ 所示。在该环境中，钟摆以随机位置开始，我们的目标是将其向上摆动，使其保持直立。
 
 <div align="center">
-<img width="400" src="figs/env_Pendulum.png"/>
+<img width="400" src={require("./figs/env_Pendulum.png").default}/>
 </div>
 <div align="center">图 3: Pendulum 环境演示</div>

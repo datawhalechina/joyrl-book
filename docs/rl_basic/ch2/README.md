@@ -7,7 +7,7 @@
 在强化学习中，马尔可夫决策过程（$\text{Markov Decision Process, MDP}$）是用来描述智能体与环境交互的数学模型。如图 1 所示，智能体（$\text{Agent}$）与环境（$\text{Environment}$）在一系列离散的时步（ $\text{time step}$ ）中交互，在每个时步 $t$，智能体接收环境的状态 $s_t$，并根据该状态选择一个动作 $a_t$。执行该动作后，智能体会收到一个奖励 $r_{t}$，同时环境会转移到下一个状态 $s_{t+1}$。
 
 <div align="center">
-<img width="500" src="figs/interaction_mdp.png"/>
+<img width="500" src={require("./figs/interaction_mdp.png").default}/>
 <figcaption style={{fontSize: '14px'}}>图 1: 智能体与环境的交互过程</figcaption>
 </div>
 
@@ -54,7 +54,7 @@ $$
 既然状态数有限，就可以用一种状态流向图的形式表示智能体与环境交互过程中的走向。如图 2 所示，图中每个曲线箭头表示指向自己，对于状态 $s_1$ 来说，有 $0.2$ 的概率继续保持在 $s_1$ 状态，同时也有 $0.4$ 和 $0.4$ 的概率转移到状态 $s_2$ 和 $s_3$。同理，其他状态之间也有类似的转移概率。
 
 <div align="center">
-<img width="400" src="figs/fsm.png"/>
+<img width="400" src={require("./figs/fsm.png").default}/>
 </div>
 <div style={{textAlign: 'center'}}>
     <figcaption style={{fontSize: '14px'}}> <b>图 2: 马尔可夫链</b> </figcaption>

@@ -8,7 +8,7 @@
 此外，RL 要求环境封闭、规则完全可描述且可重置，导致采样分布即性能上限；智能体的泛化边界被严格圈定在“可交互区域”，难以跨越未见状态空间。
 
 <div align="center">
-<img width="360" src="figs/on_off-policy.png"/>
+<img width="360" src={require("./figs/on_off-policy.png").default}/>
 <figcaption style={{fontSize: '14px'}}>图 1 同策略-异策略RL算法流程图示</figcaption>
 </div>
 
@@ -16,7 +16,7 @@
 于是人们自然发问：能否像监督学习那样，用海量历史数据先训一遍，即用数据驱动的方式进行RL训练，然后再上线？
 
 <div align="center">
-<img width="300" src="figs/offline-RL.png"/>
+<img width="300" src={require("./figs/offline-RL.png").default}/>
 <figcaption style={{fontSize: '14px'}}>图 2 离线强化学习算法流程图示</figcaption>
 </div>
  
@@ -40,7 +40,7 @@ $$\max_\pi \sum_0^T \mathbb{E}_{s_t \sim d^\pi, a_t\sim \pi(a|s)}[\gamma^t r(s_t
 
 
 <div align="center">
-<img width="300" src="figs/offline-RL-stitching.png"/>
+<img width="300" src={require("./figs/offline-RL-stitching.png").default}/>
 <figcaption style={{fontSize: '14px'}}>图 3 离线强化学习“缝合策略“图示</figcaption>
 </div>
 
@@ -52,7 +52,7 @@ $$\max_\pi \sum_0^T \mathbb{E}_{s_t \sim d^\pi, a_t\sim \pi(a|s)}[\gamma^t r(s_t
 
 
 <div align="center">
-<img width="300" src="figs/offline-RL_never-seen-state-action.png"/>
+<img width="300" src={require("./figs/offline-RL_never-seen-state-action.png").default}/>
 <figcaption style={{fontSize: '14px'}}>图 4 离线强化学习-未见过Action错误估计图示</figcaption>
 </div>
 

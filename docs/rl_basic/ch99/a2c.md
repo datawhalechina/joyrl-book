@@ -146,6 +146,6 @@ class Agent:
 
 
 <div align="center">
-<img width="400" src="figs/a2c_CartPole_training.png"/>
+<img width="400" src={require("./figs/a2c_CartPole_training.png").default}/>
 </div>
 <div align="center">图 1: CartPole 环境 A2C 算法训练曲线</div>
