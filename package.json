@@ -3,10 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "sync-assets": "node scripts/sync-static-assets.mjs",
-    "prestart": "npm run sync-assets",
     "start": "docusaurus start",
-    "prebuild": "npm run sync-assets",
     "build": "docusaurus build",
     "serve": "docusaurus serve",
     "clear": "docusaurus clear",

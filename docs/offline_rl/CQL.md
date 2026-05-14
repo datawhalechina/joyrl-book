@@ -79,7 +79,7 @@ loss = loss + self.cql_alpha * (
 3. 结束循环
 ---
 
-具体实现详见[CQL-DQN-CartPole-v2 Notebook](../../notebooks/algos/CQL/CQL_CartPole-v1.ipynb)
+具体实现详见[CQL-DQN-CartPole-v2 Notebook](https://github.com/datawhalechina/joyrl-book/blob/main/notebooks/algos/CQL/CQL_CartPole-v1.ipynb)
 
 
 ## 训练及效果展示
@@ -131,5 +131,4 @@ $$\Rightarrow \mu(a|s) = \rho(a|s) \cdot e^{(Q(s,a) - \lambda −\tau)/\tau}=\rh
 所以可以得出
 
 $$\mu(a|s) \propto ρ(a|s) · e^{Q(s,a)}; \tau=1$$
-
 
