@@ -64,7 +64,7 @@ r(\theta)=\frac{\pi_\theta(a \mid s)}{\pi_{\theta_{\text {old }}}(a \mid s)}
 \end{equation}
 $$
 
-这个损失就是置信区间的部分，一般称作 $\text{TRPO}$ 损失。这里旧策略分布 $\pi_{\theta_{\text {old }}}(a \mid s)$ 就是重要性权重部分的目标分布 $p(x)$ ，目标分布是很难采样的，所以在计算重要性权重的时候这部分通常用上一次与环境交互采样中的概率分布来近似。相应地， $\pi_\theta(a \mid s)$ 则是提议分布，即通过当前网络输出的 `probs` 形成的类别分布 $\text{Catagorical}$ 分布（离散动作）或者 $\text{Gaussian}$ 分布（连续动作）。
+这个损失就是置信区间的部分，一般称作 $\text{TRPO}$ 损失。这里新策略分布 $\pi_\theta(a \mid s)$ 就是重要性权重部分的目标分布 $p(x)$ ，目标分布是很难采样的，所以在计算重要性权重的时候这部分通常用上一次与环境交互采样中的概率分布来近似。相应地， $\pi_{\theta_{\text {old }}}(a \mid s)$ 则是提议分布，即通过当前网络输出的 `probs` 形成的类别分布 $\text{Categorical}$ 分布（离散动作）或者 $\text{Gaussian}$ 分布（连续动作）。
 
 读者们可能对这个写法感到陌生，似乎少了 $\text{Actor-Critic}$ 算法中的 `logit_p`，但其实这个公式等价于式 $\eqref{eq:12.6}$ 。
 
