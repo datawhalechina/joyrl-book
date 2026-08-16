@@ -7,6 +7,11 @@ SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
 cd "$SCRIPT_DIR"
 
+if [ ! -x "./node_modules/.bin/docusaurus" ]; then
+  echo "==> Installing dependencies..."
+  npm install
+fi
+
 echo "==> Building site..."
 npm run build
 
